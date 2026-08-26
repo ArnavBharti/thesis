@@ -5,6 +5,16 @@ description = "Reproducible Sudoku dataset generation and certification for the 
 requires-python = ">=3.11"
 dependencies = []
 
+[project.optional-dependencies]
+download = ["huggingface-hub>=0.34"]
+local = [
+  "accelerate>=1.10",
+  "huggingface-hub>=0.34",
+  "torch>=2.6",
+  "transformers>=4.56",
+  "vllm>=0.27.1; sys_platform == 'linux'"
+]
+
 [project.scripts]
 thesis-sudoku = "sudoku.cli:main"
 thesis-experiments = "experiments.cli:main"
