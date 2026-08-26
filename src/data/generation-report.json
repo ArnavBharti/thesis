@@ -1,0 +1,39 @@
+{
+  "generator_version": "1.0.0",
+  "master_seed": 20260826,
+  "puzzles_per_tier": 100,
+  "schema_version": "1.0.0",
+  "tiers": {
+    "easy": {
+      "accepted": 100,
+      "candidates_examined": 100,
+      "difficulty_rejections": {},
+      "duplicate_puzzles_rejected": 0,
+      "first_seed": 20260826,
+      "last_seed": 20260925
+    },
+    "hard": {
+      "accepted": 100,
+      "candidates_examined": 257,
+      "difficulty_rejections": {
+        "easy": 111,
+        "medium": 46
+      },
+      "duplicate_puzzles_rejected": 0,
+      "first_seed": 2020260829,
+      "last_seed": 2020261082
+    },
+    "medium": {
+      "accepted": 100,
+      "candidates_examined": 815,
+      "difficulty_rejections": {
+        "easy": 430,
+        "hard": 285
+      },
+      "duplicate_puzzles_rejected": 0,
+      "first_seed": 1020260830,
+      "last_seed": 1020261640
+    }
+  },
+  "total_puzzles": 300
+}

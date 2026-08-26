@@ -1,0 +1,15 @@
+{
+  "difficulty_counts": {
+    "easy": 100,
+    "hard": 100,
+    "medium": 100
+  },
+  "files": {
+    "generation-report.json": "6f966727f26a1105fcfe34d422b55e445417c37bb37e8ba36fb1d1514d7ed9ac",
+    "puzzles.jsonl": "43a1ef3a4dfe22fa6cd8939021a80ef3cc812c5916ab62ef6b11501b45b58cc2"
+  },
+  "generator_version": "1.0.0",
+  "master_seed": 20260826,
+  "record_count": 300,
+  "schema_version": "1.0.0"
+}
