@@ -1,0 +1,48 @@
+import json
+import tempfile
+import unittest
+from pathlib import Path
+
+from experiments.config import load_config
+from experiments.records import ExperimentRequest, Message, shard_for
+from experiments.selection import deterministic_permutation, select_stratified
+from sudoku.dataset import read_records
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+class ExperimentFoundationTests(unittest.TestCase):
+    def test_example_configuration_loads(self) -> None:
+        config = load_config(ROOT / "config" / "experiments.example.json")
+        self.assertEqual(config.run_id, "thesis-confirmatory-v1")
+        self.assertTrue(config.dataset_path.is_file())
+        self.assertEqual(config.enabled_models[0].name, "qwen-local")
+
+    def test_request_id_and_shard_are_stable(self) -> None:
+        request = ExperimentRequest(
+            experiment="exp4",
+            condition="greek",
+            model="test",
+            messages=(Message("user", "prompt"),),
+            puzzle_id="E001",
+        )
+        self.assertEqual(request.request_id, request.request_id)
+        self.assertEqual(shard_for(request.request_id, 17), shard_for(request.request_id, 17))
+
+    def test_selection_is_stratified_and_reproducible(self) -> None:
+        records = read_records(ROOT / "data" / "puzzles.jsonl")
+        first = select_stratified(records, 2, seed=42, namespace="test")
+        second = select_stratified(records, 2, seed=42, namespace="test")
+        self.assertEqual(first, second)
+        self.assertEqual([record.difficulty for record in first], ["easy"] * 2 + ["medium"] * 2 + ["hard"] * 2)
+
+    def test_permutation_is_seed_fixed(self) -> None:
+        self.assertEqual(
+            deterministic_permutation(range(9), seed=7, namespace="mapping"),
+            deterministic_permutation(range(9), seed=7, namespace="mapping"),
+        )
+
+
+if __name__ == "__main__":
+    unittest.main()

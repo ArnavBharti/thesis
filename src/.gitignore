@@ -7,3 +7,5 @@ dist/
 *.egg-info/
 data/pipeline-state.json
 data/.pipeline-state.tmp
+experiment_outputs/
+slurm/logs/

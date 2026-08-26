@@ -1,0 +1,62 @@
+{
+  "run_id": "thesis-confirmatory-v1",
+  "dataset_path": "../data/puzzles.jsonl",
+  "output_directory": "../experiment_outputs",
+  "master_seed": 20260826,
+  "pilot_per_tier": 20,
+  "mechanism_per_tier": 20,
+  "ablation_per_tier": 10,
+  "slurm_shards": 24,
+  "inference": {
+    "max_new_tokens": 2048,
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "seed": 20260826
+  },
+  "retry": {
+    "attempts": 5,
+    "initial_delay_seconds": 2.0,
+    "maximum_delay_seconds": 30.0,
+    "timeout_seconds": 600.0
+  },
+  "models": [
+    {
+      "name": "qwen-local",
+      "model_id": "Qwen/Qwen3.8-27B",
+      "backend": "auto",
+      "dtype": "bfloat16",
+      "tensor_parallel_size": 1,
+      "trust_remote_code": false,
+      "local_files_only": true,
+      "enabled": true
+    },
+    {
+      "name": "glm-local",
+      "model_id": "zai-org/GLM-5.2",
+      "backend": "auto",
+      "dtype": "bfloat16",
+      "tensor_parallel_size": 1,
+      "trust_remote_code": true,
+      "local_files_only": true,
+      "enabled": false
+    },
+    {
+      "name": "kimi-local",
+      "model_id": "moonshotai/Kimi-K3",
+      "backend": "auto",
+      "dtype": "bfloat16",
+      "tensor_parallel_size": 1,
+      "trust_remote_code": true,
+      "local_files_only": true,
+      "enabled": false
+    },
+    {
+      "name": "local-openai-server",
+      "model_id": "served-model-name",
+      "backend": "openai_compatible",
+      "api_base": "http://127.0.0.1:8000/v1",
+      "api_key_env": "LOCAL_LLM_API_KEY",
+      "enabled": false
+    }
+  ]
+}
