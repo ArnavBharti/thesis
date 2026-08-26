@@ -190,13 +190,26 @@ class CaseFactory:
         for record in subset:
             for alphabet in plan.alphabets:
                 token_length = len(tokenizer.encode(alphabet.symbols[0]))
+                puzzle = grid_from_compact(record.puzzle)
+                visible_symbols = [
+                    alphabet.symbol_for(value) for value in puzzle.cells if value
+                ]
+                clue_token_count = sum(len(tokenizer.encode(symbol)) for symbol in visible_symbols)
                 yield self._solve_request(
                     "exp7",
                     f"neutral_{token_length}_tokens",
                     model,
                     record,
                     alphabet,
-                    extra_metadata={"token_length": token_length},
+                    extra_metadata={
+                        "token_length": token_length,
+                        "mean_clue_tokens": clue_token_count / len(visible_symbols),
+                        "mean_symbol_utf8_bytes": sum(
+                            len(symbol.encode("utf-8")) for symbol in alphabet.symbols
+                        )
+                        / 9,
+                        "mean_symbol_code_points": sum(len(symbol) for symbol in alphabet.symbols) / 9,
+                    },
                 )
 
     def _exp8(self, model: ModelConfig) -> Iterator[ExperimentRequest]:

@@ -224,13 +224,16 @@ class OpenAICompatibleBackend(InferenceBackend):
         payload = {
             "model": self.model.model_id,
             "messages": [message.to_dict() for message in messages],
-            "max_tokens": self.inference.max_new_tokens,
+            "max_completion_tokens": self.inference.max_new_tokens,
             "temperature": self.inference.temperature,
             "top_p": self.inference.top_p,
             "seed": self.inference.seed,
         }
+        for parameter in self.model.extra.get("omit_parameters", []):
+            payload.pop(parameter, None)
         payload.update(self.model.extra.get("request", {}))
-        headers = {"Content-Type": "application/json"}
+        headers = {"Content-Type": "application/json", "X-OpenRouter-Metadata": "enabled"}
+        headers.update(self.model.extra.get("headers", {}))
         if self.model.api_key_env:
             key = os.environ.get(self.model.api_key_env)
             if not key:
@@ -264,8 +267,12 @@ class OpenAICompatibleBackend(InferenceBackend):
             provider_metadata={
                 "backend": "openai_compatible",
                 "response_id": value.get("id"),
+                "routed_model": value.get("model"),
+                "provider": value.get("provider"),
                 "created": value.get("created"),
                 "system_fingerprint": value.get("system_fingerprint"),
+                "usage": usage,
+                "openrouter_metadata": value.get("openrouter_metadata"),
             },
         )
 
@@ -327,13 +334,17 @@ def build_backend(
         return TransformersBackend(model, inference, retry)
     if backend == "openai_compatible":
         return OpenAICompatibleBackend(model, inference, retry)
-    if backend == "static":  # type: ignore[comparison-overlap] - intentionally test-only
+    if backend == "static":
         return StaticBackend(model, inference, retry)
     raise BackendError(f"unsupported backend {backend!r}")
 
 
 def probe_model(model: ModelConfig) -> tuple[bool, str]:
+    if model.backend == "static":
+        return True, "dependency-free static test backend"
     if model.backend == "openai_compatible":
+        if model.api_key_env and not os.environ.get(model.api_key_env):
+            return False, f"missing API key environment variable {model.api_key_env}"
         return True, "configured remote or local OpenAI-compatible endpoint"
     model_path = Path(model.resolved_model_id)
     if model_path.exists():

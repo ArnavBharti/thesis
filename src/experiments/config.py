@@ -8,7 +8,31 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal
 
-BackendName = Literal["auto", "transformers", "vllm", "openai_compatible"]
+BackendName = Literal["auto", "transformers", "vllm", "openai_compatible", "static"]
+
+
+@dataclass(frozen=True, slots=True)
+class SlurmResources:
+    """Per-model resources used by the Sharanga submission helper."""
+
+    partition: str = "gpu"
+    gpus: int = 1
+    cpus: int = 8
+    memory: str = "96G"
+    time_limit: str = "0-12:00"
+    shards: int | None = None
+    nodelist: str | None = None
+    modules: tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        if not self.partition:
+            raise ValueError("Slurm partition cannot be empty")
+        if self.gpus < 0 or self.cpus < 1:
+            raise ValueError("Slurm GPU count must be non-negative and CPU count positive")
+        if self.shards is not None and self.shards < 1:
+            raise ValueError("Slurm shard count must be positive")
+        if not self.memory or not self.time_limit:
+            raise ValueError("Slurm memory and time limit cannot be empty")
 
 
 @dataclass(frozen=True, slots=True)
@@ -57,6 +81,7 @@ class ModelConfig:
     api_base: str | None = None
     api_key_env: str | None = None
     enabled: bool = True
+    slurm: SlurmResources = SlurmResources()
     extra: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
@@ -122,7 +147,7 @@ def load_config(path: Path) -> ExperimentConfig:
 
     base = config_path.parent
     try:
-        models = tuple(ModelConfig(**value) for value in raw["models"])
+        models = tuple(_model_config(value) for value in raw["models"])
         inference = InferenceConfig(**raw.get("inference", {}))
         retry = RetryConfig(**raw.get("retry", {}))
         dataset_path = _resolve_path(base, raw.get("dataset_path", "../data/puzzles.jsonl"))
@@ -147,3 +172,11 @@ def load_config(path: Path) -> ExperimentConfig:
 def _resolve_path(base: Path, value: str) -> Path:
     expanded = Path(os.path.expandvars(os.path.expanduser(value)))
     return expanded.resolve() if expanded.is_absolute() else (base / expanded).resolve()
+
+
+def _model_config(value: dict[str, Any]) -> ModelConfig:
+    fields = dict(value)
+    slurm = dict(fields.pop("slurm", {}))
+    if "modules" in slurm:
+        slurm["modules"] = tuple(slurm["modules"])
+    return ModelConfig(**fields, slurm=SlurmResources(**slurm))

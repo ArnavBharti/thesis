@@ -9,8 +9,10 @@ from dataclasses import dataclass
 from typing import Any, Iterable
 
 from sudoku.representations import ALPHABETS, SymbolAlphabet
+from sudoku.schema import PuzzleRecord, grid_from_compact
 
 from .backends import TokenizerAdapter
+from .prompts import solve_prompt
 from .selection import derived_seed
 
 
@@ -19,6 +21,30 @@ class TokenAlphabetPlan:
     alphabets: tuple[SymbolAlphabet, ...]
     registry: tuple[dict[str, Any], ...]
     missing_token_lengths: tuple[int, ...]
+
+
+def unicode_registry() -> tuple[dict[str, Any], ...]:
+    rows: list[dict[str, Any]] = []
+    for alphabet in ALPHABETS.values():
+        for position, symbol in enumerate(alphabet.symbols, start=1):
+            rows.append(
+                {
+                    "alphabet": alphabet.name,
+                    "abstract_value": position,
+                    "symbol": symbol,
+                    "unicode_code_points": [f"U+{ord(character):04X}" for character in symbol],
+                    "utf8_bytes": len(symbol.encode("utf-8")),
+                    "code_point_count": len(symbol),
+                    "grapheme_count": _grapheme_count(symbol),
+                    "tokens_isolation": None,
+                    "token_ids_isolation": None,
+                    "tokens_after_whitespace": None,
+                    "token_ids_after_whitespace": None,
+                    "tokens_inside_row_total": None,
+                    "tokenizer": None,
+                }
+            )
+    return tuple(rows)
 
 
 def symbol_diagnostics(symbol: str, tokenizer: TokenizerAdapter) -> dict[str, Any]:
@@ -50,6 +76,33 @@ def representation_registry(tokenizer: TokenizerAdapter) -> tuple[dict[str, Any]
                 }
             )
             rows.append(value)
+    return tuple(rows)
+
+
+def prompt_token_registry(
+    records: Iterable[PuzzleRecord],
+    tokenizer: TokenizerAdapter,
+) -> tuple[dict[str, Any], ...]:
+    rows: list[dict[str, Any]] = []
+    for record in records:
+        puzzle = grid_from_compact(record.puzzle)
+        for alphabet in ALPHABETS.values():
+            visible = [alphabet.symbol_for(value) for value in puzzle.cells if value]
+            clue_tokens = sum(len(tokenizer.encode(symbol)) for symbol in visible)
+            prompt = solve_prompt(puzzle, alphabet)
+            rows.append(
+                {
+                    "kind": "prompt",
+                    "puzzle_id": record.puzzle_id,
+                    "difficulty": record.difficulty,
+                    "alphabet": alphabet.name,
+                    "clue_count": len(visible),
+                    "visible_clue_tokens": clue_tokens,
+                    "mean_clue_tokens": clue_tokens / len(visible),
+                    "total_prompt_tokens": len(tokenizer.encode(prompt)),
+                    "tokenizer": tokenizer.identity,
+                }
+            )
     return tuple(rows)
 
 

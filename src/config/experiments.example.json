@@ -23,40 +23,62 @@
     {
       "name": "qwen-local",
       "model_id": "Qwen/Qwen3.8-27B",
-      "backend": "auto",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "backend": "vllm",
       "dtype": "bfloat16",
       "tensor_parallel_size": 1,
-      "trust_remote_code": false,
       "local_files_only": true,
+      "slurm": {"partition": "gpu", "gpus": 1, "cpus": 12, "memory": "192G", "time_limit": "0-23:30", "shards": 24, "nodelist": "gpu4,gpu5,gpu6,gpu7,gpu8"},
+      "extra": {"vllm": {"max_model_len": 32768, "gpu_memory_utilization": 0.9}},
       "enabled": true
     },
     {
-      "name": "glm-local",
-      "model_id": "zai-org/GLM-5.2",
-      "backend": "auto",
+      "name": "glm-flash-local",
+      "model_id": "zai-org/GLM-4.7-Flash",
+      "revision": "7dd20894a642a0aa287e9827cb1a1f7f91386b67",
+      "backend": "vllm",
       "dtype": "bfloat16",
-      "tensor_parallel_size": 1,
+      "tensor_parallel_size": 2,
       "trust_remote_code": true,
       "local_files_only": true,
-      "enabled": false
+      "slurm": {"partition": "gpu", "gpus": 2, "cpus": 16, "memory": "256G", "time_limit": "0-23:30", "shards": 24, "nodelist": "gpu4,gpu5,gpu6,gpu7,gpu8"},
+      "extra": {"protocol": {"replaces_outline_model": "zai-org/GLM-5.2"}, "vllm": {"max_model_len": 32768, "gpu_memory_utilization": 0.9}},
+      "enabled": true
     },
     {
-      "name": "kimi-local",
-      "model_id": "moonshotai/Kimi-K3",
-      "backend": "auto",
+      "name": "kimi-linear-local",
+      "model_id": "moonshotai/Kimi-Linear-48B-A3B-Instruct",
+      "revision": "e1df551a447157d4658b573f9a695d57658590e9",
+      "backend": "vllm",
       "dtype": "bfloat16",
-      "tensor_parallel_size": 1,
+      "tensor_parallel_size": 2,
       "trust_remote_code": true,
       "local_files_only": true,
-      "enabled": false
+      "slurm": {"partition": "gpu", "gpus": 2, "cpus": 16, "memory": "256G", "time_limit": "0-23:30", "shards": 24, "nodelist": "gpu4,gpu5,gpu6,gpu7,gpu8"},
+      "extra": {"protocol": {"replaces_outline_model": "moonshotai/Kimi-K3"}, "vllm": {"max_model_len": 32768, "gpu_memory_utilization": 0.9}},
+      "enabled": true
     },
     {
-      "name": "local-openai-server",
-      "model_id": "served-model-name",
+      "name": "gpt-5.6-terra-openrouter",
+      "model_id": "openai/gpt-5.6-terra",
       "backend": "openai_compatible",
-      "api_base": "http://127.0.0.1:8000/v1",
-      "api_key_env": "LOCAL_LLM_API_KEY",
-      "enabled": false
+      "api_base": "https://openrouter.ai/api/v1",
+      "api_key_env": "OPENROUTER_API_KEY",
+      "local_files_only": false,
+      "slurm": {"partition": "compute", "gpus": 0, "cpus": 2, "memory": "8G", "time_limit": "0-23:30", "shards": 24},
+      "extra": {"omit_parameters": ["temperature", "top_p"], "request": {"provider": {"order": ["OpenAI"], "allow_fallbacks": false}, "reasoning": {"effort": "medium", "exclude": true}}},
+      "enabled": true
+    },
+    {
+      "name": "claude-sonnet-5-openrouter",
+      "model_id": "anthropic/claude-sonnet-5",
+      "backend": "openai_compatible",
+      "api_base": "https://openrouter.ai/api/v1",
+      "api_key_env": "OPENROUTER_API_KEY",
+      "local_files_only": false,
+      "slurm": {"partition": "compute", "gpus": 0, "cpus": 2, "memory": "8G", "time_limit": "0-23:30", "shards": 24},
+      "extra": {"omit_parameters": ["temperature", "top_p", "seed"], "request": {"provider": {"order": ["Anthropic"], "allow_fallbacks": false}, "reasoning": {"effort": "medium", "exclude": true}}},
+      "enabled": true
     }
   ]
 }
