@@ -5,3 +5,5 @@ __pycache__/
 build/
 dist/
 *.egg-info/
+data/pipeline-state.json
+data/.pipeline-state.tmp
