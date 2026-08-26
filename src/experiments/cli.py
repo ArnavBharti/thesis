@@ -112,10 +112,11 @@ def main(argv: list[str] | None = None) -> int:
                 if experiment not in INFERENCE_EXPERIMENTS:
                     continue
                 if experiment == "exp7" and tokenizer is None:
-                    _write_not_run_status(
-                        model_directory / "exp7" / "status.json",
-                        "NOT_RUN_NO_EXACT_TOKENIZER_ACCESS",
-                    )
+                    if arguments.shard_index == 0:
+                        _write_not_run_status(
+                            model_directory / "exp7" / "status.json",
+                            "NOT_RUN_NO_EXACT_TOKENIZER_ACCESS",
+                        )
                     print(json.dumps({"model": model.name, "experiment": experiment, "status": "skipped_no_exact_tokenizer"}, sort_keys=True))
                     continue
                 if experiment != "qualification":
@@ -131,7 +132,18 @@ def main(argv: list[str] | None = None) -> int:
                     shard_index=arguments.shard_index,
                     shard_count=arguments.shard_count,
                 )
-                requests = factory.requests(experiment, model, tokenizer=tokenizer)
+                try:
+                    requests = factory.requests(experiment, model, tokenizer=tokenizer)
+                except ValueError as error:
+                    if experiment != "exp7":
+                        raise
+                    if arguments.shard_index == 0:
+                        _write_not_run_status(
+                            model_directory / "exp7" / "status.json",
+                            "NOT_RUN_TOKEN_SET_CONSTRUCTION_FAILED: " + str(error),
+                        )
+                    print(json.dumps({"model": model.name, "experiment": experiment, "status": "skipped_token_set_construction", "detail": str(error)}, sort_keys=True))
+                    continue
                 summary = executor.run(requests, maximum_requests=arguments.max_requests)
                 print(json.dumps({"model": model.name, "experiment": experiment, **asdict(summary)}, sort_keys=True))
                 if experiment == "qualification":

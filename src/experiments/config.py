@@ -21,6 +21,7 @@ class SlurmResources:
     memory: str = "96G"
     time_limit: str = "0-12:00"
     shards: int | None = None
+    max_concurrent: int | None = None
     nodelist: str | None = None
     modules: tuple[str, ...] = ()
 
@@ -31,6 +32,8 @@ class SlurmResources:
             raise ValueError("Slurm GPU count must be non-negative and CPU count positive")
         if self.shards is not None and self.shards < 1:
             raise ValueError("Slurm shard count must be positive")
+        if self.max_concurrent is not None and self.max_concurrent < 1:
+            raise ValueError("Slurm maximum concurrent array tasks must be positive")
         if not self.memory or not self.time_limit:
             raise ValueError("Slurm memory and time limit cannot be empty")
 

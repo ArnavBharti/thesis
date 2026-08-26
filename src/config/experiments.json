@@ -29,13 +29,13 @@
       "tensor_parallel_size": 1,
       "local_files_only": true,
       "slurm": {
-        "partition": "gpu",
+        "partition": "gpu_h100_4",
         "gpus": 1,
         "cpus": 12,
         "memory": "192G",
         "time_limit": "0-23:30",
         "shards": 24,
-        "nodelist": "gpu4,gpu5,gpu6,gpu7,gpu8"
+        "max_concurrent": 4
       },
       "extra": {
         "protocol": {
@@ -58,13 +58,13 @@
       "trust_remote_code": true,
       "local_files_only": true,
       "slurm": {
-        "partition": "gpu",
+        "partition": "gpu_h100_4",
         "gpus": 2,
         "cpus": 16,
         "memory": "256G",
         "time_limit": "0-23:30",
         "shards": 24,
-        "nodelist": "gpu4,gpu5,gpu6,gpu7,gpu8"
+        "max_concurrent": 2
       },
       "extra": {
         "protocol": {
@@ -89,13 +89,13 @@
       "trust_remote_code": true,
       "local_files_only": true,
       "slurm": {
-        "partition": "gpu",
+        "partition": "gpu_h200_8",
         "gpus": 2,
         "cpus": 16,
         "memory": "256G",
         "time_limit": "0-23:30",
         "shards": 24,
-        "nodelist": "gpu4,gpu5,gpu6,gpu7,gpu8"
+        "max_concurrent": 4
       },
       "extra": {
         "protocol": {
@@ -123,7 +123,8 @@
         "cpus": 2,
         "memory": "8G",
         "time_limit": "0-23:30",
-        "shards": 24
+        "shards": 24,
+        "max_concurrent": 8
       },
       "extra": {
         "omit_parameters": ["temperature", "top_p"],
@@ -151,7 +152,8 @@
         "cpus": 2,
         "memory": "8G",
         "time_limit": "0-23:30",
-        "shards": 24
+        "shards": 24,
+        "max_concurrent": 8
       },
       "extra": {
         "omit_parameters": ["temperature", "top_p", "seed"],

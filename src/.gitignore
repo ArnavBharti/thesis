@@ -1,3 +1,4 @@
+.venv/
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -8,4 +9,5 @@ dist/
 data/pipeline-state.json
 data/.pipeline-state.tmp
 experiment_outputs/
+slurm/generated/
 slurm/logs/

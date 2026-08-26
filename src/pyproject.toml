@@ -2,7 +2,7 @@
 name = "thesis-sudoku"
 version = "0.1.0"
 description = "Reproducible Sudoku dataset generation and certification for the thesis experiments"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = []
 
 [project.optional-dependencies]

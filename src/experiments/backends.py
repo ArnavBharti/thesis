@@ -162,14 +162,20 @@ class VLLMBackend(InferenceBackend):
         except ImportError as error:  # pragma: no cover - optional inference dependency
             raise BackendError("the vLLM backend requires vllm") from error
         self._tokenizer_adapter = load_huggingface_tokenizer(model)
+        model_location = _local_snapshot_path(model) if model.local_files_only else model.resolved_model_id
+        tokenizer_location = (
+            model_location
+            if model.resolved_tokenizer_id == model.resolved_model_id
+            else model.resolved_tokenizer_id
+        )
         arguments: dict[str, Any] = {
-            "model": model.resolved_model_id,
-            "tokenizer": model.resolved_tokenizer_id,
+            "model": model_location,
+            "tokenizer": tokenizer_location,
             "dtype": model.dtype,
             "tensor_parallel_size": model.tensor_parallel_size,
             "trust_remote_code": model.trust_remote_code,
         }
-        if model.revision:
+        if model.revision and model_location == model.resolved_model_id:
             arguments["revision"] = model.revision
         arguments.update(model.extra.get("vllm", {}))
         self._llm = LLM(**arguments)
@@ -258,6 +264,12 @@ class OpenAICompatibleBackend(InferenceBackend):
             raise BackendError(str(error)) from error
         choice = value["choices"][0]
         usage = value.get("usage", {})
+        required_provider = self.model.extra.get("protocol", {}).get("required_provider")
+        actual_provider = value.get("provider")
+        if required_provider and actual_provider and actual_provider != required_provider:
+            raise BackendError(
+                f"provider routing violation: expected {required_provider}, received {actual_provider}"
+            )
         return Generation(
             text=choice["message"]["content"] or "",
             finish_reason=choice.get("finish_reason"),
@@ -363,3 +375,23 @@ def probe_model(model: ModelConfig) -> tuple[bool, str]:
         return True, "model configuration found in the local Hugging Face cache"
     except Exception as error:  # transformers raises several cache/config-specific types
         return False, f"model is not available locally: {error}"
+
+
+def _local_snapshot_path(model: ModelConfig) -> str:
+    direct_path = Path(model.resolved_model_id)
+    if direct_path.exists():
+        return str(direct_path.resolve())
+    try:
+        from huggingface_hub import snapshot_download
+    except ImportError as error:  # pragma: no cover - optional inference dependency
+        raise BackendError("huggingface-hub is required to resolve a cached model snapshot") from error
+    try:
+        return snapshot_download(
+            repo_id=model.resolved_model_id,
+            revision=model.revision,
+            local_files_only=True,
+        )
+    except Exception as error:
+        raise BackendError(
+            f"pinned model snapshot is missing for {model.name}; run download_models.py first"
+        ) from error

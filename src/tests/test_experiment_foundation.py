@@ -19,6 +19,14 @@ class ExperimentFoundationTests(unittest.TestCase):
         self.assertTrue(config.dataset_path.is_file())
         self.assertEqual(config.enabled_models[0].name, "qwen-local")
 
+    def test_only_gpt_and_claude_use_openrouter(self) -> None:
+        config = load_config(ROOT / "config" / "experiments.example.json")
+        remote = {model.name for model in config.enabled_models if model.backend == "openai_compatible"}
+        self.assertEqual(
+            remote,
+            {"gpt-5.6-terra-openrouter", "claude-sonnet-5-openrouter"},
+        )
+
     def test_request_id_and_shard_are_stable(self) -> None:
         request = ExperimentRequest(
             experiment="exp4",
