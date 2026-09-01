@@ -9,6 +9,7 @@ from dataclasses import asdict
 from pathlib import Path
 
 from lib.requests import sudoku_request
+from lib.protocol import verify_global_protocol
 from lib.results import index_results
 from lib.samples import load_sample_plan
 from lib.selection import deterministic_permutation
@@ -32,6 +33,7 @@ def main() -> int:
     arguments = parser.parse_args()
 
     config, model = load_enabled_model(arguments.config, arguments.model)
+    verify_global_protocol(config, load_sample_plan(config))
     if not experiment_complete(config, model, "exp4"):
         raise SystemExit(f"finish all Step 7 parts for {model.name} first")
     if experiment_part_complete(config, model, "exp8", 1):

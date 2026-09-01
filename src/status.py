@@ -39,7 +39,9 @@ def main() -> int:
             raise SystemExit("unknown models: " + ", ".join(sorted(unknown)))
         models = tuple(model for model in models if model.name in requested)
 
-    protocol_frozen = sample_plan_path(config).exists()
+    protocol_frozen = sample_plan_path(config).exists() and (
+        config.output_directory / config.run_id / "protocol.json"
+    ).exists()
     for model in models:
         status = workflow_status(config, model)
         print(f"\n{model.name}")

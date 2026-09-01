@@ -9,6 +9,7 @@ from dataclasses import asdict
 from pathlib import Path
 
 from lib.requests import sudoku_request
+from lib.protocol import verify_global_protocol
 from lib.samples import load_sample_plan
 from lib.slurm import finish_submission, write_python_job
 from lib.steps import execute_requests, load_enabled_model
@@ -36,7 +37,7 @@ def main() -> int:
         raise SystemExit(f"--part must be between 1 and {parts}")
     if not qualification_complete(config, model):
         raise SystemExit(f"{model.name} has not passed Step 4")
-    load_sample_plan(config)
+    verify_global_protocol(config, load_sample_plan(config))
     if experiment_part_complete(config, model, "exp4", arguments.part):
         print(f"SKIP: main benchmark part {arguments.part}/{parts} is complete for {model.name}")
         return 0

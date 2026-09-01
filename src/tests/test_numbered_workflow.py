@@ -65,7 +65,7 @@ class NumberedWorkflowTests(unittest.TestCase):
         jobs = 5 + 5 + (6 * 5) + 5 + 3 + 5 + 5 + 5 + 5
         self.assertEqual(jobs, 68)
 
-    def test_qualification_script_executes_and_reruns_cleanly(self) -> None:
+    def test_qualification_pilot_and_freeze_execute_and_rerun_cleanly(self) -> None:
         records = read_records(ROOT / "data" / "puzzles.jsonl")
         selected = select_stratified(records, 2, seed=20260826, namespace="qualification")[:5]
         representations = (
@@ -124,6 +124,78 @@ class NumberedWorkflowTests(unittest.TestCase):
             second = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
             self.assertEqual(second.returncode, 0, second.stderr)
             self.assertIn("SKIP", second.stdout)
+
+            pilot_command = [
+                sys.executable,
+                str(ROOT / "05_run_pilot.py"),
+                "mock",
+                "--config",
+                str(config_path),
+                "--execute",
+            ]
+            pilot = subprocess.run(pilot_command, cwd=ROOT, capture_output=True, text=True)
+            self.assertEqual(pilot.returncode, 0, pilot.stderr)
+            pilot_file = (
+                temporary
+                / "outputs"
+                / "qualification-integration-test"
+                / "mock"
+                / "exp2"
+                / "shard-000-of-001.jsonl"
+            )
+            self.assertEqual(len(pilot_file.read_text(encoding="utf-8").splitlines()), 240)
+            repeated_pilot = subprocess.run(pilot_command, cwd=ROOT, capture_output=True, text=True)
+            self.assertEqual(repeated_pilot.returncode, 0, repeated_pilot.stderr)
+            self.assertIn("SKIP", repeated_pilot.stdout)
+
+            freeze = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "06_freeze_protocol.py"),
+                    "--config",
+                    str(config_path),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(freeze.returncode, 0, freeze.stderr)
+            sample_path = (
+                temporary
+                / "outputs"
+                / "qualification-integration-test"
+                / "sample-plan.json"
+            )
+            sample = json.loads(sample_path.read_text(encoding="utf-8"))
+            self.assertEqual(len(sample["pilot_ids"]), 60)
+            self.assertEqual(len(sample["main_ids"]), 150)
+
+            main_command = [
+                sys.executable,
+                str(ROOT / "07_run_main_benchmark.py"),
+                "mock",
+                "--part",
+                "1",
+                "--config",
+                str(config_path),
+                "--execute",
+            ]
+            main = subprocess.run(main_command, cwd=ROOT, capture_output=True, text=True)
+            self.assertEqual(main.returncode, 0, main.stderr)
+            main_file = (
+                temporary
+                / "outputs"
+                / "qualification-integration-test"
+                / "mock"
+                / "exp4"
+                / "shard-000-of-006.jsonl"
+            )
+            main_count = len(main_file.read_text(encoding="utf-8").splitlines())
+            self.assertGreater(main_count, 180)
+            self.assertLess(main_count, 270)
+            repeated_main = subprocess.run(main_command, cwd=ROOT, capture_output=True, text=True)
+            self.assertEqual(repeated_main.returncode, 0, repeated_main.stderr)
+            self.assertIn("SKIP", repeated_main.stdout)
 
 
 if __name__ == "__main__":
