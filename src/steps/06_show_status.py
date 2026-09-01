@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Step 7: show completed work and the next job to submit."""
+"""Step 6: show completed work and the next job to submit."""
 
 from __future__ import annotations
 
@@ -48,7 +48,7 @@ def _next_command(model_name: str, status: ModelWorkflowStatus) -> str:
                 command = f"python steps/05_submit_experiment.py {model_name} {experiment}"
                 return command if len(parts) == 1 else f"{command} --part {index}"
     if not status.finalization_complete:
-        return f"python steps/06_submit_finalization.py {model_name}"
+        return f"python steps/07_submit_finalization.py {model_name}"
     return "all work is complete"
 
 

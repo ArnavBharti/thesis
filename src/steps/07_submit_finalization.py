@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Step 6: submit token-registry and analysis work for one finished model."""
+"""Step 7: submit token-registry and analysis work for one finished model."""
 
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ def main() -> int:
         missing = sum(not complete for parts in status.experiments.values() for complete in parts)
         raise SystemExit(
             f"{model.name} still has {missing} unfinished experiment job(s). "
-            "Run steps/07_show_status.py for details."
+            "Run steps/06_show_status.py for details."
         )
 
     path = finalization_job(arguments.config, config, model)

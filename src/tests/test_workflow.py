@@ -29,6 +29,15 @@ class WorkflowTests(unittest.TestCase):
         model = config.model("gpt-5.6-terra-openrouter")
         self.assertNotIn("exp7", experiments_for(model))
 
+    def test_complete_study_uses_158_single_jobs(self) -> None:
+        config = load_config(ROOT / "config" / "experiments.example.json")
+        jobs = 0
+        for model in config.enabled_models:
+            jobs += 1  # qualification
+            jobs += sum(config.shard_count(name) for name in experiments_for(model))
+            jobs += 1  # finalization
+        self.assertEqual(jobs, 158)
+
     def test_completion_markers_are_readable_and_idempotent(self) -> None:
         original = load_config(ROOT / "config" / "experiments.example.json")
         with tempfile.TemporaryDirectory() as directory:
