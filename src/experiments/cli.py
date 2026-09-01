@@ -21,6 +21,7 @@ from .provenance import collect_provenance, write_provenance_once
 from .records import shard_for
 from .storage import ResultStore
 from .token_registry import prompt_token_registry, representation_registry, unicode_registry
+from .workflow import write_completion_marker
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONFIG = ROOT / "config" / "experiments.json"
@@ -76,6 +77,8 @@ def main(argv: list[str] | None = None) -> int:
             tokenizer = _load_optional_tokenizer(model)
             _write_token_registry(config, model, records, tokenizer)
         return 0
+
+    _check_shard_plan(config, experiments, arguments.shard_count)
 
     if not 0 <= arguments.shard_index < arguments.shard_count:
         raise SystemExit("--shard-index must be in [0, --shard-count)")
@@ -145,6 +148,15 @@ def main(argv: list[str] | None = None) -> int:
                     print(json.dumps({"model": model.name, "experiment": experiment, "status": "skipped_token_set_construction", "detail": str(error)}, sort_keys=True))
                     continue
                 summary = executor.run(requests, maximum_requests=arguments.max_requests)
+                if arguments.max_requests is None:
+                    write_completion_marker(
+                        config,
+                        model,
+                        experiment,
+                        arguments.shard_index,
+                        arguments.shard_count,
+                        summary.eligible,
+                    )
                 print(json.dumps({"model": model.name, "experiment": experiment, **asdict(summary)}, sort_keys=True))
                 if experiment == "qualification":
                     qualification = write_qualification_status(model_directory)
@@ -177,6 +189,22 @@ def _selected_experiments(value: str) -> tuple[str, ...]:
     if invalid:
         raise SystemExit("unknown experiments: " + ", ".join(sorted(invalid)))
     return names
+
+
+def _check_shard_plan(
+    config: ExperimentConfig,
+    experiments: Iterable[str],
+    shard_count: int,
+) -> None:
+    mismatches = [
+        f"{experiment} needs {config.shard_count(experiment)} part(s)"
+        for experiment in experiments
+        if experiment in INFERENCE_EXPERIMENTS
+        and experiment != "qualification"
+        and shard_count != config.shard_count(experiment)
+    ]
+    if mismatches:
+        raise SystemExit("wrong --shard-count: " + "; ".join(mismatches))
 
 
 def _probe(models: Iterable[ModelConfig]) -> int:

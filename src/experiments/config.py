@@ -9,6 +9,15 @@ from pathlib import Path
 from typing import Any, Literal
 
 BackendName = Literal["auto", "transformers", "vllm", "openai_compatible", "static"]
+DEFAULT_EXPERIMENT_SHARDS = {
+    "exp2": 1,
+    "exp4": 24,
+    "exp6": 1,
+    "exp7": 1,
+    "exp8": 1,
+    "exp9": 1,
+    "exp10": 1,
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -20,8 +29,6 @@ class SlurmResources:
     cpus: int = 8
     memory: str = "96G"
     time_limit: str = "0-12:00"
-    shards: int | None = None
-    max_concurrent: int | None = None
     nodelist: str | None = None
     modules: tuple[str, ...] = ()
 
@@ -30,10 +37,6 @@ class SlurmResources:
             raise ValueError("Slurm partition cannot be empty")
         if self.gpus < 0 or self.cpus < 1:
             raise ValueError("Slurm GPU count must be non-negative and CPU count positive")
-        if self.shards is not None and self.shards < 1:
-            raise ValueError("Slurm shard count must be positive")
-        if self.max_concurrent is not None and self.max_concurrent < 1:
-            raise ValueError("Slurm maximum concurrent array tasks must be positive")
         if not self.memory or not self.time_limit:
             raise ValueError("Slurm memory and time limit cannot be empty")
 
@@ -117,7 +120,9 @@ class ExperimentConfig:
     pilot_per_tier: int = 20
     mechanism_per_tier: int = 20
     ablation_per_tier: int = 10
-    slurm_shards: int = 24
+    experiment_shards: dict[str, int] = field(
+        default_factory=lambda: dict(DEFAULT_EXPERIMENT_SHARDS)
+    )
 
     def __post_init__(self) -> None:
         if not self.run_id or any(character.isspace() for character in self.run_id):
@@ -127,14 +132,23 @@ class ExperimentConfig:
             raise ValueError("model names must be unique")
         if min(self.pilot_per_tier, self.mechanism_per_tier, self.ablation_per_tier) < 1:
             raise ValueError("subset sizes must be positive")
-        if self.slurm_shards < 1:
-            raise ValueError("slurm_shards must be positive")
+        required = {"exp2", "exp4", "exp6", "exp7", "exp8", "exp9", "exp10"}
+        if set(self.experiment_shards) != required:
+            raise ValueError("experiment_shards must define exp2, exp4, and exp6 through exp10")
+        if any(count < 1 for count in self.experiment_shards.values()):
+            raise ValueError("experiment shard counts must be positive")
 
     def model(self, name: str) -> ModelConfig:
         for model in self.models:
             if model.name == name:
                 return model
         raise KeyError(f"unknown model {name!r}")
+
+    def shard_count(self, experiment: str) -> int:
+        try:
+            return self.experiment_shards[experiment]
+        except KeyError as error:
+            raise ValueError(f"experiment {experiment} does not run as an inference job") from error
 
     @property
     def enabled_models(self) -> tuple[ModelConfig, ...]:
@@ -166,7 +180,7 @@ def load_config(path: Path) -> ExperimentConfig:
             pilot_per_tier=raw.get("pilot_per_tier", 20),
             mechanism_per_tier=raw.get("mechanism_per_tier", 20),
             ablation_per_tier=raw.get("ablation_per_tier", 10),
-            slurm_shards=raw.get("slurm_shards", 24),
+            experiment_shards=dict(raw.get("experiment_shards", DEFAULT_EXPERIMENT_SHARDS)),
         )
     except (KeyError, TypeError, ValueError) as error:
         raise ValueError(f"invalid experiment configuration {config_path}: {error}") from error

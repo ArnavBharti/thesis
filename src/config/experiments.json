@@ -6,7 +6,15 @@
   "pilot_per_tier": 20,
   "mechanism_per_tier": 20,
   "ablation_per_tier": 10,
-  "slurm_shards": 24,
+  "experiment_shards": {
+    "exp2": 1,
+    "exp4": 24,
+    "exp6": 1,
+    "exp7": 1,
+    "exp8": 1,
+    "exp9": 1,
+    "exp10": 1
+  },
   "inference": {
     "max_new_tokens": 2048,
     "temperature": 0.0,
@@ -33,9 +41,7 @@
         "gpus": 1,
         "cpus": 12,
         "memory": "192G",
-        "time_limit": "0-23:30",
-        "shards": 24,
-        "max_concurrent": 4
+        "time_limit": "0-23:30"
       },
       "extra": {
         "protocol": {
@@ -62,9 +68,7 @@
         "gpus": 2,
         "cpus": 16,
         "memory": "256G",
-        "time_limit": "0-23:30",
-        "shards": 24,
-        "max_concurrent": 2
+        "time_limit": "0-23:30"
       },
       "extra": {
         "protocol": {
@@ -93,9 +97,7 @@
         "gpus": 2,
         "cpus": 16,
         "memory": "256G",
-        "time_limit": "0-23:30",
-        "shards": 24,
-        "max_concurrent": 4
+        "time_limit": "0-23:30"
       },
       "extra": {
         "protocol": {
@@ -122,9 +124,7 @@
         "gpus": 0,
         "cpus": 2,
         "memory": "8G",
-        "time_limit": "0-23:30",
-        "shards": 24,
-        "max_concurrent": 8
+        "time_limit": "0-23:30"
       },
       "extra": {
         "omit_parameters": ["temperature", "top_p"],
@@ -151,9 +151,7 @@
         "gpus": 0,
         "cpus": 2,
         "memory": "8G",
-        "time_limit": "0-23:30",
-        "shards": 24,
-        "max_concurrent": 8
+        "time_limit": "0-23:30"
       },
       "extra": {
         "omit_parameters": ["temperature", "top_p", "seed"],

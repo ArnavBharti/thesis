@@ -6,7 +6,7 @@
   "pilot_per_tier": 20,
   "mechanism_per_tier": 20,
   "ablation_per_tier": 10,
-  "slurm_shards": 24,
+  "experiment_shards": {"exp2": 1, "exp4": 24, "exp6": 1, "exp7": 1, "exp8": 1, "exp9": 1, "exp10": 1},
   "inference": {
     "max_new_tokens": 2048,
     "temperature": 0.0,
@@ -28,7 +28,7 @@
       "dtype": "bfloat16",
       "tensor_parallel_size": 1,
       "local_files_only": true,
-      "slurm": {"partition": "gpu_h100_4", "gpus": 1, "cpus": 12, "memory": "192G", "time_limit": "0-23:30", "shards": 24, "max_concurrent": 4},
+      "slurm": {"partition": "gpu_h100_4", "gpus": 1, "cpus": 12, "memory": "192G", "time_limit": "0-23:30"},
       "extra": {"vllm": {"max_model_len": 32768, "gpu_memory_utilization": 0.9}},
       "enabled": true
     },
@@ -41,7 +41,7 @@
       "tensor_parallel_size": 2,
       "trust_remote_code": true,
       "local_files_only": true,
-      "slurm": {"partition": "gpu_h100_4", "gpus": 2, "cpus": 16, "memory": "256G", "time_limit": "0-23:30", "shards": 24, "max_concurrent": 2},
+      "slurm": {"partition": "gpu_h100_4", "gpus": 2, "cpus": 16, "memory": "256G", "time_limit": "0-23:30"},
       "extra": {"protocol": {"replaces_outline_model": "zai-org/GLM-5.2"}, "vllm": {"max_model_len": 32768, "gpu_memory_utilization": 0.9}},
       "enabled": true
     },
@@ -54,7 +54,7 @@
       "tensor_parallel_size": 2,
       "trust_remote_code": true,
       "local_files_only": true,
-      "slurm": {"partition": "gpu_h200_8", "gpus": 2, "cpus": 16, "memory": "256G", "time_limit": "0-23:30", "shards": 24, "max_concurrent": 4},
+      "slurm": {"partition": "gpu_h200_8", "gpus": 2, "cpus": 16, "memory": "256G", "time_limit": "0-23:30"},
       "extra": {"protocol": {"replaces_outline_model": "moonshotai/Kimi-K3"}, "vllm": {"max_model_len": 32768, "gpu_memory_utilization": 0.9}},
       "enabled": true
     },
@@ -65,7 +65,7 @@
       "api_base": "https://openrouter.ai/api/v1",
       "api_key_env": "OPENROUTER_API_KEY",
       "local_files_only": false,
-      "slurm": {"partition": "compute", "gpus": 0, "cpus": 2, "memory": "8G", "time_limit": "0-23:30", "shards": 24, "max_concurrent": 8},
+      "slurm": {"partition": "compute", "gpus": 0, "cpus": 2, "memory": "8G", "time_limit": "0-23:30"},
       "extra": {"omit_parameters": ["temperature", "top_p"], "request": {"provider": {"order": ["OpenAI"], "allow_fallbacks": false}, "reasoning": {"effort": "medium", "exclude": true}}},
       "enabled": true
     },
@@ -76,7 +76,7 @@
       "api_base": "https://openrouter.ai/api/v1",
       "api_key_env": "OPENROUTER_API_KEY",
       "local_files_only": false,
-      "slurm": {"partition": "compute", "gpus": 0, "cpus": 2, "memory": "8G", "time_limit": "0-23:30", "shards": 24, "max_concurrent": 8},
+      "slurm": {"partition": "compute", "gpus": 0, "cpus": 2, "memory": "8G", "time_limit": "0-23:30"},
       "extra": {"omit_parameters": ["temperature", "top_p", "seed"], "request": {"provider": {"order": ["Anthropic"], "allow_fallbacks": false}, "reasoning": {"effort": "medium", "exclude": true}}},
       "enabled": true
     }

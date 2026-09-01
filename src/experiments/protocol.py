@@ -54,6 +54,7 @@ def build_protocol_manifest(
             "mechanism_per_tier": config.mechanism_per_tier,
             "ablation_per_tier": config.ablation_per_tier,
         },
+        "experiment_shards": config.experiment_shards,
         "tokenizer": tokenizer.identity if tokenizer else None,
         "experiments": experiments,
     }
