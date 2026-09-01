@@ -32,13 +32,13 @@ def main() -> int:
     arguments = parser.parse_args()
 
     config, model = load_enabled_model(arguments.config, arguments.model)
+    if not experiment_complete(config, model, "exp4"):
+        raise SystemExit(f"finish all Step 7 parts for {model.name} first")
     if model.backend == "openai_compatible" and not model.tokenizer_id:
         status_path = model_directory(config, model) / "exp7" / "status.json"
         write_status(status_path, {"status": "NOT_RUN", "reason": "NO_EXACT_TOKENIZER_ACCESS"})
         print(f"SKIP: {model.name} does not expose exact token IDs")
         return 0
-    if not experiment_complete(config, model, "exp4"):
-        raise SystemExit(f"finish all Step 7 parts for {model.name} first")
     if experiment_part_complete(config, model, "exp7", 1):
         print(f"SKIP: token-length experiment is complete for {model.name}")
         return 0

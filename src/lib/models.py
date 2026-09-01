@@ -393,5 +393,5 @@ def _local_snapshot_path(model: ModelConfig) -> str:
         )
     except Exception as error:
         raise BackendError(
-            f"pinned model snapshot is missing for {model.name}; run download_models.py first"
+            f"pinned model snapshot is missing for {model.name}; run 02_download_models.py first"
         ) from error

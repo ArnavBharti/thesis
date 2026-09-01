@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -15,6 +16,7 @@ from lib.sudoku.dataset import (
     generate_dataset,
     write_dataset,
 )
+from lib.sudoku.generator import GENERATOR_VERSION
 
 ROOT = Path(__file__).resolve().parent
 DATA_DIRECTORY = ROOT / "data"
@@ -31,12 +33,16 @@ def main() -> int:
     expected_counts = {tier: arguments.puzzles_per_tier for tier in TIERS}
     try:
         audit = audit_directory(DATA_DIRECTORY)
+        manifest = json.loads((DATA_DIRECTORY / "manifest.json").read_text(encoding="utf-8"))
     except (FileNotFoundError, ValueError):
         audit = {"valid": False, "record_count": 0, "difficulty_counts": {}, "errors": []}
+        manifest = {}
     ready = (
         audit["valid"]
         and audit["record_count"] == arguments.puzzles_per_tier * len(TIERS)
         and audit["difficulty_counts"] == expected_counts
+        and manifest.get("master_seed") == arguments.master_seed
+        and manifest.get("generator_version") == GENERATOR_VERSION
     )
 
     if arguments.status:

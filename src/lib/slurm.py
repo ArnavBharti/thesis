@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import shlex
 import subprocess
 from pathlib import Path
@@ -84,7 +85,13 @@ def finish_submission(path: Path, *, dry_run: bool, test_only: bool) -> int:
         submit_job(path, test_only=True)
         print("Slurm accepted the resources. The job was not submitted.")
         return 0
-    print(f"Submitted one job: {submit_job(path)}")
+    previous_job = _previous_job_id(path)
+    if previous_job and _job_is_active(previous_job):
+        print(f"SKIP: Slurm job {previous_job} is already queued or running")
+        return 0
+    job_id = submit_job(path)
+    _write_submission(path, job_id)
+    print(f"Submitted one job: {job_id}")
     return 0
 
 
@@ -105,3 +112,36 @@ def _shell_join(arguments: Iterable[str]) -> str:
 def _safe_name(value: str) -> str:
     clean = "".join(character if character.isalnum() else "-" for character in value)
     return clean.strip("-")[:100]
+
+
+def _submission_path(job_path: Path) -> Path:
+    return job_path.with_suffix(".submitted.json")
+
+
+def _previous_job_id(job_path: Path) -> str | None:
+    try:
+        value = json.loads(_submission_path(job_path).read_text(encoding="utf-8"))
+        return str(value["job_id"])
+    except (FileNotFoundError, KeyError, TypeError, ValueError, json.JSONDecodeError):
+        return None
+
+
+def _job_is_active(job_id: str) -> bool:
+    try:
+        result = subprocess.run(
+            ["squeue", "--noheader", "--jobs", job_id, "--format", "%i"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        return False
+    return any(line.strip() == job_id for line in result.stdout.splitlines())
+
+
+def _write_submission(job_path: Path, job_id: str) -> None:
+    path = _submission_path(job_path)
+    text = json.dumps({"job_id": job_id}, indent=2, sort_keys=True) + "\n"
+    temporary = path.with_suffix(".tmp")
+    temporary.write_text(text, encoding="utf-8", newline="\n")
+    temporary.replace(path)

@@ -1,208 +1,347 @@
-# Sudoku experiments
+# Sudoku representation experiments
 
-This project tests how language models solve Sudoku when the digits are replaced by other symbols.
+This project tests whether language models can still solve the same Sudoku when digits are replaced by other symbols.
 
-Run the numbered Python scripts in `steps/`. Each submission script sends only one Slurm job. It never submits an array or a chain of jobs.
+Run all commands from the `src` directory. The numbered Python files contain the experiment steps. Shared model, Sudoku, evaluation, storage, and Slurm code is in `lib/`.
 
-## Project layout
-
-```text
-src/
-├── steps/          Commands that you run, in order
-├── sudoku/         Shared Sudoku generation and checking code
-├── experiments/    Shared model, prompt, evaluation, Slurm, and analysis code
-├── config/         Model and experiment settings
-├── data/           The certified 300-puzzle dataset
-└── tests/          Automated tests
-```
-
-The files in `steps/` are small wrappers. The shared code is grouped by purpose in `sudoku/` and `experiments/`. This avoids duplicate code and keeps each file focused.
-
-Run every command below from the `src` directory.
+Each experiment command submits only one Slurm job. Wait for that job to finish before running the next command.
 
 ## Models
 
-| Name used by the scripts | How it runs |
+| Script name | Execution |
 |---|---|
-| `qwen-local` | Local Qwen3.8-27B on 1 H100 |
-| `glm-flash-local` | Local GLM-4.7-Flash on 2 H100s |
-| `kimi-linear-local` | Local Kimi-Linear-48B-A3B on 2 H200s |
-| `gpt-5.6-terra-openrouter` | OpenRouter with the OpenAI provider fixed |
-| `claude-sonnet-5-openrouter` | OpenRouter with the Anthropic provider fixed |
+| `qwen-local` | Qwen3.8-27B on 1 H100 |
+| `glm-flash-local` | GLM-4.7-Flash on 2 H100s |
+| `kimi-linear-local` | Kimi-Linear-48B-A3B on 2 H200s |
+| `gpt-5.6-terra-openrouter` | OpenAI through OpenRouter |
+| `claude-sonnet-5-openrouter` | Anthropic through OpenRouter |
 
-The research outline named GLM-5.2 and Kimi-K3. Their published model files are too large for a normal Sharanga job. This project uses smaller official models from the same families. The replacement is recorded in the experiment manifest. Do not report their results as GLM-5.2 or Kimi-K3 results.
+GLM-4.7-Flash and Kimi-Linear are smaller replacements for the GLM-5.2 and Kimi-K3 models named in the original outline. Report their exact names in the paper.
 
-## One-time setup
+## One-time setup on Sharanga
 
-Create a Python environment:
+Clone the repository, enter `src`, and create the environment:
 
 ```bash
+cd src
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -e ".[local]"
 ```
 
-Store model files in Sharanga scratch space. The three local models need more than 200 GB.
+Use scratch storage for model files:
 
 ```bash
 export HF_HOME="$SCRATCH/thesis-huggingface"
+mkdir -p "$HF_HOME"
 ```
 
 Set the OpenRouter key before submitting GPT or Claude jobs:
 
 ```bash
-export OPENROUTER_API_KEY="your-key"
+export OPENROUTER_API_KEY="replace-with-your-key"
 ```
 
-Slurm inherits these environment variables when you submit a job. Set them again after a new login.
+Set `HF_HOME` and `OPENROUTER_API_KEY` again after a new login. Slurm receives the values that are set when you submit the job.
 
-## Step 1: prepare the Sudoku data
+## Step 1: prepare and check the Sudoku data
 
 ```bash
-python steps/01_prepare_data.py
+python 01_prepare_data.py
 ```
 
-This runs the tests, creates 300 puzzles, and audits the dataset. It skips work that is already complete and unchanged.
+The command runs the tests, keeps the existing dataset when it is valid, and independently checks all 300 puzzles. It is safe to run again.
 
-Check its status without running anything:
+Check without changing anything:
 
 ```bash
-python steps/01_prepare_data.py --status
+python 01_prepare_data.py --status
 ```
 
 ## Step 2: download the local models
 
 ```bash
-python steps/02_download_models.py --cache-dir "$HF_HOME"
+python 02_download_models.py --cache-dir "$HF_HOME"
 ```
 
-The download can be run again. Existing files are reused. Verify the files without downloading:
+Existing downloaded files are reused. Verify them later without downloading:
 
 ```bash
-python steps/02_download_models.py --cache-dir "$HF_HOME" --verify-only
+python 02_download_models.py --cache-dir "$HF_HOME" --verify-only
 ```
 
-## Step 3: check the setup
+## Step 3: check the complete setup
 
 ```bash
-python steps/03_check_setup.py
+python 03_check_setup.py
 ```
 
-It checks the dataset, local model cache, and `OPENROUTER_API_KEY`. A missing item is printed as `MISSING`.
+Every item should print `READY`.
 
-## Step 4: qualify one model
+## Step 4: qualify every model
 
-Submit one small qualification job:
+Run one line, wait for the job to finish, and then run the next line:
 
 ```bash
-python steps/04_submit_qualification.py qwen-local
+python 04_qualify_model.py qwen-local
+python 04_qualify_model.py glm-flash-local
+python 04_qualify_model.py kimi-linear-local
+python 04_qualify_model.py gpt-5.6-terra-openrouter
+python 04_qualify_model.py claude-sonnet-5-openrouter
 ```
 
-Replace `qwen-local` with another model name when you are ready to test that model. The main experiments cannot run until its five qualification puzzles are correct.
+Each model must solve all five qualification puzzles. A failed model is not silently replaced.
 
-To inspect the generated job without submitting it:
+## Step 5: run the pilot
+
+Again, run one line and wait before running the next line:
 
 ```bash
-python steps/04_submit_qualification.py qwen-local --dry-run
+python 05_run_pilot.py qwen-local
+python 05_run_pilot.py glm-flash-local
+python 05_run_pilot.py kimi-linear-local
+python 05_run_pilot.py gpt-5.6-terra-openrouter
+python 05_run_pilot.py claude-sonnet-5-openrouter
 ```
 
-To ask Slurm to validate the job without submitting it:
+The pilot uses 60 puzzles and four representations. Pilot puzzles are not used in the confirmatory main sample.
+
+## Step 6: freeze the reduced protocol
+
+Run this only after all five pilot jobs are complete:
 
 ```bash
-python steps/04_submit_qualification.py qwen-local --test-only
+python 06_freeze_protocol.py
 ```
 
-## Step 5: submit one experiment job
+This freezes these deterministic samples:
 
-Most experiments use one job:
+- Pilot: 20 puzzles per difficulty, 60 total.
+- Main benchmark: 50 different puzzles per difficulty, 150 total.
+- Mechanism experiments: 10 main puzzles per difficulty, 30 total.
+- Ablation and revision experiments: 5 main puzzles per difficulty, 15 total.
+
+Do not change prompts, samples, models, or inference settings after this step. If a real protocol change is necessary, use a new `run_id` in `config/experiments.json`.
+
+## Step 7: run the main benchmark
+
+The main benchmark has six parts per model. Run exactly one line at a time and wait for it to finish.
+
+Qwen:
 
 ```bash
-python steps/05_submit_experiment.py qwen-local exp2
-python steps/05_submit_experiment.py qwen-local exp6
-python steps/05_submit_experiment.py qwen-local exp7
-python steps/05_submit_experiment.py qwen-local exp8
-python steps/05_submit_experiment.py qwen-local exp9
-python steps/05_submit_experiment.py qwen-local exp10
+python 07_run_main_benchmark.py qwen-local --part 1
+python 07_run_main_benchmark.py qwen-local --part 2
+python 07_run_main_benchmark.py qwen-local --part 3
+python 07_run_main_benchmark.py qwen-local --part 4
+python 07_run_main_benchmark.py qwen-local --part 5
+python 07_run_main_benchmark.py qwen-local --part 6
 ```
 
-Experiment 4 has 2,700 requests. It is divided into 24 parts so each job can stay below Sharanga's 24-hour limit. Submit one part, wait for it to finish, and then submit the next part:
+GLM:
 
 ```bash
-python steps/05_submit_experiment.py qwen-local exp4 --part 1
-python steps/05_submit_experiment.py qwen-local exp4 --part 2
+python 07_run_main_benchmark.py glm-flash-local --part 1
+python 07_run_main_benchmark.py glm-flash-local --part 2
+python 07_run_main_benchmark.py glm-flash-local --part 3
+python 07_run_main_benchmark.py glm-flash-local --part 4
+python 07_run_main_benchmark.py glm-flash-local --part 5
+python 07_run_main_benchmark.py glm-flash-local --part 6
 ```
 
-Continue through `--part 24`.
-
-Experiment 7 needs the exact model tokenizer. It runs for the three local models. It is skipped for GPT and Claude because their exact tokenizers are not available through OpenRouter.
-
-Every completed part has a small completion file. If you run the same command again, the script prints `SKIP`. If a job stops early, run the same command again. Completed requests are not repeated.
-
-## Step 6: check what to run next
-
-You can run the status script at any time:
+Kimi:
 
 ```bash
-python steps/06_show_status.py
+python 07_run_main_benchmark.py kimi-linear-local --part 1
+python 07_run_main_benchmark.py kimi-linear-local --part 2
+python 07_run_main_benchmark.py kimi-linear-local --part 3
+python 07_run_main_benchmark.py kimi-linear-local --part 4
+python 07_run_main_benchmark.py kimi-linear-local --part 5
+python 07_run_main_benchmark.py kimi-linear-local --part 6
+```
+
+GPT:
+
+```bash
+python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 1
+python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 2
+python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 3
+python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 4
+python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 5
+python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 6
+```
+
+Claude:
+
+```bash
+python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 1
+python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 2
+python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 3
+python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 4
+python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 5
+python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 6
+```
+
+## Step 8: run the input/output experiment
+
+```bash
+python 08_run_input_output_cross.py qwen-local
+python 08_run_input_output_cross.py glm-flash-local
+python 08_run_input_output_cross.py kimi-linear-local
+python 08_run_input_output_cross.py gpt-5.6-terra-openrouter
+python 08_run_input_output_cross.py claude-sonnet-5-openrouter
+```
+
+Run one line at a time. Matching Arabic and Greek baseline answers are reused from Step 7, so they do not make duplicate model calls.
+
+## Step 9: run the token-length experiment
+
+This step requires exact token IDs and therefore runs only for local models:
+
+```bash
+python 09_run_token_length.py qwen-local
+python 09_run_token_length.py glm-flash-local
+python 09_run_token_length.py kimi-linear-local
+```
+
+## Step 10: run the binding experiment
+
+```bash
+python 10_run_binding.py qwen-local
+python 10_run_binding.py glm-flash-local
+python 10_run_binding.py kimi-linear-local
+python 10_run_binding.py gpt-5.6-terra-openrouter
+python 10_run_binding.py claude-sonnet-5-openrouter
+```
+
+Run one line at a time. Three exact baseline conditions are reused from Step 7.
+
+## Step 11: run the prompt ablations
+
+```bash
+python 11_run_ablations.py qwen-local
+python 11_run_ablations.py glm-flash-local
+python 11_run_ablations.py kimi-linear-local
+python 11_run_ablations.py gpt-5.6-terra-openrouter
+python 11_run_ablations.py claude-sonnet-5-openrouter
+```
+
+These 15-puzzle analyses are exploratory and should be described that way in the paper.
+
+## Step 12: run the revision experiment
+
+```bash
+python 12_run_revisions.py qwen-local
+python 12_run_revisions.py glm-flash-local
+python 12_run_revisions.py kimi-linear-local
+python 12_run_revisions.py gpt-5.6-terra-openrouter
+python 12_run_revisions.py claude-sonnet-5-openrouter
+```
+
+Each revision condition starts from the same saved Step 7 answer. The revision branches are separate, so feedback from one branch cannot enter another branch.
+
+## Step 13: analyze each model
+
+```bash
+python 13_analyze_results.py qwen-local
+python 13_analyze_results.py glm-flash-local
+python 13_analyze_results.py kimi-linear-local
+python 13_analyze_results.py gpt-5.6-terra-openrouter
+python 13_analyze_results.py claude-sonnet-5-openrouter
+```
+
+These are small CPU jobs. Run one line at a time.
+
+## Check progress
+
+Run this at any time:
+
+```bash
+python status.py
 ```
 
 For one model:
 
 ```bash
-python steps/06_show_status.py --model qwen-local
+python status.py --model qwen-local
 ```
 
-It prints completed parts and the exact next command.
+The script prints the next command to run.
 
-## Step 7: finalize one model
-
-After every required experiment job for a model is complete, run:
+Check the Slurm queue:
 
 ```bash
-python steps/07_submit_finalization.py qwen-local
+squeue -u "$USER"
 ```
 
-This submits one CPU job. It creates the token registry and final analysis files. Experiment 5 is calculated from the paired Experiment 4 results during this step.
+## Safe reruns
 
-## Number of jobs
+Every numbered script can be run again:
 
-The complete five-model study uses 158 jobs when Experiment 4 has 24 parts:
+- A completed step prints `SKIP`.
+- A job that is already queued or running is not submitted again.
+- An interrupted job can be submitted again with the same command.
+- Existing request IDs in append-only result files are skipped.
+- A step is marked complete only after every expected request is stored.
+- Frozen manifests prevent changed code or settings from being mixed into the same run.
 
-- 96 jobs for the three local models.
-- 62 jobs for GPT and Claude.
+Preview a job without submitting it:
 
-You submit these jobs one at a time. You do not need to submit every model or experiment in one session.
+```bash
+python 07_run_main_benchmark.py qwen-local --part 1 --dry-run
+```
 
-## Output files
+Ask Slurm to validate the resources without submitting:
 
-Results are stored in:
+```bash
+python 07_run_main_benchmark.py qwen-local --part 1 --test-only
+```
+
+## Reduced study size
+
+The design uses approximately 12,595 to 12,820 model calls before retries. The exact Experiment 10 count depends on whether checker-guided revision is needed. The original design required approximately 27,265 to 27,715 calls.
+
+The full workflow uses 68 one-at-a-time Slurm jobs:
+
+- 5 qualification jobs.
+- 5 pilot jobs.
+- 30 main-benchmark jobs.
+- 5 input/output jobs.
+- 3 token-length jobs.
+- 5 binding jobs.
+- 5 ablation jobs.
+- 5 revision jobs.
+- 5 analysis jobs.
+
+## Results
+
+Results are stored under:
 
 ```text
-experiment_outputs/thesis-confirmatory-v1/<model-name>/
+experiment_outputs/thesis-confirmatory-lean-v1/
 ```
 
-Important files are:
+Important files include:
 
-- `protocol-manifest.json`: frozen dataset, model, prompt, and request information.
-- `provenance.json`: Git, Python, package, host, and GPU information.
-- `qualification-status.json`: qualification result.
-- `exp*/shard-*.jsonl`: raw responses and evaluations.
-- `analysis/summary.json`: final summary.
+- `sample-plan.json`: frozen pilot, main, mechanism, and ablation puzzle IDs.
+- `protocol.json`: frozen global design.
+- `<model>/provenance.json`: model, software, Git, host, and GPU information.
+- `<model>/<experiment>/request-manifest.json`: exact request count and digest.
+- `<model>/<experiment>/shard-*.jsonl`: append-only raw responses and evaluations.
+- `<model>/analysis/summary.json`: final statistical summary.
+- `<model>/analysis/observations.jsonl`: analysis-ready request-level records.
 
-Result files are append-only. Request IDs are stable. Do not manually edit the result files.
+Do not manually edit result files.
 
-If you intentionally change the dataset, models, prompts, or inference settings, change `run_id` in `config/experiments.json`. This keeps the old and new studies separate.
-
-## Run the tests
+## Run tests manually
 
 ```bash
 python -m unittest discover -s tests -v
 ```
 
-## Sharanga references
+## Sharanga documentation
 
-- [GPU job instructions](https://sharanga.hpc.bits-hyderabad.ac.in/docs/faq/jobs/gpu/)
-- [GPU and node configuration](https://sharanga.hpc.bits-hyderabad.ac.in/docs/misc_docs/configuration/)
-- [GPU partition names](https://sharanga.hpc.bits-hyderabad.ac.in/docs/faq/software/cuda/)
-- [Scratch storage policy](https://sharanga.hpc.bits-hyderabad.ac.in/docs/faq/storage/)
+- [GPU jobs](https://sharanga.hpc.bits-hyderabad.ac.in/docs/faq/jobs/gpu/)
+- [GPU configuration](https://sharanga.hpc.bits-hyderabad.ac.in/docs/misc_docs/configuration/)
+- [Scratch storage](https://sharanga.hpc.bits-hyderabad.ac.in/docs/faq/storage/)
