@@ -1,8 +1,8 @@
 import unittest
 
-from sudoku.evaluator import evaluate_response, parse_response
-from sudoku.grid import Grid
-from sudoku.representations import ALPHABETS, encode_grid
+from lib.sudoku.evaluator import evaluate_response, parse_response
+from lib.sudoku.grid import Grid
+from lib.sudoku.representations import ALPHABETS, encode_grid
 from tests.test_grid import PUZZLE, SOLUTION
 
 

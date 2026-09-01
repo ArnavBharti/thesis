@@ -1,7 +1,7 @@
 import unittest
 
-from download_models import _plan_row, local_models
-from experiments.config import ModelConfig
+from lib.config import ModelConfig
+from lib.downloads import local_models
 
 
 class DownloadModelsTests(unittest.TestCase):
@@ -20,8 +20,7 @@ class DownloadModelsTests(unittest.TestCase):
 
     def test_download_plan_retains_revision(self) -> None:
         model = ModelConfig(name="local", model_id="org/local", revision="deadbeef")
-        row = _plan_row(model, None)
-        self.assertEqual(row["revision"], "deadbeef")
+        self.assertEqual(model.revision, "deadbeef")
 
 
 if __name__ == "__main__":

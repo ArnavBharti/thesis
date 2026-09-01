@@ -2,11 +2,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from experiments.backends import StaticBackend
-from experiments.config import InferenceConfig, ModelConfig, RetryConfig
-from experiments.executor import ExperimentExecutor
-from experiments.records import ExperimentRequest, Message
-from experiments.storage import ResultStore
+from lib.config import InferenceConfig, ModelConfig, RetryConfig
+from lib.execution import ExperimentExecutor
+from lib.models import StaticBackend
+from lib.records import ExperimentRequest, Message
+from lib.results import ResultStore
 
 
 class ExecutorTests(unittest.TestCase):

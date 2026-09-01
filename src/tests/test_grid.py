@@ -1,6 +1,6 @@
 import unittest
 
-from sudoku.grid import Grid, cell_name, is_complete_solution, preserves_clues, validate_partial
+from lib.sudoku.grid import Grid, cell_name, is_complete_solution, preserves_clues, validate_partial
 
 
 PUZZLE = """\

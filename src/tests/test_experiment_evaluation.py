@@ -1,10 +1,10 @@
 import json
 import unittest
 
-from experiments.evaluation import checker_feedback, evaluate_generation, normalize_output
-from experiments.records import ExperimentRequest, Generation, Message
-from sudoku.grid import Grid
-from sudoku.representations import ALPHABETS
+from lib.evaluation import checker_feedback, evaluate_generation, normalize_output
+from lib.records import ExperimentRequest, Generation, Message
+from lib.sudoku.grid import Grid
+from lib.sudoku.representations import ALPHABETS
 from tests.test_grid import PUZZLE, SOLUTION
 
 

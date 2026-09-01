@@ -1,9 +1,9 @@
 import json
 import unittest
 
-from experiments.prompts import PromptOptions, format_solution, solve_prompt
-from sudoku.grid import Grid
-from sudoku.representations import ALPHABETS
+from lib.prompts import PromptOptions, format_solution, solve_prompt
+from lib.sudoku.grid import Grid
+from lib.sudoku.representations import ALPHABETS
 from tests.test_grid import PUZZLE, SOLUTION
 
 

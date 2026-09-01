@@ -15,17 +15,13 @@ local = [
   "vllm>=0.27.1; sys_platform == 'linux'"
 ]
 
-[project.scripts]
-thesis-sudoku = "sudoku.cli:main"
-thesis-experiments = "experiments.cli:main"
-
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["sudoku*", "experiments*"]
+include = ["lib*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -1,12 +1,13 @@
 {
-  "run_id": "thesis-confirmatory-v1",
+  "run_id": "thesis-confirmatory-lean-v1",
   "dataset_path": "../data/puzzles.jsonl",
   "output_directory": "../experiment_outputs",
   "master_seed": 20260826,
   "pilot_per_tier": 20,
-  "mechanism_per_tier": 20,
-  "ablation_per_tier": 10,
-  "experiment_shards": {"exp2": 1, "exp4": 24, "exp6": 1, "exp7": 1, "exp8": 1, "exp9": 1, "exp10": 1},
+  "main_per_tier": 50,
+  "mechanism_per_tier": 10,
+  "ablation_per_tier": 5,
+  "experiment_shards": {"exp2": 1, "exp4": 6, "exp6": 1, "exp7": 1, "exp8": 1, "exp9": 1, "exp10": 1},
   "inference": {
     "max_new_tokens": 2048,
     "temperature": 0.0,

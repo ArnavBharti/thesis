@@ -1,0 +1,107 @@
+"""Write and submit one readable Sharanga Slurm job at a time."""
+
+from __future__ import annotations
+
+import shlex
+import subprocess
+from pathlib import Path
+from typing import Iterable
+
+from .config import ExperimentConfig, ModelConfig, SlurmResources
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def write_python_job(
+    config: ExperimentConfig,
+    model: ModelConfig,
+    script: Path,
+    step_name: str,
+    arguments: Iterable[str],
+    *,
+    resources: SlurmResources | None = None,
+) -> Path:
+    """Create one job that executes the same numbered Python script."""
+
+    selected_resources = resources or model.slurm
+    directory = ROOT / "slurm" / "generated" / config.run_id / model.name
+    logs = directory / "logs"
+    logs.mkdir(parents=True, exist_ok=True)
+    path = directory / f"{step_name}.sbatch"
+    job_name = _safe_name(f"sdk-{model.name}-{step_name}")
+    command = ["python3", script.name, *arguments, "--execute"]
+
+    lines = [
+        "#!/bin/bash",
+        f"#SBATCH --partition={selected_resources.partition}",
+        "#SBATCH --nodes=1",
+        "#SBATCH --ntasks=1",
+        f"#SBATCH --cpus-per-task={selected_resources.cpus}",
+        f"#SBATCH --mem={selected_resources.memory}",
+        f"#SBATCH --time={selected_resources.time_limit}",
+        f"#SBATCH --job-name={job_name}",
+        f"#SBATCH --output={logs / (job_name + '-%j.out')}",
+        f"#SBATCH --error={logs / (job_name + '-%j.err')}",
+    ]
+    if selected_resources.gpus:
+        lines.append(f"#SBATCH --gres=gpu:{selected_resources.gpus}")
+    if selected_resources.nodelist:
+        lines.append(f"#SBATCH --nodelist={selected_resources.nodelist}")
+
+    lines.extend(("", "set -euo pipefail"))
+    for module in selected_resources.modules:
+        lines.append(f"module load {shlex.quote(module)}")
+    lines.extend(
+        (
+            f"cd {shlex.quote(str(ROOT))}",
+            f"source {shlex.quote(str(ROOT / '.venv' / 'bin' / 'activate'))}",
+            "export TOKENIZERS_PARALLELISM=false",
+            "srun " + _shell_join(command),
+        )
+    )
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    return path
+
+
+def submit_job(path: Path, *, test_only: bool = False) -> str:
+    command = ["sbatch", "--test-only" if test_only else "--parsable", str(path)]
+    try:
+        result = subprocess.run(command, check=True, capture_output=True, text=True)
+    except FileNotFoundError as error:
+        raise SystemExit("sbatch is not available. Run this command on Sharanga.") from error
+    except subprocess.CalledProcessError as error:
+        detail = (error.stderr or error.stdout).strip()
+        raise SystemExit(f"Slurm rejected the job: {detail}") from error
+    return result.stdout.strip().split(";", 1)[0]
+
+
+def finish_submission(path: Path, *, dry_run: bool, test_only: bool) -> int:
+    print(f"Job file: {path}")
+    if dry_run:
+        print("DRY RUN: the job was not submitted")
+        return 0
+    if test_only:
+        submit_job(path, test_only=True)
+        print("Slurm accepted the resources. The job was not submitted.")
+        return 0
+    print(f"Submitted one job: {submit_job(path)}")
+    return 0
+
+
+def cpu_resources(*, time_limit: str = "0-02:00") -> SlurmResources:
+    return SlurmResources(
+        partition="compute",
+        gpus=0,
+        cpus=2,
+        memory="16G",
+        time_limit=time_limit,
+    )
+
+
+def _shell_join(arguments: Iterable[str]) -> str:
+    return " ".join(shlex.quote(value) for value in arguments)
+
+
+def _safe_name(value: str) -> str:
+    clean = "".join(character if character.isalnum() else "-" for character in value)
+    return clean.strip("-")[:100]

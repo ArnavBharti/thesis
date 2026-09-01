@@ -1,8 +1,8 @@
 import unittest
 
-from experiments.backends import CharacterTokenizer, StaticBackend
-from experiments.config import InferenceConfig, ModelConfig, RetryConfig
-from experiments.records import Message
+from lib.config import InferenceConfig, ModelConfig, RetryConfig
+from lib.models import CharacterTokenizer, StaticBackend
+from lib.records import Message
 
 
 class BackendTests(unittest.TestCase):

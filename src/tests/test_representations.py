@@ -1,7 +1,7 @@
 import unittest
 
-from sudoku.grid import Grid
-from sudoku.representations import ALPHABETS, decode_grid, encode_grid, verify_round_trip
+from lib.sudoku.grid import Grid
+from lib.sudoku.representations import ALPHABETS, decode_grid, encode_grid, verify_round_trip
 from tests.test_grid import PUZZLE, SOLUTION
 
 

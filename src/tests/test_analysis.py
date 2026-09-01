@@ -1,6 +1,6 @@
 import unittest
 
-from experiments.analysis import _mcnemar_exact, _wilson_interval, qualification_summary
+from lib.statistics import _mcnemar_exact, _wilson_interval, qualification_summary
 
 
 class AnalysisTests(unittest.TestCase):

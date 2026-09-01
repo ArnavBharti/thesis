@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from sudoku.dataset import (
+from lib.sudoku.dataset import (
     DatasetConfig,
     audit_directory,
     generate_dataset,

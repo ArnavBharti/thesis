@@ -1,7 +1,7 @@
 import unittest
 
-from sudoku.difficulty import analyze_difficulty
-from sudoku.grid import Grid
+from lib.sudoku.difficulty import analyze_difficulty
+from lib.sudoku.grid import Grid
 from tests.test_grid import PUZZLE
 
 

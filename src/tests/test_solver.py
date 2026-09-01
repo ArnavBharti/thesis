@@ -1,8 +1,8 @@
 import random
 import unittest
 
-from sudoku.grid import Grid, is_complete_solution, preserves_clues
-from sudoku.solver import SearchStats, count_solutions, solve
+from lib.sudoku.grid import Grid, is_complete_solution, preserves_clues
+from lib.sudoku.solver import SearchStats, count_solutions, solve
 from tests.test_grid import PUZZLE, SOLUTION
 
 

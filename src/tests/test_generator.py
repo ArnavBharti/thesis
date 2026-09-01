@@ -1,9 +1,9 @@
 import unittest
 
-from sudoku.certificate import certify
-from sudoku.generator import GeneratedPuzzle, carve_unique_puzzle, generate_candidate, generate_solution
-from sudoku.grid import is_complete_solution, preserves_clues
-from sudoku.solver import count_solutions
+from lib.sudoku.certificate import certify
+from lib.sudoku.generator import GeneratedPuzzle, carve_unique_puzzle, generate_candidate, generate_solution
+from lib.sudoku.grid import is_complete_solution, preserves_clues
+from lib.sudoku.solver import count_solutions
 
 
 class GeneratorTests(unittest.TestCase):

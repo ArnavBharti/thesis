@@ -3,10 +3,10 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from experiments.config import load_config
-from experiments.records import ExperimentRequest, Message, shard_for
-from experiments.selection import deterministic_permutation, select_stratified
-from sudoku.dataset import read_records
+from lib.config import load_config
+from lib.records import ExperimentRequest, Message, shard_for
+from lib.selection import deterministic_permutation, select_stratified
+from lib.sudoku.dataset import read_records
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,7 +15,8 @@ ROOT = Path(__file__).resolve().parents[1]
 class ExperimentFoundationTests(unittest.TestCase):
     def test_example_configuration_loads(self) -> None:
         config = load_config(ROOT / "config" / "experiments.example.json")
-        self.assertEqual(config.run_id, "thesis-confirmatory-v1")
+        self.assertEqual(config.run_id, "thesis-confirmatory-lean-v1")
+        self.assertEqual(config.main_per_tier, 50)
         self.assertTrue(config.dataset_path.is_file())
         self.assertEqual(config.enabled_models[0].name, "qwen-local")
 
