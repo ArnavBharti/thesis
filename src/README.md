@@ -62,13 +62,13 @@ python 01_prepare_data.py --status
 ## Step 2: download the local models
 
 ```bash
-python 02_download_models.py --cache-dir "$HF_HOME"
+python 02_download_models.py
 ```
 
 Existing downloaded files are reused. Verify them later without downloading:
 
 ```bash
-python 02_download_models.py --cache-dir "$HF_HOME" --verify-only
+python 02_download_models.py --verify-only
 ```
 
 ## Step 3: check the complete setup
