@@ -40,11 +40,17 @@ def experiments_for(model: ModelConfig) -> tuple[str, ...]:
 
 
 def qualification_complete(config: ExperimentConfig, model: ModelConfig) -> bool:
+    return qualification_result(config, model) is True
+
+
+def qualification_result(config: ExperimentConfig, model: ModelConfig) -> bool | None:
     path = model_directory(config, model) / "qualification-status.json"
     try:
         return bool(json.loads(path.read_text(encoding="utf-8")).get("passed"))
+    except FileNotFoundError:
+        return None
     except (OSError, json.JSONDecodeError, AttributeError):
-        return False
+        raise ValueError(f"invalid qualification status: {path}")
 
 
 def completion_marker(
@@ -79,7 +85,9 @@ def write_completion_marker(
     path.parent.mkdir(parents=True, exist_ok=True)
     if path.exists() and path.read_text(encoding="utf-8") != text:
         raise ValueError(f"completion marker differs from the current job: {path}")
-    path.write_text(text, encoding="utf-8", newline="\n")
+    temporary = path.with_suffix(".tmp")
+    temporary.write_text(text, encoding="utf-8", newline="\n")
+    temporary.replace(path)
     return path
 
 
@@ -92,9 +100,26 @@ def experiment_part_complete(
     parts = config.shard_count(experiment)
     if not 1 <= part <= parts:
         raise ValueError(f"part must be between 1 and {parts}")
-    if experiment == "exp7" and (model_directory(config, model) / "exp7" / "status.json").exists():
-        return True
-    return completion_marker(config, model, experiment, part - 1, parts).exists()
+    if experiment == "exp7":
+        status_path = model_directory(config, model) / "exp7" / "status.json"
+        try:
+            return json.loads(status_path.read_text(encoding="utf-8")).get("status") == "NOT_RUN"
+        except FileNotFoundError:
+            pass
+        except (OSError, json.JSONDecodeError, AttributeError):
+            raise ValueError(f"invalid Experiment 7 status: {status_path}")
+    marker = completion_marker(config, model, experiment, part - 1, parts)
+    try:
+        value = json.loads(marker.read_text(encoding="utf-8"))
+        return (
+            value.get("status") == "COMPLETE"
+            and value.get("part") == part
+            and value.get("parts") == parts
+        )
+    except FileNotFoundError:
+        return False
+    except (OSError, json.JSONDecodeError, AttributeError):
+        raise ValueError(f"invalid completion marker: {marker}")
 
 
 def finalization_complete(config: ExperimentConfig, model: ModelConfig) -> bool:
