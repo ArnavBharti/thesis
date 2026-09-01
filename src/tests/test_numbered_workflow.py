@@ -1,3 +1,4 @@
+import json
 import subprocess
 import sys
 import tempfile
@@ -6,7 +7,11 @@ from pathlib import Path
 from unittest.mock import patch
 
 from lib.config import load_config
+from lib.selection import select_stratified
 from lib.slurm import write_python_job
+from lib.sudoku.dataset import read_records
+from lib.sudoku.representations import ALPHABETS, encode_grid
+from lib.sudoku.schema import grid_from_compact
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -59,6 +64,66 @@ class NumberedWorkflowTests(unittest.TestCase):
 
         jobs = 5 + 5 + (6 * 5) + 5 + 3 + 5 + 5 + 5 + 5
         self.assertEqual(jobs, 68)
+
+    def test_qualification_script_executes_and_reruns_cleanly(self) -> None:
+        records = read_records(ROOT / "data" / "puzzles.jsonl")
+        selected = select_stratified(records, 2, seed=20260826, namespace="qualification")[:5]
+        representations = (
+            "arabic_digits",
+            "greek_letters",
+            "emoji",
+            "nonce_labels",
+            "devanagari_numerals",
+        )
+        responses = [
+            encode_grid(grid_from_compact(record.solution), ALPHABETS[name])
+            for record, name in zip(selected, representations, strict=True)
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            temporary = Path(directory)
+            config = {
+                "run_id": "qualification-integration-test",
+                "dataset_path": str(ROOT / "data" / "puzzles.jsonl"),
+                "output_directory": str(temporary / "outputs"),
+                "master_seed": 20260826,
+                "pilot_per_tier": 20,
+                "main_per_tier": 50,
+                "mechanism_per_tier": 10,
+                "ablation_per_tier": 5,
+                "experiment_shards": {
+                    "exp2": 1,
+                    "exp4": 6,
+                    "exp6": 1,
+                    "exp7": 1,
+                    "exp8": 1,
+                    "exp9": 1,
+                    "exp10": 1,
+                },
+                "retry": {"attempts": 1},
+                "models": [
+                    {
+                        "name": "mock",
+                        "model_id": "mock",
+                        "backend": "static",
+                        "extra": {"responses": responses},
+                    }
+                ],
+            }
+            config_path = temporary / "config.json"
+            config_path.write_text(json.dumps(config), encoding="utf-8")
+            command = [
+                sys.executable,
+                str(ROOT / "04_qualify_model.py"),
+                "mock",
+                "--config",
+                str(config_path),
+                "--execute",
+            ]
+            first = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
+            self.assertEqual(first.returncode, 0, first.stderr)
+            second = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
+            self.assertEqual(second.returncode, 0, second.stderr)
+            self.assertIn("SKIP", second.stdout)
 
 
 if __name__ == "__main__":
