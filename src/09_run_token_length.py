@@ -10,6 +10,7 @@ from pathlib import Path
 
 from lib.models import load_huggingface_tokenizer
 from lib.requests import sudoku_request
+from lib.protocol import verify_global_protocol
 from lib.samples import load_sample_plan
 from lib.slurm import finish_submission, write_python_job
 from lib.steps import execute_requests, load_enabled_model, write_status
@@ -34,6 +35,7 @@ def main() -> int:
     config, model = load_enabled_model(arguments.config, arguments.model)
     if not experiment_complete(config, model, "exp4"):
         raise SystemExit(f"finish all Step 7 parts for {model.name} first")
+    verify_global_protocol(config, load_sample_plan(config))
     if model.backend == "openai_compatible" and not model.tokenizer_id:
         status_path = model_directory(config, model) / "exp7" / "status.json"
         write_status(status_path, {"status": "NOT_RUN", "reason": "NO_EXACT_TOKENIZER_ACCESS"})

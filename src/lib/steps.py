@@ -9,10 +9,11 @@ from typing import Any, Iterable, Mapping
 from .config import ExperimentConfig, ModelConfig, load_config
 from .execution import ExecutionSummary, ExperimentExecutor
 from .models import build_backend, probe_model
-from .protocol import freeze_step_requests
+from .protocol import freeze_step_requests, verify_global_protocol
 from .provenance import collect_provenance, write_provenance_once
 from .records import ExperimentRequest, shard_for
 from .results import ResultStore, store_reused_result
+from .samples import load_sample_plan
 from .workflow import model_directory, write_completion_marker
 
 
@@ -47,6 +48,8 @@ def execute_requests(
         raise ValueError(f"part must be between 1 and {parts}")
     all_requests = tuple(all_requests)
     inference_requests = tuple(inference_requests if inference_requests is not None else all_requests)
+    if step_name not in {"qualification", "exp2"}:
+        verify_global_protocol(config, load_sample_plan(config))
     freeze_step_requests(config, model, step_name, all_requests, notes=manifest_notes)
 
     shard_index = part - 1

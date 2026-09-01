@@ -4,6 +4,7 @@ from dataclasses import replace
 from pathlib import Path
 
 from lib.config import load_config
+from lib.protocol import freeze_json, global_protocol, verify_global_protocol
 from lib.samples import build_sample_plan, freeze_sample_plan, load_sample_plan
 from lib.sudoku.dataset import read_records
 
@@ -39,6 +40,17 @@ class SamplePlanTests(unittest.TestCase):
             freeze_sample_plan(config, first)
             freeze_sample_plan(config, first)
             self.assertEqual(load_sample_plan(config), first)
+
+    def test_global_protocol_is_idempotent_and_freezes_models(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            config = replace(self.config, output_directory=Path(directory))
+            plan = build_sample_plan(config, self.records)
+            freeze_sample_plan(config, plan)
+            value = global_protocol(config, plan)
+            self.assertEqual(len(value["models"]), 5)
+            path = config.output_directory / config.run_id / "protocol.json"
+            freeze_json(path, value)
+            verify_global_protocol(config, plan)
 
 
 if __name__ == "__main__":

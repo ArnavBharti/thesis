@@ -12,6 +12,8 @@ from .config import ExperimentConfig, ModelConfig
 from .records import ExperimentRequest
 from .samples import SamplePlan
 
+ROOT = Path(__file__).resolve().parents[1]
+
 
 def global_protocol(
     config: ExperimentConfig,
@@ -34,13 +36,39 @@ def global_protocol(
         },
         "inference": asdict(config.inference),
         "retry": asdict(config.retry),
+        "models": [asdict(model) for model in config.models],
         "experiment_shards": config.experiment_shards,
+        "source_sha256": source_digest(),
         "baseline_reuse": {
             "exp6": ["A_arabic_to_arabic", "B_greek_to_greek"],
             "exp8": ["uppercase_standard", "digits_ordinary", "nonce_neutral"],
             "exp10": "Each revision branch starts from its matching exp4 response.",
         },
     }
+
+
+def verify_global_protocol(config: ExperimentConfig, sample_plan: SamplePlan) -> None:
+    """Refuse confirmatory work after any frozen setting or source file changes."""
+
+    path = config.output_directory / config.run_id / "protocol.json"
+    try:
+        existing_text = path.read_text(encoding="utf-8")
+        json.loads(existing_text)
+    except FileNotFoundError as error:
+        raise SystemExit("protocol is not frozen; run 06_freeze_protocol.py first") from error
+    except json.JSONDecodeError as error:
+        raise ValueError(f"invalid frozen protocol: {path}") from error
+    expected_text = json.dumps(
+        global_protocol(config, sample_plan),
+        ensure_ascii=False,
+        indent=2,
+        sort_keys=True,
+    ) + "\n"
+    if existing_text != expected_text:
+        raise ValueError(
+            f"configuration or Python source changed after protocol freeze at {path}; "
+            "restore the frozen code or use a new run_id"
+        )
 
 
 def freeze_json(path: Path, value: dict[str, object]) -> Path:
@@ -92,3 +120,14 @@ def freeze_step_requests(
 
 def _digest(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+def source_digest() -> str:
+    digest = hashlib.sha256()
+    paths = sorted(ROOT.glob("[0-9][0-9]_*.py")) + sorted((ROOT / "lib").rglob("*.py"))
+    for path in paths:
+        digest.update(str(path.relative_to(ROOT)).encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(path.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()

@@ -8,6 +8,8 @@ import json
 from pathlib import Path
 
 from lib.models import load_huggingface_tokenizer
+from lib.protocol import verify_global_protocol
+from lib.samples import load_sample_plan
 from lib.slurm import cpu_resources, finish_submission, write_python_job
 from lib.statistics import analyze_run
 from lib.steps import load_enabled_model
@@ -29,6 +31,7 @@ def main() -> int:
     arguments = parser.parse_args()
 
     config, model = load_enabled_model(arguments.config, arguments.model)
+    verify_global_protocol(config, load_sample_plan(config))
     required = ("exp2", "exp4", "exp6", "exp8", "exp9", "exp10")
     if model.backend != "openai_compatible" or model.tokenizer_id:
         required += ("exp7",)
