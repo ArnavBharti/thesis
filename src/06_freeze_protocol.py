@@ -4,13 +4,16 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
 from lib.config import load_config
 from lib.protocol import freeze_json, global_protocol
 from lib.samples import build_sample_plan, freeze_sample_plan
+from lib.results import iter_result_values
+from lib.statistics import pilot_summary
 from lib.sudoku.dataset import audit_records, read_records
-from lib.workflow import experiment_part_complete, qualification_complete
+from lib.workflow import experiment_part_complete, model_directory, qualification_complete
 
 ROOT = Path(__file__).resolve().parent
 DEFAULT_CONFIG = ROOT / "config" / "experiments.json"
@@ -32,6 +35,21 @@ def main() -> int:
             raise SystemExit(f"{model.name} has not passed qualification")
         if not experiment_part_complete(config, model, "exp2", 1):
             raise SystemExit(f"{model.name} has not completed the pilot")
+        summary = pilot_summary(
+            iter_result_values((model_directory(config, model) / "exp2").glob("shard-*.jsonl"))
+        )
+        summary_path = model_directory(config, model) / "exp2" / "pilot-summary.json"
+        summary_text = json.dumps(summary, indent=2, sort_keys=True) + "\n"
+        if summary_path.exists() and summary_path.read_text(encoding="utf-8") != summary_text:
+            raise ValueError(f"pilot summary changed at {summary_path}")
+        summary_path.write_text(summary_text, encoding="utf-8", newline="\n")
+        outside = [tier for tier, value in summary.items() if not value["within_target"]]
+        result = ", ".join(
+            f"{tier}={value['correct']}/{value['evaluated']}" for tier, value in summary.items()
+        )
+        print(f"{model.name} Arabic pilot: {result}")
+        if outside:
+            print("  WARNING: outside the planned range for " + ", ".join(outside))
 
     plan = build_sample_plan(config, records)
     sample_path = freeze_sample_plan(config, plan)

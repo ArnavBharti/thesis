@@ -24,7 +24,7 @@ def analyze_run(model_directory: Path, output_directory: Path | None = None) -> 
         "groups": _group_summaries(values),
         "failure_labels": _failure_labels(values),
         "qualification": qualification_summary(values),
-        "pilot": _pilot_summary(values),
+        "pilot": pilot_summary(values),
         "experiment_5": _experiment_5(values),
         "experiment_7_regression": _experiment_7(values),
         "experiment_10": _experiment_10(values),
@@ -97,7 +97,7 @@ def _failure_labels(values: Iterable[dict[str, Any]]) -> dict[str, int]:
     return dict(sorted(labels.items()))
 
 
-def _pilot_summary(values: Iterable[dict[str, Any]]) -> dict[str, Any]:
+def pilot_summary(values: Iterable[dict[str, Any]]) -> dict[str, Any]:
     pilot = [
         value
         for value in values

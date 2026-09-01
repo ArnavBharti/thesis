@@ -122,6 +122,8 @@ This freezes these deterministic samples:
 - Mechanism experiments: 10 main puzzles per difficulty, 30 total.
 - Ablation and revision experiments: 5 main puzzles per difficulty, 15 total.
 
+The command also writes and prints the Arabic pilot accuracy for each model. A warning means a difficulty tier is outside the planned calibration range. Keep the warning and report the observed floor or ceiling in the paper; do not silently replace puzzles after seeing confirmatory results.
+
 Do not change prompts, samples, models, or inference settings after this step. If a real protocol change is necessary, use a new `run_id` in `config/experiments.json`.
 
 ## Step 7: run the main benchmark
