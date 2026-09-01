@@ -215,6 +215,8 @@ def _experiment_10(values: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
             regressed += first and not final
             calls += sum(stage.get("model_called", True) for stage in stages)
             for stage in stages:
+                if not stage.get("model_called", True):
+                    continue
                 generation = stage.get("generation") or {}
                 tokens += (generation.get("prompt_tokens") or 0) + (generation.get("completion_tokens") or 0)
                 latency += generation.get("latency_seconds") or 0.0

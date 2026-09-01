@@ -53,6 +53,41 @@ class ExecutorTests(unittest.TestCase):
                 eligible += summary.eligible
         self.assertEqual(eligible, len(requests))
 
+    def test_revision_can_reuse_an_initial_answer_without_calling_model(self) -> None:
+        model = ModelConfig(name="mock", model_id="mock", extra={"response": "unused"})
+        backend = StaticBackend(model, InferenceConfig(), RetryConfig(attempts=1))
+        request = ExperimentRequest(
+            experiment="exp10",
+            condition="arabic_digits:one_pass",
+            model="mock",
+            messages=(Message("user", "same prompt"),),
+            metadata={"revision_condition": "one_pass"},
+        )
+        source = {
+            "request": {
+                "request_id": "source-id",
+                "messages": [{"role": "user", "content": "same prompt"}],
+            },
+            "status": "OK",
+            "generation": {
+                "text": "saved answer",
+                "finish_reason": "stop",
+                "prompt_tokens": 10,
+                "completion_tokens": 2,
+                "latency_seconds": 1.0,
+                "provider_metadata": {},
+            },
+            "evaluation": {"outcome": "CORRECT", "results": [{"type": "CORRECT"}]},
+            "attempts": 1,
+            "error": None,
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            store = ResultStore(Path(directory) / "results.jsonl")
+            executor = ExperimentExecutor(backend, store, RetryConfig(attempts=1))
+            summary = executor.run([request], initial_results={request.request_id: source})
+            self.assertEqual(summary.executed, 1)
+            self.assertEqual(backend.calls, 0)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -11,7 +11,7 @@ from typing import Any, Literal
 BackendName = Literal["auto", "transformers", "vllm", "openai_compatible", "static"]
 DEFAULT_EXPERIMENT_SHARDS = {
     "exp2": 1,
-    "exp4": 24,
+    "exp4": 6,
     "exp6": 1,
     "exp7": 1,
     "exp8": 1,
