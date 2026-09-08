@@ -336,6 +336,8 @@ def vllm_runtime_options(model: ModelConfig) -> dict[str, Any]:
     """Return recorded model options plus required runtime compatibility settings."""
 
     options = dict(model.extra.get("vllm", {}))
+    # ExperimentExecutor sends one prompt per generate call.
+    options.setdefault("max_num_seqs", 1)
     if model.resolved_model_id == "Qwen/Qwen3.8-27B":
         options.setdefault("gdn_prefill_backend", "triton")
     return options

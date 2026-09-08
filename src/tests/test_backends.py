@@ -31,7 +31,9 @@ class BackendTests(unittest.TestCase):
             extra={"vllm": {"max_model_len": 32768}},
         )
         self.assertNotIn("gdn_prefill_backend", model.extra["vllm"])
-        self.assertEqual(vllm_runtime_options(model)["gdn_prefill_backend"], "triton")
+        options = vllm_runtime_options(model)
+        self.assertEqual(options["gdn_prefill_backend"], "triton")
+        self.assertEqual(options["max_num_seqs"], 1)
 
 
 if __name__ == "__main__":
