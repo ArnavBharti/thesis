@@ -160,7 +160,7 @@ class VLLMBackend(InferenceBackend):
         try:
             from vllm import LLM
         except ImportError as error:  # pragma: no cover - optional inference dependency
-            raise BackendError("the vLLM backend requires vllm") from error
+            raise BackendError(f"vLLM could not be imported: {error}") from error
         self._tokenizer_adapter = load_huggingface_tokenizer(model)
         model_location = _local_snapshot_path(model) if model.local_files_only else model.resolved_model_id
         tokenizer_location = (
@@ -187,7 +187,7 @@ class VLLMBackend(InferenceBackend):
         try:
             from vllm import SamplingParams
         except ImportError as error:  # pragma: no cover
-            raise BackendError("the vLLM backend requires vllm") from error
+            raise BackendError(f"vLLM could not be imported: {error}") from error
         started = time.monotonic()
         prompt = self._tokenizer_adapter.format_chat(messages)
         parameters = SamplingParams(
