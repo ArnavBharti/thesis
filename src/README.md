@@ -20,7 +20,7 @@ GLM-4.7-Flash and Kimi-Linear are smaller replacements for the GLM-5.2 and Kimi-
 
 ## One-time setup on Sharanga
 
-Define the scratch location after every login:
+Define the scratch location for the installation session:
 
 ```bash
 export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
@@ -73,7 +73,9 @@ Leave the interactive installation job after setup:
 exit
 ```
 
-At the start of every later login, run:
+## Repeat after every login or new shell
+
+Run this complete block whenever you log in again or open a new interactive shell. You only need to run it once in that shell, not before every Python command.
 
 ```bash
 export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
@@ -83,7 +85,29 @@ cd "$ARNAVSCRATCH/src"
 source .venv/bin/activate
 ```
 
-Also set `OPENROUTER_API_KEY` before submitting a GPT or Claude job. Slurm receives the environment values that are set when you submit the job.
+Before submitting a GPT or Claude job in that shell, also run:
+
+```bash
+export OPENROUTER_API_KEY="replace-with-your-key"
+```
+
+You do not need the OpenRouter key for Qwen, GLM, or Kimi. Slurm receives the environment values that are set when you submit the job.
+
+## Repeat after every submitted job
+
+Each experiment command submits one job and then returns to the terminal. Check the queue:
+
+```bash
+squeue -u "$USER"
+```
+
+Wait until that job is no longer listed. Then check what completed and which command comes next:
+
+```bash
+python status.py
+```
+
+Do not submit the next experiment command until the previous job has finished.
 
 ## Step 1: prepare and check the Sudoku data
 
