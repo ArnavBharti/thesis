@@ -2,7 +2,7 @@
 
 This project tests whether language models can still solve the same Sudoku when digits are replaced by other symbols.
 
-Run all commands from the `src` directory. The numbered Python files contain the experiment steps. Shared model, Sudoku, evaluation, storage, and Slurm code is in `lib/`.
+On Sharanga, the repository should be located at `/scratch/kudhru/arnavbharti`. Run all experiment commands from `/scratch/kudhru/arnavbharti/src`. The numbered Python files contain the experiment steps. Shared model, Sudoku, evaluation, storage, and Slurm code is in `lib/`.
 
 Each experiment command submits only one Slurm job. Wait for that job to finish before running the next command.
 
@@ -20,20 +20,44 @@ GLM-4.7-Flash and Kimi-Linear are smaller replacements for the GLM-5.2 and Kimi-
 
 ## One-time setup on Sharanga
 
-Clone the repository, enter `src`, and create the environment:
+Define the scratch location after every login:
 
 ```bash
-cd src
+export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
+```
+
+Clone or copy the repository directly into `$ARNAVSCRATCH`. The expected location of this README is `$ARNAVSCRATCH/src/README.md`.
+
+Sharanga requires package installation to run inside an interactive Slurm job. Start one from the login node:
+
+```bash
+srun --partition=compute \
+  --nodes=1 \
+  --ntasks=1 \
+  --cpus-per-task=8 \
+  --mem=32G \
+  --time=02:00:00 \
+  --pty bash -l
+```
+
+Inside the interactive job, create the Python environment:
+
+```bash
+export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
+export PIP_CACHE_DIR="$ARNAVSCRATCH/cache/pip"
+export HF_HOME="$ARNAVSCRATCH/huggingface"
+mkdir -p "$PIP_CACHE_DIR" "$HF_HOME"
+cd "$ARNAVSCRATCH/src"
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -e ".[local]"
 ```
 
-Use scratch storage for model files:
+Use the same scratch location for model files:
 
 ```bash
-export HF_HOME="$SCRATCH/thesis-huggingface"
+export HF_HOME="$ARNAVSCRATCH/huggingface"
 mkdir -p "$HF_HOME"
 ```
 
@@ -43,7 +67,23 @@ Set the OpenRouter key before submitting GPT or Claude jobs:
 export OPENROUTER_API_KEY="replace-with-your-key"
 ```
 
-Set `HF_HOME` and `OPENROUTER_API_KEY` again after a new login. Slurm receives the values that are set when you submit the job.
+Leave the interactive installation job after setup:
+
+```bash
+exit
+```
+
+At the start of every later login, run:
+
+```bash
+export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
+export PIP_CACHE_DIR="$ARNAVSCRATCH/cache/pip"
+export HF_HOME="$ARNAVSCRATCH/huggingface"
+cd "$ARNAVSCRATCH/src"
+source .venv/bin/activate
+```
+
+Also set `OPENROUTER_API_KEY` before submitting a GPT or Claude job. Slurm receives the environment values that are set when you submit the job.
 
 ## Step 1: prepare and check the Sudoku data
 
