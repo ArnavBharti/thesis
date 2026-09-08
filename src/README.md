@@ -92,7 +92,7 @@ source .venv/bin/activate
 python --version
 ```
 
-The last command must print Python 3.10.8.
+The last command must print Python 3.10.8, and the prompt should begin with `(.venv)`. Do not run a numbered script from the login node until both checks are true.
 
 Before submitting a GPT or Claude job in that shell, also run:
 
