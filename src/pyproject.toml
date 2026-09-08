@@ -9,6 +9,7 @@ dependencies = []
 download = ["huggingface-hub>=0.34"]
 local = [
   "accelerate>=1.10",
+  "cuda-toolkit[nvcc]==13.0.3; sys_platform == 'linux'",
   "huggingface-hub>=0.34",
   "torch>=2.6",
   "transformers>=4.56",

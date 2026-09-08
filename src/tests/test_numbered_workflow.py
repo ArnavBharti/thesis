@@ -50,6 +50,7 @@ class NumberedWorkflowTests(unittest.TestCase):
             self.assertIn("export VLLM_CACHE_ROOT=", text)
             self.assertIn("export TORCHINDUCTOR_CACHE_DIR=", text)
             self.assertIn("export TRITON_CACHE_DIR=", text)
+            self.assertIn("export FLASHINFER_WORKSPACE_BASE=", text)
             self.assertIn("site-packages/nvidia/cu*/bin/nvcc", text)
             self.assertIn('export CUDACXX="$NVCC_PATH"', text)
 

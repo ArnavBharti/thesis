@@ -61,6 +61,7 @@ def write_python_job(
             f"export VLLM_CACHE_ROOT={shlex.quote(str(ROOT.parent / 'cache' / 'vllm'))}",
             f"export TORCHINDUCTOR_CACHE_DIR={shlex.quote(str(ROOT.parent / 'cache' / 'torchinductor'))}",
             f"export TRITON_CACHE_DIR={shlex.quote(str(ROOT.parent / 'cache' / 'triton'))}",
+            f"export FLASHINFER_WORKSPACE_BASE={shlex.quote(str(ROOT.parent / 'cache'))}",
             'mkdir -p "$HF_HOME" "$VLLM_CACHE_ROOT" "$TORCHINDUCTOR_CACHE_DIR" "$TRITON_CACHE_DIR"',
             'NVCC_PATH="$(find "$VIRTUAL_ENV/lib" -path \'*/site-packages/nvidia/cu*/bin/nvcc\' '
             '-type f -perm -u+x -print -quit)"',

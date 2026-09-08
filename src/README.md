@@ -478,14 +478,48 @@ The full workflow uses 68 one-at-a-time Slurm jobs:
 - 5 revision jobs.
 - 5 analysis jobs.
 
-## If vLLM reports an `nvcc` error
+## If vLLM reports a CUDA compiler error
 
 The generated GPU jobs automatically find the CUDA compiler installed inside
 `.venv` and put it on `PATH`. They also store vLLM, TorchInductor, and Triton
 compilation caches under `$ARNAVSCRATCH/cache`, not under your small home quota.
+The local dependency list pins the compiler to the same CUDA 13.0 release used
+by PyTorch.
 
-After pulling this fix, rerun the same failed command from the login node. For
-example:
+If the log says that the CUDA compiler and toolkit headers are incompatible,
+update the environment in an interactive compute shell. Start on the login
+node:
+
+```bash
+export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
+cd "$ARNAVSCRATCH/src"
+git pull --ff-only
+srun --partition=compute \
+  --nodes=1 \
+  --ntasks=1 \
+  --cpus-per-task=8 \
+  --mem=32G \
+  --time=02:00:00 \
+  --pty bash -l
+```
+
+After the prompt changes to `node...`, repair and verify the environment:
+
+```bash
+export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
+export PIP_CACHE_DIR="$ARNAVSCRATCH/cache/pip"
+export HF_HOME="$ARNAVSCRATCH/huggingface"
+cd "$ARNAVSCRATCH/src"
+spack unload --all
+spack load anaconda3/lddgbyw
+source .venv/bin/activate
+python -m pip install -e ".[local]"
+python 03_check_setup.py --model qwen-local
+exit
+```
+
+`CUDA compiler` must print `READY`. Back on the login node, load the environment
+and submit the failed qualification job again:
 
 ```bash
 export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
@@ -497,10 +531,8 @@ source .venv/bin/activate
 python 04_qualify_model.py qwen-local
 ```
 
-The command replaces the generated `.sbatch` file with the corrected version
-and submits a new job. It does not repeat completed requests. If the new log
-shows a different compiler error, keep that full error: the old `nvcc`
-permission traceback could hide the original TorchInductor failure.
+The last command replaces the generated `.sbatch` file and submits a new job.
+It does not repeat any completed requests.
 
 ## Results
 

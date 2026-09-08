@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import argparse
 import importlib
+import re
 import sqlite3
+import subprocess
 import sys
 from pathlib import Path
 
@@ -52,12 +54,59 @@ def main() -> int:
             failed = True
         else:
             print("vLLM import: READY")
+        cuda_ready, cuda_detail = check_cuda_versions()
+        print(f"CUDA compiler: {'READY' if cuda_ready else 'FAILED'}")
+        print(f"  {cuda_detail}")
+        failed |= not cuda_ready
     for model in models:
         ready, detail = probe_model(model)
         print(f"{model.name}: {'READY' if ready else 'MISSING'}")
         print(f"  {detail}")
         failed |= not ready
     return 1 if failed else 0
+
+
+def check_cuda_versions() -> tuple[bool, str]:
+    """Confirm that the bundled compiler matches PyTorch's CUDA headers."""
+
+    try:
+        torch = importlib.import_module("torch")
+    except Exception as error:
+        return False, f"cannot import torch: {error}"
+
+    runtime_version = getattr(torch.version, "cuda", None)
+    if not runtime_version:
+        return False, "the installed PyTorch build has no CUDA runtime"
+
+    candidates = sorted(
+        Path(sys.prefix).glob("lib/python*/site-packages/nvidia/cu*/bin/nvcc")
+    )
+    if not candidates:
+        return False, "bundled nvcc is missing; reinstall the local dependencies"
+
+    compiler = candidates[0]
+    try:
+        result = subprocess.run(
+            [str(compiler), "--version"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (OSError, subprocess.CalledProcessError) as error:
+        return False, f"cannot run {compiler}: {error}"
+
+    match = re.search(r"release\s+(\d+\.\d+)", result.stdout)
+    if not match:
+        return False, f"could not read the CUDA version from {compiler}"
+    compiler_version = match.group(1)
+    runtime_major_minor = ".".join(runtime_version.split(".")[:2])
+    if compiler_version != runtime_major_minor:
+        return (
+            False,
+            f"nvcc {compiler_version} does not match PyTorch CUDA {runtime_major_minor}; "
+            'run python -m pip install -e ".[local]" again',
+        )
+    return True, f"nvcc {compiler_version} matches PyTorch CUDA {runtime_major_minor}"
 
 
 if __name__ == "__main__":
