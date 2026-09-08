@@ -47,6 +47,11 @@ class NumberedWorkflowTests(unittest.TestCase):
             self.assertIn("--execute", text)
             self.assertNotIn("--array", text)
             self.assertEqual(text.count("srun "), 1)
+            self.assertIn("export VLLM_CACHE_ROOT=", text)
+            self.assertIn("export TORCHINDUCTOR_CACHE_DIR=", text)
+            self.assertIn("export TRITON_CACHE_DIR=", text)
+            self.assertIn("site-packages/nvidia/cu*/bin/nvcc", text)
+            self.assertIn('export CUDACXX="$NVCC_PATH"', text)
 
     def test_reduced_call_and_job_counts_are_frozen(self) -> None:
         qualification = 5 * 5

@@ -478,6 +478,30 @@ The full workflow uses 68 one-at-a-time Slurm jobs:
 - 5 revision jobs.
 - 5 analysis jobs.
 
+## If vLLM reports an `nvcc` error
+
+The generated GPU jobs automatically find the CUDA compiler installed inside
+`.venv` and put it on `PATH`. They also store vLLM, TorchInductor, and Triton
+compilation caches under `$ARNAVSCRATCH/cache`, not under your small home quota.
+
+After pulling this fix, rerun the same failed command from the login node. For
+example:
+
+```bash
+export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
+export HF_HOME="$ARNAVSCRATCH/huggingface"
+cd "$ARNAVSCRATCH/src"
+spack unload --all
+spack load anaconda3/lddgbyw
+source .venv/bin/activate
+python 04_qualify_model.py qwen-local
+```
+
+The command replaces the generated `.sbatch` file with the corrected version
+and submits a new job. It does not repeat completed requests. If the new log
+shows a different compiler error, keep that full error: the old `nvcc`
+permission traceback could hide the original TorchInductor failure.
+
 ## Results
 
 Results are stored under:

@@ -56,6 +56,19 @@ def write_python_job(
         (
             f"cd {shlex.quote(str(ROOT))}",
             f"source {shlex.quote(str(ROOT / '.venv' / 'bin' / 'activate'))}",
+            f"export HF_HOME={shlex.quote(str(ROOT.parent / 'huggingface'))}",
+            f"export XDG_CACHE_HOME={shlex.quote(str(ROOT.parent / 'cache'))}",
+            f"export VLLM_CACHE_ROOT={shlex.quote(str(ROOT.parent / 'cache' / 'vllm'))}",
+            f"export TORCHINDUCTOR_CACHE_DIR={shlex.quote(str(ROOT.parent / 'cache' / 'torchinductor'))}",
+            f"export TRITON_CACHE_DIR={shlex.quote(str(ROOT.parent / 'cache' / 'triton'))}",
+            'mkdir -p "$HF_HOME" "$VLLM_CACHE_ROOT" "$TORCHINDUCTOR_CACHE_DIR" "$TRITON_CACHE_DIR"',
+            'NVCC_PATH="$(find "$VIRTUAL_ENV/lib" -path \'*/site-packages/nvidia/cu*/bin/nvcc\' '
+            '-type f -perm -u+x -print -quit)"',
+            'if [[ -n "$NVCC_PATH" ]]; then',
+            '    export PATH="$(dirname "$NVCC_PATH"):$PATH"',
+            '    export CUDA_HOME="$(dirname "$(dirname "$NVCC_PATH")")"',
+            '    export CUDACXX="$NVCC_PATH"',
+            "fi",
             "export TOKENIZERS_PARALLELISM=false",
             "srun " + _shell_join(command),
         )
