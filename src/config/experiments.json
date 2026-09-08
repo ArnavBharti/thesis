@@ -71,7 +71,7 @@
       "slurm": {
         "partition": "gpu_h100_4",
         "gpus": 2,
-        "cpus": 16,
+        "cpus": 12,
         "memory": "256G",
         "time_limit": "0-23:30"
       },
@@ -101,7 +101,7 @@
       "slurm": {
         "partition": "gpu_h200_8",
         "gpus": 2,
-        "cpus": 16,
+        "cpus": 12,
         "memory": "256G",
         "time_limit": "0-23:30"
       },
