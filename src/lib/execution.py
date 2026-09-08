@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from typing import Any, Iterable, Mapping, Sequence
 
 from .models import BackendError, BackendTimeout, InferenceBackend
@@ -78,7 +78,7 @@ class ExperimentExecutor:
         request: ExperimentRequest,
         initial_result: dict[str, Any] | None = None,
     ) -> ExperimentResult:
-        started = datetime.now(UTC).isoformat()
+        started = datetime.now(timezone.utc).isoformat()
         if request.experiment == "exp10":
             return self._execute_revision(request, started, initial_result)
         if initial_result is not None:
@@ -97,7 +97,7 @@ class ExperimentExecutor:
             attempts=attempts,
             error=error,
             started_at=started,
-            completed_at=datetime.now(UTC).isoformat(),
+            completed_at=datetime.now(timezone.utc).isoformat(),
         )
 
     def _execute_revision(
@@ -183,7 +183,7 @@ class ExperimentExecutor:
             attempts=total_attempts,
             error=error,
             started_at=started,
-            completed_at=datetime.now(UTC).isoformat(),
+            completed_at=datetime.now(timezone.utc).isoformat(),
         )
 
     def _generate(
