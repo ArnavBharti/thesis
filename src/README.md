@@ -48,11 +48,30 @@ export PIP_CACHE_DIR="$ARNAVSCRATCH/cache/pip"
 export HF_HOME="$ARNAVSCRATCH/huggingface"
 mkdir -p "$PIP_CACHE_DIR" "$HF_HOME"
 cd "$ARNAVSCRATCH/src"
+spack load python/wikzev7
+python3 --version
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -e ".[local]"
 ```
+
+The version check must print `Python 3.10.8`. Do not create the environment with Sharanga's default Python 3.6.
+
+If `.venv` was already created with Python 3.6, replace it before installing packages:
+
+```bash
+deactivate
+mv .venv .venv-python36
+spack load python/wikzev7
+python3 --version
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[local]"
+```
+
+The moved `.venv-python36` directory is only a backup. You can delete it after the new environment works.
 
 Use the same scratch location for model files:
 
@@ -82,8 +101,12 @@ export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
 export PIP_CACHE_DIR="$ARNAVSCRATCH/cache/pip"
 export HF_HOME="$ARNAVSCRATCH/huggingface"
 cd "$ARNAVSCRATCH/src"
+spack load python/wikzev7
 source .venv/bin/activate
+python --version
 ```
+
+The last command must print Python 3.10.8.
 
 Before submitting a GPT or Claude job in that shell, also run:
 
