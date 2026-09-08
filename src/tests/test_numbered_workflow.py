@@ -56,6 +56,8 @@ class NumberedWorkflowTests(unittest.TestCase):
             self.assertIn("from __future__ import annotations", text)
             self.assertIn('export CUDACXX="$NVCC_PATH"', text)
             self.assertIn("export VLLM_USE_FLASHINFER_SAMPLER=0", text)
+            syntax = subprocess.run(["bash", "-n", str(path)], capture_output=True, text=True)
+            self.assertEqual(syntax.returncode, 0, syntax.stderr)
 
     def test_reduced_call_and_job_counts_are_frozen(self) -> None:
         qualification = 5 * 5

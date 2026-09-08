@@ -64,7 +64,7 @@ def write_python_job(
             f"export FLASHINFER_WORKSPACE_BASE={shlex.quote(str(ROOT.parent / 'cache'))}",
             'mkdir -p "$HF_HOME" "$VLLM_CACHE_ROOT" "$TORCHINDUCTOR_CACHE_DIR" "$TRITON_CACHE_DIR"',
             'FLASHINFER_FD_EXCHANGE="$(find "$VIRTUAL_ENV/lib" '
-            "-path '*/site-packages/flashinfer/comm/fd_exchange.py' -print -quit)",
+            "-path '*/site-packages/flashinfer/comm/fd_exchange.py' -print -quit)\"",
             'if [[ -n "$FLASHINFER_FD_EXCHANGE" ]] && '
             '! grep -q "^from __future__ import annotations$" "$FLASHINFER_FD_EXCHANGE"; then',
             "    sed -i '1i from __future__ import annotations' \"$FLASHINFER_FD_EXCHANGE\"",
