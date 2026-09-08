@@ -1,5 +1,5 @@
 {
-  "run_id": "thesis-confirmatory-lean-v4",
+  "run_id": "thesis-confirmatory-lean-v5",
   "dataset_path": "../data/puzzles.jsonl",
   "output_directory": "../experiment_outputs",
   "master_seed": 20260826,
@@ -30,7 +30,7 @@
       "tensor_parallel_size": 1,
       "local_files_only": true,
       "slurm": {"partition": "gpu_h100_4", "gpus": 1, "cpus": 12, "memory": "192G", "time_limit": "0-23:30"},
-      "extra": {"chat_template": {"reasoning_effort": "low"}, "reasoning_output": "think_tags", "vllm": {"max_model_len": 32768, "gpu_memory_utilization": 0.9}},
+      "extra": {"chat_template": {"reasoning_effort": "medium"}, "reasoning_output": "think_tags", "vllm": {"max_model_len": 32768, "gpu_memory_utilization": 0.9}},
       "enabled": true
     },
     {

@@ -55,7 +55,7 @@ def main() -> int:
 
     selected = select_stratified(
         records,
-        2,
+        5,
         seed=config.master_seed,
         namespace="qualification",
     )[:5]

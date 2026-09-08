@@ -1,5 +1,5 @@
 {
-  "run_id": "thesis-confirmatory-lean-v4",
+  "run_id": "thesis-confirmatory-lean-v5",
   "dataset_path": "../data/puzzles.jsonl",
   "output_directory": "../experiment_outputs",
   "master_seed": 20260826,
@@ -46,7 +46,7 @@
       },
       "extra": {
         "chat_template": {
-          "reasoning_effort": "low"
+          "reasoning_effort": "medium"
         },
         "reasoning_output": "think_tags",
         "protocol": {

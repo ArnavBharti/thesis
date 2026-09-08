@@ -74,7 +74,8 @@ class NumberedWorkflowTests(unittest.TestCase):
 
     def test_qualification_pilot_and_freeze_execute_and_rerun_cleanly(self) -> None:
         records = read_records(ROOT / "data" / "puzzles.jsonl")
-        selected = select_stratified(records, 2, seed=20260826, namespace="qualification")[:5]
+        selected = select_stratified(records, 5, seed=20260826, namespace="qualification")[:5]
+        self.assertEqual({record.difficulty for record in selected}, {"easy"})
         representations = (
             "arabic_digits",
             "greek_letters",
