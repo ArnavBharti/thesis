@@ -53,30 +53,32 @@ export PIP_CACHE_DIR="$ARNAVSCRATCH/cache/pip"
 export HF_HOME="$ARNAVSCRATCH/huggingface"
 mkdir -p "$PIP_CACHE_DIR" "$HF_HOME"
 cd "$ARNAVSCRATCH/src"
-spack load python/wikzev7
-python3 --version
+spack unload --all
+spack load anaconda3/lddgbyw
+python3 -c "import sqlite3, sys; assert sys.version_info >= (3, 10); print(sys.version); print('SQLite', sqlite3.sqlite_version)"
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -e ".[local]"
 ```
 
-The version check must print `Python 3.10.8`. Do not create the environment with Sharanga's default Python 3.6.
+The check must print Python 3.10 or newer and an SQLite version. Sharanga's standalone Python 3.10 build has no `_sqlite3` module, so do not use `spack load python/wikzev7` for this project.
 
-If `.venv` was already created with Python 3.6, replace it before installing packages:
+If `.venv` was created with Python 3.6 or with `python/wikzev7`, replace it before installing packages:
 
 ```bash
 deactivate
-mv .venv .venv-python36
-spack load python/wikzev7
-python3 --version
+mv .venv .venv-without-sqlite
+spack unload --all
+spack load anaconda3/lddgbyw
+python3 -c "import sqlite3, sys; assert sys.version_info >= (3, 10); print(sys.version); print('SQLite', sqlite3.sqlite_version)"
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -e ".[local]"
 ```
 
-The moved `.venv-python36` directory is only a backup. You can delete it after the new environment works. Stay in the compute shell and continue with Steps 1, 2, and 3 below.
+The moved `.venv-without-sqlite` directory is only a backup. You can delete it after the new environment works. The model downloads under `$HF_HOME` are separate and do not need to be downloaded again. Stay in the compute shell and continue with Steps 1, 2, and 3 below.
 
 ## Repeat after every login
 
@@ -87,12 +89,13 @@ export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
 export PIP_CACHE_DIR="$ARNAVSCRATCH/cache/pip"
 export HF_HOME="$ARNAVSCRATCH/huggingface"
 cd "$ARNAVSCRATCH/src"
-spack load python/wikzev7
+spack unload --all
+spack load anaconda3/lddgbyw
 source .venv/bin/activate
-python --version
+python -c "import sqlite3, sys; assert sys.version_info >= (3, 10); print(sys.version); print('SQLite', sqlite3.sqlite_version)"
 ```
 
-The last command must print Python 3.10.8, and the prompt should begin with `(.venv)`. Do not run a numbered script from the login node until both checks are true.
+The last command must print Python 3.10 or newer and an SQLite version, and the prompt should begin with `(.venv)`. Do not run a numbered script from the login node until all checks are true.
 
 Before submitting a GPT or Claude job in that shell, also run:
 
@@ -123,12 +126,13 @@ export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
 export PIP_CACHE_DIR="$ARNAVSCRATCH/cache/pip"
 export HF_HOME="$ARNAVSCRATCH/huggingface"
 cd "$ARNAVSCRATCH/src"
-spack load python/wikzev7
+spack unload --all
+spack load anaconda3/lddgbyw
 source .venv/bin/activate
-python --version
+python -c "import sqlite3, sys; assert sys.version_info >= (3, 10); print(sys.version); print('SQLite', sqlite3.sqlite_version)"
 ```
 
-The last command must print Python 3.10.8.
+The last command must print Python 3.10 or newer and an SQLite version.
 
 ## Repeat after every submitted job
 

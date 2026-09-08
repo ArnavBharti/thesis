@@ -4,6 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import importlib
+import sqlite3
+import sys
 from pathlib import Path
 
 from lib.config import load_config
@@ -37,6 +40,18 @@ def main() -> int:
         models = tuple(model for model in models if model.name in requested)
 
     failed = False
+    print(
+        f"Python runtime: READY ({sys.version.split()[0]}, SQLite {sqlite3.sqlite_version})"
+    )
+    if any(model.backend == "vllm" for model in models):
+        try:
+            getattr(importlib.import_module("vllm"), "LLM")
+        except Exception as error:
+            print("vLLM import: FAILED")
+            print(f"  {type(error).__name__}: {error}")
+            failed = True
+        else:
+            print("vLLM import: READY")
     for model in models:
         ready, detail = probe_model(model)
         print(f"{model.name}: {'READY' if ready else 'MISSING'}")
