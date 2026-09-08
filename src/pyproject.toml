@@ -13,7 +13,7 @@ local = [
   "huggingface-hub>=0.34",
   "torch>=2.6",
   "transformers>=4.56",
-  "vllm>=0.27.1; sys_platform == 'linux'"
+  "vllm==0.28.0; sys_platform == 'linux'"
 ]
 
 [build-system]

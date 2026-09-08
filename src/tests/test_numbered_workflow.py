@@ -53,6 +53,7 @@ class NumberedWorkflowTests(unittest.TestCase):
             self.assertIn("export FLASHINFER_WORKSPACE_BASE=", text)
             self.assertIn("site-packages/nvidia/cu*/bin/nvcc", text)
             self.assertIn('export CUDACXX="$NVCC_PATH"', text)
+            self.assertIn("export VLLM_USE_FLASHINFER_SAMPLER=0", text)
 
     def test_reduced_call_and_job_counts_are_frozen(self) -> None:
         qualification = 5 * 5

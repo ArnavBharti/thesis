@@ -484,7 +484,8 @@ The generated GPU jobs automatically find the CUDA compiler installed inside
 `.venv` and put it on `PATH`. They also store vLLM, TorchInductor, and Triton
 compilation caches under `$ARNAVSCRATCH/cache`, not under your small home quota.
 The local dependency list pins the compiler to the same CUDA 13.0 release used
-by PyTorch.
+by PyTorch. The jobs use vLLM's native sampler instead of FlashInfer's optional
+JIT-compiled sampler. Qwen uses the supported Triton GDN prefill backend.
 
 If the log says that the CUDA compiler and toolkit headers are incompatible,
 update the environment in an interactive compute shell. Start on the login

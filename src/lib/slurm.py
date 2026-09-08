@@ -70,6 +70,7 @@ def write_python_job(
             '    export CUDA_HOME="$(dirname "$(dirname "$NVCC_PATH")")"',
             '    export CUDACXX="$NVCC_PATH"',
             "fi",
+            "export VLLM_USE_FLASHINFER_SAMPLER=0",
             "export TOKENIZERS_PARALLELISM=false",
             "srun " + _shell_join(command),
         )

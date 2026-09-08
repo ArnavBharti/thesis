@@ -19,6 +19,10 @@ class ExperimentFoundationTests(unittest.TestCase):
         self.assertEqual(config.main_per_tier, 50)
         self.assertTrue(config.dataset_path.is_file())
         self.assertEqual(config.enabled_models[0].name, "qwen-local")
+        self.assertEqual(
+            config.enabled_models[0].extra["vllm"]["gdn_prefill_backend"],
+            "triton",
+        )
 
     def test_only_gpt_and_claude_use_openrouter(self) -> None:
         config = load_config(ROOT / "config" / "experiments.example.json")
