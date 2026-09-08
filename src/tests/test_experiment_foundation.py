@@ -15,14 +15,14 @@ ROOT = Path(__file__).resolve().parents[1]
 class ExperimentFoundationTests(unittest.TestCase):
     def test_example_configuration_loads(self) -> None:
         config = load_config(ROOT / "config" / "experiments.example.json")
-        self.assertEqual(config.run_id, "thesis-confirmatory-lean-v3")
+        self.assertEqual(config.run_id, "thesis-confirmatory-lean-v4")
         self.assertEqual(config.main_per_tier, 50)
         self.assertEqual(config.inference.max_new_tokens, 28672)
         self.assertTrue(config.dataset_path.is_file())
         self.assertEqual(config.enabled_models[0].name, "qwen-local")
         self.assertEqual(
             config.model("qwen-local").extra["chat_template"]["reasoning_effort"],
-            "medium",
+            "low",
         )
 
     def test_only_gpt_and_claude_use_openrouter(self) -> None:

@@ -248,7 +248,8 @@ python 04_qualify_model.py claude-sonnet-5-openrouter
 Each model must solve all five qualification puzzles. A failed model is not silently replaced.
 The qualification configuration gives every model the same maximum of 28,672 generated
 tokens. Reasoning-model traces are saved, but only their final-answer channel is passed
-to the strict Sudoku parser.
+to the strict Sudoku parser. Qwen uses its native `low` reasoning effort so that it has
+a practical chance to finish; this setting remains fixed for every Qwen condition.
 
 ## Step 5: run the pilot
 
@@ -558,7 +559,7 @@ It does not repeat any completed requests.
 Results are stored under:
 
 ```text
-experiment_outputs/thesis-confirmatory-lean-v3/
+experiment_outputs/thesis-confirmatory-lean-v4/
 ```
 
 Important files include:
