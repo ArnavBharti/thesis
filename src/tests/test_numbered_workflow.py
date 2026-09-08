@@ -52,6 +52,8 @@ class NumberedWorkflowTests(unittest.TestCase):
             self.assertIn("export TRITON_CACHE_DIR=", text)
             self.assertIn("export FLASHINFER_WORKSPACE_BASE=", text)
             self.assertIn("site-packages/nvidia/cu*/bin/nvcc", text)
+            self.assertIn("site-packages/flashinfer/comm/fd_exchange.py", text)
+            self.assertIn("from __future__ import annotations", text)
             self.assertIn('export CUDACXX="$NVCC_PATH"', text)
             self.assertIn("export VLLM_USE_FLASHINFER_SAMPLER=0", text)
 
