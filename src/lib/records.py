@@ -55,6 +55,7 @@ class Generation:
     completion_tokens: int | None
     latency_seconds: float
     provider_metadata: dict[str, Any] = field(default_factory=dict)
+    raw_text: str | None = None
 
 
 @dataclass(frozen=True, slots=True)

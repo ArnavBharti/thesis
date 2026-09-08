@@ -1,5 +1,5 @@
 {
-  "run_id": "thesis-confirmatory-lean-v1",
+  "run_id": "thesis-confirmatory-lean-v2",
   "dataset_path": "../data/puzzles.jsonl",
   "output_directory": "../experiment_outputs",
   "master_seed": 20260826,
@@ -17,7 +17,7 @@
     "exp10": 1
   },
   "inference": {
-    "max_new_tokens": 2048,
+    "max_new_tokens": 8192,
     "temperature": 0.0,
     "top_p": 1.0,
     "seed": 20260826
@@ -45,6 +45,10 @@
         "time_limit": "0-23:30"
       },
       "extra": {
+        "chat_template": {
+          "reasoning_effort": "medium"
+        },
+        "reasoning_output": "think_tags",
         "protocol": {
           "cohort_role": "exact open-weight model from the outline"
         },
@@ -72,6 +76,7 @@
         "time_limit": "0-23:30"
       },
       "extra": {
+        "reasoning_output": "think_tags",
         "protocol": {
           "cohort_role": "local GLM-family replacement",
           "replaces_outline_model": "zai-org/GLM-5.2",

@@ -217,6 +217,7 @@ def _generation_dict(generation: Generation | None) -> dict[str, object] | None:
         "prompt_tokens": generation.prompt_tokens,
         "completion_tokens": generation.completion_tokens,
         "latency_seconds": generation.latency_seconds,
+        "raw_text": generation.raw_text,
         "provider_metadata": generation.provider_metadata,
     }
 
@@ -230,5 +231,6 @@ def _generation_from_value(value: dict[str, Any] | None) -> Generation | None:
         prompt_tokens=value.get("prompt_tokens"),
         completion_tokens=value.get("completion_tokens"),
         latency_seconds=float(value.get("latency_seconds") or 0.0),
+        raw_text=value.get("raw_text"),
         provider_metadata=dict(value.get("provider_metadata") or {}),
     )

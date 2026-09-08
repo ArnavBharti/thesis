@@ -159,7 +159,7 @@ The commands in one allowed group may be pasted together. Each command still cre
 | 1 | One direct command on an interactive compute node. |
 | 2 | One direct command; it downloads all three local models. |
 | 3 | One direct command on an interactive compute node. |
-| 4 | All five model qualification jobs. |
+| 4 | Run one local-model qualification job at a time. The two OpenRouter jobs may run together later. |
 | 5 | All five model pilot jobs, after every model has passed Step 4. |
 | 6 | One direct command, after all five pilot jobs finish. |
 | 7 | One part per model at a time: submit the five Part 1 jobs together, wait, then Part 2, and so on. |
@@ -222,17 +222,33 @@ After the prompt changes back to `hpc01`, paste the block under **Repeat after e
 
 ## Step 4: qualify every model
 
-All five commands are independent. Paste all five together:
+Submit the local models one at a time. Run the first command, wait for the job to
+finish, and check its result before running the next command:
 
 ```bash
 python 04_qualify_model.py qwen-local
+```
+
+```bash
 python 04_qualify_model.py glm-flash-local
+```
+
+```bash
 python 04_qualify_model.py kimi-linear-local
+```
+
+When you are ready to test the API models, these two commands may be submitted
+together:
+
+```bash
 python 04_qualify_model.py gpt-5.6-terra-openrouter
 python 04_qualify_model.py claude-sonnet-5-openrouter
 ```
 
 Each model must solve all five qualification puzzles. A failed model is not silently replaced.
+The qualification configuration gives every model the same maximum of 8,192 generated
+tokens. Reasoning-model traces are saved, but only their final-answer channel is passed
+to the strict Sudoku parser.
 
 ## Step 5: run the pilot
 
@@ -542,7 +558,7 @@ It does not repeat any completed requests.
 Results are stored under:
 
 ```text
-experiment_outputs/thesis-confirmatory-lean-v1/
+experiment_outputs/thesis-confirmatory-lean-v2/
 ```
 
 Important files include:

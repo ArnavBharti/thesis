@@ -1,5 +1,5 @@
 {
-  "run_id": "thesis-confirmatory-lean-v1",
+  "run_id": "thesis-confirmatory-lean-v2",
   "dataset_path": "../data/puzzles.jsonl",
   "output_directory": "../experiment_outputs",
   "master_seed": 20260826,
@@ -9,7 +9,7 @@
   "ablation_per_tier": 5,
   "experiment_shards": {"exp2": 1, "exp4": 6, "exp6": 1, "exp7": 1, "exp8": 1, "exp9": 1, "exp10": 1},
   "inference": {
-    "max_new_tokens": 2048,
+    "max_new_tokens": 8192,
     "temperature": 0.0,
     "top_p": 1.0,
     "seed": 20260826
@@ -30,7 +30,7 @@
       "tensor_parallel_size": 1,
       "local_files_only": true,
       "slurm": {"partition": "gpu_h100_4", "gpus": 1, "cpus": 12, "memory": "192G", "time_limit": "0-23:30"},
-      "extra": {"vllm": {"max_model_len": 32768, "gpu_memory_utilization": 0.9}},
+      "extra": {"chat_template": {"reasoning_effort": "medium"}, "reasoning_output": "think_tags", "vllm": {"max_model_len": 32768, "gpu_memory_utilization": 0.9}},
       "enabled": true
     },
     {
@@ -43,7 +43,7 @@
       "trust_remote_code": true,
       "local_files_only": true,
       "slurm": {"partition": "gpu_h100_4", "gpus": 2, "cpus": 16, "memory": "256G", "time_limit": "0-23:30"},
-      "extra": {"protocol": {"replaces_outline_model": "zai-org/GLM-5.2"}, "vllm": {"max_model_len": 32768, "gpu_memory_utilization": 0.9}},
+      "extra": {"reasoning_output": "think_tags", "protocol": {"replaces_outline_model": "zai-org/GLM-5.2"}, "vllm": {"max_model_len": 32768, "gpu_memory_utilization": 0.9}},
       "enabled": true
     },
     {

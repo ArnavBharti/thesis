@@ -100,6 +100,7 @@ def store_reused_result(
             prompt_tokens=generation_value.get("prompt_tokens"),
             completion_tokens=generation_value.get("completion_tokens"),
             latency_seconds=float(generation_value.get("latency_seconds") or 0.0),
+            raw_text=generation_value.get("raw_text"),
             provider_metadata={
                 **dict(generation_value.get("provider_metadata") or {}),
                 "reused_from_request_id": source["request"]["request_id"],

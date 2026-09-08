@@ -52,9 +52,15 @@ class InferenceBackend(ABC):
 
 
 class HuggingFaceTokenizerAdapter:
-    def __init__(self, tokenizer: Any, identity: str) -> None:
+    def __init__(
+        self,
+        tokenizer: Any,
+        identity: str,
+        chat_template_kwargs: dict[str, Any] | None = None,
+    ) -> None:
         self._tokenizer = tokenizer
         self._identity = identity
+        self._chat_template_kwargs = chat_template_kwargs or {}
 
     @property
     def identity(self) -> str:
@@ -70,6 +76,7 @@ class HuggingFaceTokenizerAdapter:
                 values,
                 tokenize=False,
                 add_generation_prompt=True,
+                **self._chat_template_kwargs,
             )
         return "\n\n".join(f"{message.role.upper()}: {message.content}" for message in messages) + "\n\nASSISTANT:"
 
@@ -87,7 +94,14 @@ def load_huggingface_tokenizer(model: ModelConfig) -> HuggingFaceTokenizerAdapte
     )
     if tokenizer.pad_token_id is None and tokenizer.eos_token_id is not None:
         tokenizer.pad_token_id = tokenizer.eos_token_id
-    return HuggingFaceTokenizerAdapter(tokenizer, model.resolved_tokenizer_id)
+    chat_template_kwargs = model.extra.get("chat_template", {})
+    if not isinstance(chat_template_kwargs, dict):
+        raise BackendError(f"model {model.name}: extra.chat_template must be an object")
+    return HuggingFaceTokenizerAdapter(
+        tokenizer,
+        model.resolved_tokenizer_id,
+        chat_template_kwargs,
+    )
 
 
 class TransformersBackend(InferenceBackend):
@@ -143,13 +157,15 @@ class TransformersBackend(InferenceBackend):
             output = self._model.generate(**arguments)
         prompt_length = inputs["input_ids"].shape[-1]
         generated = output[0, prompt_length:]
-        text = self._tokenizer.decode(generated, skip_special_tokens=True)
+        raw_text = self._tokenizer.decode(generated, skip_special_tokens=True)
+        text = final_answer_text(raw_text, self.model)
         return Generation(
             text=text,
             finish_reason="length" if generated.shape[-1] >= self.inference.max_new_tokens else "stop",
             prompt_tokens=prompt_length,
             completion_tokens=generated.shape[-1],
             latency_seconds=time.monotonic() - started,
+            raw_text=raw_text if text != raw_text else None,
             provider_metadata={"backend": "transformers"},
         )
 
@@ -200,12 +216,15 @@ class VLLMBackend(InferenceBackend):
         candidate = result.outputs[0]
         prompt_token_ids = getattr(result, "prompt_token_ids", None)
         completion_token_ids = getattr(candidate, "token_ids", None)
+        raw_text = candidate.text
+        text = final_answer_text(raw_text, self.model)
         return Generation(
-            text=candidate.text,
+            text=text,
             finish_reason=str(getattr(candidate, "finish_reason", "stop")),
             prompt_tokens=len(prompt_token_ids) if prompt_token_ids is not None else None,
             completion_tokens=len(completion_token_ids) if completion_token_ids is not None else None,
             latency_seconds=time.monotonic() - started,
+            raw_text=raw_text if text != raw_text else None,
             provider_metadata={"backend": "vllm"},
         )
 
@@ -330,6 +349,22 @@ class CharacterTokenizer:
 
     def format_chat(self, messages: Sequence[Message]) -> str:
         return "\n".join(f"{message.role}: {message.content}" for message in messages)
+
+
+def final_answer_text(raw_text: str, model: ModelConfig) -> str:
+    """Return only the answer channel while preserving the raw generation separately."""
+
+    reasoning_format = model.extra.get("reasoning_output")
+    if reasoning_format is None:
+        return raw_text
+    if reasoning_format != "think_tags":
+        raise BackendError(
+            f"model {model.name}: unsupported extra.reasoning_output {reasoning_format!r}"
+        )
+    closing_tag = "</think>"
+    if closing_tag not in raw_text:
+        return ""
+    return raw_text.rsplit(closing_tag, 1)[1].strip()
 
 
 def vllm_runtime_options(model: ModelConfig) -> dict[str, Any]:
