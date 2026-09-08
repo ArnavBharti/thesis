@@ -252,7 +252,9 @@ already succeeding on the effect studied by the benchmark.
 The qualification configuration gives every model the same maximum of 28,672 generated
 tokens. Reasoning-model traces are saved, but only their final-answer channel is passed
 to the strict Sudoku parser. Qwen uses its native `medium` reasoning effort, which remains
-fixed for every Qwen condition.
+fixed for every Qwen condition. GLM uses its native non-thinking mode because its thinking
+mode did not reach a final-answer channel within the calibrated limit; this also remains
+fixed for every GLM condition.
 
 ## Step 5: run the pilot
 
@@ -562,7 +564,7 @@ It does not repeat any completed requests.
 Results are stored under:
 
 ```text
-experiment_outputs/thesis-confirmatory-lean-v5/
+experiment_outputs/thesis-confirmatory-lean-v6/
 ```
 
 Important files include:

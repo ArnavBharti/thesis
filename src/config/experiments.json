@@ -1,5 +1,5 @@
 {
-  "run_id": "thesis-confirmatory-lean-v5",
+  "run_id": "thesis-confirmatory-lean-v6",
   "dataset_path": "../data/puzzles.jsonl",
   "output_directory": "../experiment_outputs",
   "master_seed": 20260826,
@@ -76,7 +76,9 @@
         "time_limit": "0-23:30"
       },
       "extra": {
-        "reasoning_output": "think_tags",
+        "chat_template": {
+          "enable_thinking": false
+        },
         "protocol": {
           "cohort_role": "local GLM-family replacement",
           "replaces_outline_model": "zai-org/GLM-5.2",
