@@ -138,13 +138,35 @@ Each experiment command submits one job and then returns to the terminal. Check 
 squeue -u "$USER"
 ```
 
-Wait until that job is no longer listed. Then check what completed and which command comes next:
+Wait until the submitted group is no longer listed. Then check what completed and which command comes next:
 
 ```bash
 python status.py
 ```
 
-Do not submit the next experiment command until the previous job has finished.
+Do not start the next step, or the next Step 7 part, until the current group has finished.
+
+## Which jobs can run together
+
+The commands in one allowed group may be pasted together. Each command still creates a separate Slurm job.
+
+| Step | Commands that may be submitted together |
+|---|---|
+| 1 | One direct command on an interactive compute node. |
+| 2 | One direct command; it downloads all three local models. |
+| 3 | One direct command on an interactive compute node. |
+| 4 | All five model qualification jobs. |
+| 5 | All five model pilot jobs, after every model has passed Step 4. |
+| 6 | One direct command, after all five pilot jobs finish. |
+| 7 | One part per model at a time: submit the five Part 1 jobs together, wait, then Part 2, and so on. |
+| 8 | All five model jobs, after Step 7 is complete. |
+| 9 | All three local-model jobs. |
+| 10 | All five model jobs. |
+| 11 | All five model jobs. |
+| 12 | All five model jobs. |
+| 13 | All five analysis jobs, after the required experiments finish. |
+
+Do not submit different numbered steps together. For OpenRouter jobs, your account must have enough credit and rate-limit capacity for GPT and Claude to run at the same time.
 
 ## Step 1: prepare and check the Sudoku data
 
@@ -196,7 +218,7 @@ After the prompt changes back to `hpc01`, paste the block under **Repeat after e
 
 ## Step 4: qualify every model
 
-Run one line, wait for the job to finish, and then run the next line:
+All five commands are independent. Paste all five together:
 
 ```bash
 python 04_qualify_model.py qwen-local
@@ -210,7 +232,7 @@ Each model must solve all five qualification puzzles. A failed model is not sile
 
 ## Step 5: run the pilot
 
-Again, run one line and wait before running the next line:
+After all five models pass Step 4, paste all five commands together:
 
 ```bash
 python 05_run_pilot.py qwen-local
@@ -249,64 +271,71 @@ Do not change prompts, samples, models, or inference settings after this step. I
 
 ## Step 7: run the main benchmark
 
-The main benchmark has six parts per model. Run exactly one line at a time and wait for it to finish.
+The main benchmark has six parts per model. Submit one part for all five models together. Wait for those five jobs to finish before submitting the next part.
 
-Qwen:
+Part 1:
 
 ```bash
 python 07_run_main_benchmark.py qwen-local --part 1
-python 07_run_main_benchmark.py qwen-local --part 2
-python 07_run_main_benchmark.py qwen-local --part 3
-python 07_run_main_benchmark.py qwen-local --part 4
-python 07_run_main_benchmark.py qwen-local --part 5
-python 07_run_main_benchmark.py qwen-local --part 6
-```
-
-GLM:
-
-```bash
 python 07_run_main_benchmark.py glm-flash-local --part 1
-python 07_run_main_benchmark.py glm-flash-local --part 2
-python 07_run_main_benchmark.py glm-flash-local --part 3
-python 07_run_main_benchmark.py glm-flash-local --part 4
-python 07_run_main_benchmark.py glm-flash-local --part 5
-python 07_run_main_benchmark.py glm-flash-local --part 6
-```
-
-Kimi:
-
-```bash
 python 07_run_main_benchmark.py kimi-linear-local --part 1
-python 07_run_main_benchmark.py kimi-linear-local --part 2
-python 07_run_main_benchmark.py kimi-linear-local --part 3
-python 07_run_main_benchmark.py kimi-linear-local --part 4
-python 07_run_main_benchmark.py kimi-linear-local --part 5
-python 07_run_main_benchmark.py kimi-linear-local --part 6
-```
-
-GPT:
-
-```bash
 python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 1
-python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 2
-python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 3
-python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 4
-python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 5
-python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 6
+python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 1
 ```
 
-Claude:
+Part 2, after all Part 1 jobs finish:
 
 ```bash
-python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 1
+python 07_run_main_benchmark.py qwen-local --part 2
+python 07_run_main_benchmark.py glm-flash-local --part 2
+python 07_run_main_benchmark.py kimi-linear-local --part 2
+python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 2
 python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 2
+```
+
+Part 3, after all Part 2 jobs finish:
+
+```bash
+python 07_run_main_benchmark.py qwen-local --part 3
+python 07_run_main_benchmark.py glm-flash-local --part 3
+python 07_run_main_benchmark.py kimi-linear-local --part 3
+python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 3
 python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 3
+```
+
+Part 4, after all Part 3 jobs finish:
+
+```bash
+python 07_run_main_benchmark.py qwen-local --part 4
+python 07_run_main_benchmark.py glm-flash-local --part 4
+python 07_run_main_benchmark.py kimi-linear-local --part 4
+python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 4
 python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 4
+```
+
+Part 5, after all Part 4 jobs finish:
+
+```bash
+python 07_run_main_benchmark.py qwen-local --part 5
+python 07_run_main_benchmark.py glm-flash-local --part 5
+python 07_run_main_benchmark.py kimi-linear-local --part 5
+python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 5
 python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 5
+```
+
+Part 6, after all Part 5 jobs finish:
+
+```bash
+python 07_run_main_benchmark.py qwen-local --part 6
+python 07_run_main_benchmark.py glm-flash-local --part 6
+python 07_run_main_benchmark.py kimi-linear-local --part 6
+python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 6
 python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 6
 ```
 
 ## Step 8: run the input/output experiment
+
+After all Step 7 jobs finish, paste all five commands together:
 
 ```bash
 python 08_run_input_output_cross.py qwen-local
@@ -316,11 +345,11 @@ python 08_run_input_output_cross.py gpt-5.6-terra-openrouter
 python 08_run_input_output_cross.py claude-sonnet-5-openrouter
 ```
 
-Run one line at a time. Matching Arabic and Greek baseline answers are reused from Step 7, so they do not make duplicate model calls.
+Matching Arabic and Greek baseline answers are reused from Step 7, so they do not make duplicate model calls.
 
 ## Step 9: run the token-length experiment
 
-This step requires exact token IDs and therefore runs only for local models:
+This step requires exact token IDs and therefore runs only for local models. Paste all three commands together:
 
 ```bash
 python 09_run_token_length.py qwen-local
@@ -330,6 +359,8 @@ python 09_run_token_length.py kimi-linear-local
 
 ## Step 10: run the binding experiment
 
+Paste all five commands together:
+
 ```bash
 python 10_run_binding.py qwen-local
 python 10_run_binding.py glm-flash-local
@@ -338,9 +369,11 @@ python 10_run_binding.py gpt-5.6-terra-openrouter
 python 10_run_binding.py claude-sonnet-5-openrouter
 ```
 
-Run one line at a time. Three exact baseline conditions are reused from Step 7.
+Three exact baseline conditions are reused from Step 7.
 
 ## Step 11: run the prompt ablations
+
+Paste all five commands together:
 
 ```bash
 python 11_run_ablations.py qwen-local
@@ -354,6 +387,8 @@ These 15-puzzle analyses are exploratory and should be described that way in the
 
 ## Step 12: run the revision experiment
 
+Paste all five commands together:
+
 ```bash
 python 12_run_revisions.py qwen-local
 python 12_run_revisions.py glm-flash-local
@@ -366,6 +401,8 @@ Each revision condition starts from the same saved Step 7 answer. The revision b
 
 ## Step 13: analyze each model
 
+After all required experiment jobs finish, paste all five commands together:
+
 ```bash
 python 13_analyze_results.py qwen-local
 python 13_analyze_results.py glm-flash-local
@@ -374,7 +411,7 @@ python 13_analyze_results.py gpt-5.6-terra-openrouter
 python 13_analyze_results.py claude-sonnet-5-openrouter
 ```
 
-These are small CPU jobs. Run one line at a time.
+These are small CPU jobs.
 
 ## Check progress
 
