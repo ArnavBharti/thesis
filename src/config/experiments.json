@@ -49,7 +49,6 @@
           "cohort_role": "exact open-weight model from the outline"
         },
         "vllm": {
-          "gdn_prefill_backend": "triton",
           "max_model_len": 32768,
           "gpu_memory_utilization": 0.9
         }

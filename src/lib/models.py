@@ -177,7 +177,7 @@ class VLLMBackend(InferenceBackend):
         }
         if model.revision and model_location == model.resolved_model_id:
             arguments["revision"] = model.revision
-        arguments.update(model.extra.get("vllm", {}))
+        arguments.update(vllm_runtime_options(model))
         self._llm = LLM(**arguments)
 
     def tokenizer(self) -> TokenizerAdapter:
@@ -330,6 +330,15 @@ class CharacterTokenizer:
 
     def format_chat(self, messages: Sequence[Message]) -> str:
         return "\n".join(f"{message.role}: {message.content}" for message in messages)
+
+
+def vllm_runtime_options(model: ModelConfig) -> dict[str, Any]:
+    """Return recorded model options plus required runtime compatibility settings."""
+
+    options = dict(model.extra.get("vllm", {}))
+    if model.resolved_model_id == "Qwen/Qwen3.8-27B":
+        options.setdefault("gdn_prefill_backend", "triton")
+    return options
 
 
 def build_backend(
