@@ -4,7 +4,12 @@ This project tests whether language models can still solve the same Sudoku when 
 
 On Sharanga, the repository should be located at `/scratch/kudhru/arnavbharti`. Run all experiment commands from `/scratch/kudhru/arnavbharti/src`. The numbered Python files contain the experiment steps. Shared model, Sudoku, evaluation, storage, and Slurm code is in `lib/`.
 
-Each experiment command submits only one Slurm job. Wait for that job to finish before running the next command.
+The shell prompt tells you where you are:
+
+- `[kudhru@hpc01 ...]` is the login node.
+- `[kudhru@node... ...]` is an interactive compute job.
+
+Steps 1, 2, 3, and 6 run directly and must be run on an interactive compute node. Steps 4, 5, and 7 through 13 submit their own Slurm jobs and should be started from the login node.
 
 ## Models
 
@@ -20,17 +25,13 @@ GLM-4.7-Flash and Kimi-Linear are smaller replacements for the GLM-5.2 and Kimi-
 
 ## One-time setup on Sharanga
 
-Define the scratch location for the installation session:
+### A. Paste on the login node
+
+Define the scratch location and start an interactive compute shell:
 
 ```bash
 export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
-```
-
-Clone or copy the repository directly into `$ARNAVSCRATCH`. The expected location of this README is `$ARNAVSCRATCH/src/README.md`.
-
-Sharanga requires package installation to run inside an interactive Slurm job. Start one from the login node:
-
-```bash
+cd "$ARNAVSCRATCH/src"
 srun --partition=compute \
   --nodes=1 \
   --ntasks=1 \
@@ -40,7 +41,11 @@ srun --partition=compute \
   --pty bash -l
 ```
 
-Inside the interactive job, create the Python environment:
+Wait for the prompt to change from `hpc01` to `node...`.
+
+### B. Paste on the compute node
+
+Create the Python environment:
 
 ```bash
 export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
@@ -71,30 +76,11 @@ python -m pip install --upgrade pip
 python -m pip install -e ".[local]"
 ```
 
-The moved `.venv-python36` directory is only a backup. You can delete it after the new environment works.
+The moved `.venv-python36` directory is only a backup. You can delete it after the new environment works. Stay in the compute shell and continue with Steps 1, 2, and 3 below.
 
-Use the same scratch location for model files:
+## Repeat after every login
 
-```bash
-export HF_HOME="$ARNAVSCRATCH/huggingface"
-mkdir -p "$HF_HOME"
-```
-
-Set the OpenRouter key before submitting GPT or Claude jobs:
-
-```bash
-export OPENROUTER_API_KEY="replace-with-your-key"
-```
-
-Leave the interactive installation job after setup:
-
-```bash
-exit
-```
-
-## Repeat after every login or new shell
-
-Run this complete block whenever you log in again or open a new interactive shell. You only need to run it once in that shell, not before every Python command.
+Paste this block on the login node whenever you log in again. It prepares the shell for commands that submit experiment jobs:
 
 ```bash
 export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
@@ -116,6 +102,34 @@ export OPENROUTER_API_KEY="replace-with-your-key"
 
 You do not need the OpenRouter key for Qwen, GLM, or Kimi. Slurm receives the environment values that are set when you submit the job.
 
+## Start an interactive compute shell again
+
+Steps 1, 2, 3, and 6 require an interactive compute shell. If your prompt says `hpc01`, paste:
+
+```bash
+srun --partition=compute \
+  --nodes=1 \
+  --ntasks=1 \
+  --cpus-per-task=8 \
+  --mem=32G \
+  --time=02:00:00 \
+  --pty bash -l
+```
+
+After the prompt changes to `node...`, paste:
+
+```bash
+export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
+export PIP_CACHE_DIR="$ARNAVSCRATCH/cache/pip"
+export HF_HOME="$ARNAVSCRATCH/huggingface"
+cd "$ARNAVSCRATCH/src"
+spack load python/wikzev7
+source .venv/bin/activate
+python --version
+```
+
+The last command must print Python 3.10.8.
+
 ## Repeat after every submitted job
 
 Each experiment command submits one job and then returns to the terminal. Check the queue:
@@ -134,6 +148,8 @@ Do not submit the next experiment command until the previous job has finished.
 
 ## Step 1: prepare and check the Sudoku data
 
+Run this on the interactive compute node. If your prompt says `hpc01`, first use the two copy-and-paste blocks under **Start an interactive compute shell again**.
+
 ```bash
 python 01_prepare_data.py
 ```
@@ -148,11 +164,13 @@ python 01_prepare_data.py --status
 
 ## Step 2: download the local models
 
+Stay on the interactive compute node and run:
+
 ```bash
 python 02_download_models.py
 ```
 
-Existing downloaded files are reused. Verify them later without downloading:
+Existing downloaded files are reused. If the interactive allocation ends during a download, start another interactive compute shell and run the same command again. Verify the downloads later without downloading:
 
 ```bash
 python 02_download_models.py --verify-only
@@ -160,11 +178,21 @@ python 02_download_models.py --verify-only
 
 ## Step 3: check the complete setup
 
+Stay on the interactive compute node and run:
+
 ```bash
 python 03_check_setup.py
 ```
 
 Every item should print `READY`.
+
+Return to the login node:
+
+```bash
+exit
+```
+
+After the prompt changes back to `hpc01`, paste the block under **Repeat after every login** before continuing with Step 4.
 
 ## Step 4: qualify every model
 
@@ -196,10 +224,16 @@ The pilot uses 60 puzzles and four representations. Pilot puzzles are not used i
 
 ## Step 6: freeze the reduced protocol
 
-Run this only after all five pilot jobs are complete:
+Run this only after all five pilot jobs are complete. From `hpc01`, use the two blocks under **Start an interactive compute shell again**. Then run this on the compute node:
 
 ```bash
 python 06_freeze_protocol.py
+```
+
+Return to the login node when it finishes:
+
+```bash
+exit
 ```
 
 This freezes these deterministic samples:
