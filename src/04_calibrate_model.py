@@ -61,12 +61,11 @@ def main() -> int:
     calibration_pool = tuple(record for record in records if record.puzzle_id not in reserved)
     selected = select_stratified(
         calibration_pool,
-        10,
+        5,
         seed=config.master_seed,
         namespace="configuration-readiness-v1",
     )
-    puzzles = tuple(record for record in selected if record.difficulty == "easy")[:5]
-    puzzles += tuple(record for record in selected if record.difficulty == "hard")
+    puzzles = selected
 
     requests = tuple(
         sudoku_request(
@@ -96,8 +95,12 @@ def calibration_status(config, model):
     if len(values) != 15:
         return None
     easy = [value for value in values if value["request"]["metadata"]["difficulty"] == "easy"]
+    medium = [
+        value for value in values if value["request"]["metadata"]["difficulty"] == "medium"
+    ]
     hard = [value for value in values if value["request"]["metadata"]["difficulty"] == "hard"]
     easy_correct = sum(value["evaluation"]["outcome"] == "CORRECT" for value in easy)
+    medium_correct = sum(value["evaluation"]["outcome"] == "CORRECT" for value in medium)
     hard_correct = sum(value["evaluation"]["outcome"] == "CORRECT" for value in hard)
     operational_failures = sum(
         value["evaluation"]["outcome"] == "NOT_EVALUATED" for value in values
@@ -106,10 +109,17 @@ def calibration_status(config, model):
         "requests": len(values),
         "easy_correct": easy_correct,
         "easy_total": len(easy),
+        "medium_correct": medium_correct,
+        "medium_total": len(medium),
         "hard_correct": hard_correct,
         "hard_total": len(hard),
         "operational_failures": operational_failures,
-        "ready": easy_correct >= 4 and hard_correct >= 2 and operational_failures == 0,
+        "ready": (
+            easy_correct >= 4
+            and medium_correct >= 2
+            and hard_correct >= 1
+            and operational_failures == 0
+        ),
     }
 
 

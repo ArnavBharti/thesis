@@ -1,12 +1,12 @@
 {
-  "run_id": "thesis-confirmatory-lean-v6",
+  "run_id": "thesis-confirmatory-compact-v1",
   "dataset_path": "../data/puzzles.jsonl",
   "output_directory": "../experiment_outputs",
   "master_seed": 20260826,
-  "pilot_per_tier": 20,
-  "main_per_tier": 50,
-  "mechanism_per_tier": 10,
-  "ablation_per_tier": 5,
+  "pilot_per_tier": 5,
+  "main_per_tier": 20,
+  "mechanism_per_tier": 5,
+  "ablation_per_tier": 3,
   "experiment_shards": {
     "exp2": 1,
     "exp4": 6,
@@ -17,9 +17,9 @@
     "exp10": 1
   },
   "inference": {
-    "max_new_tokens": 28672,
-    "temperature": 0.0,
-    "top_p": 1.0,
+    "max_new_tokens": 16384,
+    "temperature": 0.6,
+    "top_p": 0.95,
     "seed": 20260826
   },
   "retry": {
@@ -30,71 +30,9 @@
   },
   "models": [
     {
-      "name": "qwen-local",
-      "model_id": "Qwen/Qwen3.8-27B",
-      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
-      "backend": "vllm",
-      "dtype": "bfloat16",
-      "tensor_parallel_size": 1,
-      "local_files_only": true,
-      "slurm": {
-        "partition": "gpu_h100_4",
-        "gpus": 1,
-        "cpus": 12,
-        "memory": "192G",
-        "time_limit": "0-23:30"
-      },
-      "extra": {
-        "chat_template": {
-          "reasoning_effort": "medium"
-        },
-        "reasoning_output": "think_tags",
-        "protocol": {
-          "cohort_role": "exact open-weight model from the outline"
-        },
-        "vllm": {
-          "max_model_len": 32768,
-          "gpu_memory_utilization": 0.9
-        }
-      },
-      "enabled": true
-    },
-    {
-      "name": "glm-flash-local",
-      "model_id": "zai-org/GLM-4.7-Flash",
-      "revision": "7dd20894a642a0aa287e9827cb1a1f7f91386b67",
-      "backend": "vllm",
-      "dtype": "bfloat16",
-      "tensor_parallel_size": 2,
-      "trust_remote_code": true,
-      "local_files_only": true,
-      "slurm": {
-        "partition": "gpu_h100_4",
-        "gpus": 2,
-        "cpus": 12,
-        "memory": "256G",
-        "time_limit": "0-23:30"
-      },
-      "extra": {
-        "chat_template": {
-          "enable_thinking": false
-        },
-        "protocol": {
-          "cohort_role": "local GLM-family replacement",
-          "replaces_outline_model": "zai-org/GLM-5.2",
-          "replacement_reason": "the exact checkpoint is not locally deployable on available Sharanga nodes"
-        },
-        "vllm": {
-          "max_model_len": 32768,
-          "gpu_memory_utilization": 0.9
-        }
-      },
-      "enabled": true
-    },
-    {
-      "name": "kimi-linear-local",
-      "model_id": "moonshotai/Kimi-Linear-48B-A3B-Instruct",
-      "revision": "e1df551a447157d4658b573f9a695d57658590e9",
+      "name": "mistral-small-4-local",
+      "model_id": "mistralai/Mistral-Small-4-119B-2603",
+      "revision": "a11f36bebf709121056b1dbcc943d1c6afbe494d",
       "backend": "vllm",
       "dtype": "bfloat16",
       "tensor_parallel_size": 2,
@@ -108,14 +46,57 @@
         "time_limit": "0-23:30"
       },
       "extra": {
+        "chat_template": {"reasoning_effort": "high"},
+        "reasoning_output": "mistral_think_tags",
+        "bounded_final": {
+          "mode": "close_think",
+          "reasoning_tokens": 15360,
+          "final_tokens": 1024
+        },
         "protocol": {
-          "cohort_role": "local Kimi-family replacement",
-          "replaces_outline_model": "moonshotai/Kimi-K3",
-          "replacement_reason": "the exact 2.8T-parameter model is not locally deployable on available Sharanga nodes"
+          "cohort_role": "strong open-weight reasoning model"
         },
         "vllm": {
           "max_model_len": 32768,
-          "gpu_memory_utilization": 0.9
+          "gpu_memory_utilization": 0.8,
+          "attention_backend": "FLASH_ATTN_MLA"
+        }
+      },
+      "enabled": true
+    },
+    {
+      "name": "nemotron-local",
+      "model_id": "nvidia/Llama-3_3-Nemotron-Super-49B-v1_5-FP8",
+      "revision": "04822723e77e036ddf2d24e83c6d469d3b009252",
+      "backend": "vllm",
+      "dtype": "bfloat16",
+      "tensor_parallel_size": 1,
+      "trust_remote_code": true,
+      "local_files_only": true,
+      "slurm": {
+        "partition": "gpu_h100_4",
+        "gpus": 1,
+        "cpus": 12,
+        "memory": "192G",
+        "time_limit": "0-23:30"
+      },
+      "extra": {
+        "reasoning_output": "think_tags",
+        "bounded_final": {
+          "mode": "close_think",
+          "reasoning_tokens": 15360,
+          "final_tokens": 1024
+        },
+        "protocol": {
+          "cohort_role": "efficient Llama-family open-weight reasoning model",
+          "replaces_outline_model": "Qwen/Qwen3.8-27B",
+          "replacement_reason": "Qwen3.8-27B failed the held-out hard-puzzle readiness calibration"
+        },
+        "vllm": {
+          "max_model_len": 32768,
+          "gpu_memory_utilization": 0.9,
+          "enforce_eager": true,
+          "quantization": "modelopt"
         }
       },
       "enabled": true

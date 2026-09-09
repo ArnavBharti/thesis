@@ -60,21 +60,21 @@ class NumberedWorkflowTests(unittest.TestCase):
             self.assertEqual(syntax.returncode, 0, syntax.stderr)
 
     def test_reduced_call_and_job_counts_are_frozen(self) -> None:
-        qualification = 5 * 5
-        pilot = 60 * 4 * 5
-        main = 150 * 9 * 5
-        input_output = 30 * 7 * 5
-        token_length = 30 * 3 * 3
-        binding = 30 * 8 * 5
-        ablations = 15 * 19 * 5
-        revision_minimum = 15 * 3 * 3 * 5
-        revision_maximum = 15 * 3 * 4 * 5
+        qualification = 5 * 4
+        pilot = 15 * 4 * 4
+        main = 60 * 9 * 4
+        input_output = 15 * 7 * 4
+        token_length = 15 * 3 * 2
+        binding = 15 * 8 * 4
+        ablations = 9 * 19 * 4
+        revision_minimum = 9 * 3 * 3 * 4
+        revision_maximum = 9 * 3 * 4 * 4
         fixed = qualification + pilot + main + input_output + token_length + binding + ablations
-        self.assertEqual(fixed + revision_minimum, 12_595)
-        self.assertEqual(fixed + revision_maximum, 12_820)
+        self.assertEqual(fixed + revision_minimum, 4_418)
+        self.assertEqual(fixed + revision_maximum, 4_526)
 
-        jobs = 5 + 5 + (6 * 5) + 5 + 3 + 5 + 5 + 5 + 5
-        self.assertEqual(jobs, 68)
+        jobs = 4 + 4 + (6 * 4) + 4 + 2 + 4 + 4 + 4 + 4
+        self.assertEqual(jobs, 54)
 
     def test_qualification_pilot_and_freeze_execute_and_rerun_cleanly(self) -> None:
         records = read_records(ROOT / "data" / "puzzles.jsonl")

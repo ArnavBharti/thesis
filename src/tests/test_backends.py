@@ -1,7 +1,7 @@
 import unittest
 
 from lib.config import InferenceConfig, ModelConfig, RetryConfig
-from lib.models import CharacterTokenizer, StaticBackend, vllm_runtime_options
+from lib.models import CharacterTokenizer, StaticBackend
 from lib.records import Message
 
 
@@ -22,18 +22,6 @@ class BackendTests(unittest.TestCase):
         tokenizer = CharacterTokenizer()
         self.assertEqual(tokenizer.encode("α"), [ord("α")])
         self.assertEqual(tokenizer.identity, "character-tokenizer-v1")
-
-    def test_qwen_uses_triton_gdn_without_changing_frozen_config(self) -> None:
-        model = ModelConfig(
-            name="qwen-local",
-            model_id="Qwen/Qwen3.8-27B",
-            backend="vllm",
-            extra={"vllm": {"max_model_len": 32768}},
-        )
-        self.assertNotIn("gdn_prefill_backend", model.extra["vllm"])
-        options = vllm_runtime_options(model)
-        self.assertEqual(options["gdn_prefill_backend"], "triton")
-        self.assertEqual(options["max_num_seqs"], 1)
 
 
 if __name__ == "__main__":

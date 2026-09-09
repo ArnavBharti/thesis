@@ -11,6 +11,7 @@ local = [
   "accelerate>=1.10",
   "cuda-toolkit[nvcc]==13.0.3; sys_platform == 'linux'",
   "huggingface-hub>=0.34",
+  "mistral-common>=1.11",
   "torch>=2.6",
   "transformers>=4.56",
   "vllm==0.28.0; sys_platform == 'linux'"

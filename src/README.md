@@ -1,631 +1,377 @@
 # Sudoku representation experiments
 
-This project tests whether language models can still solve the same Sudoku when digits are replaced by other symbols.
+This project tests whether a language model can solve the same 9x9 Sudoku when the values are renamed with different symbols.
 
-On Sharanga, the repository should be located at `/scratch/kudhru/arnavbharti`. Run all experiment commands from `/scratch/kudhru/arnavbharti/src`. The numbered Python files contain the experiment steps. Shared model, Sudoku, evaluation, storage, and Slurm code is in `lib/`.
+All commands assume the repository is `/scratch/kudhru/arnavbharti/src`. Every numbered script is safe to run again: completed requests are reused and active Slurm jobs are not submitted twice.
 
-The shell prompt tells you where you are:
+## Models and sample sizes
 
-- `[kudhru@hpc01 ...]` is the login node.
-- `[kudhru@node... ...]` is an interactive compute job.
+| Script name | Model | Execution |
+|---|---|---|
+| `mistral-small-4-local` | Mistral Small 4 119B A6B | 2 H200 GPUs |
+| `nemotron-local` | Llama-3.3-Nemotron-Super-49B-v1.5 FP8 | 1 H100 GPU |
+| `gpt-5.6-terra-openrouter` | GPT | OpenRouter |
+| `claude-sonnet-5-openrouter` | Claude | OpenRouter |
 
-Steps 1, 2, 3, and 6 run directly and must be run on an interactive compute node. Steps 4, 5, and 7 through 13 submit their own Slurm jobs and should be started from the login node.
+- Calibration: 5 easy + 5 medium + 5 hard Arabic puzzles.
+- Pilot: 5 + 5 + 5 puzzles in four representations.
+- Main benchmark: 20 + 20 + 20 puzzles in nine representations.
+- Mechanism experiments: 5 puzzles per difficulty.
+- Exploratory ablations: 3 puzzles per difficulty.
 
-## Models
+The main benchmark makes `60 x 9 x 4 = 2,160` calls. The complete workflow makes approximately 4,418 to 4,526 calls before retries.
 
-| Script name | Execution |
-|---|---|
-| `qwen-local` | Qwen3.8-27B on 1 H100 |
-| `glm-flash-local` | GLM-4.7-Flash on 2 H100s |
-| `kimi-linear-local` | Kimi-Linear-48B-A3B on 2 H200s |
-| `gpt-5.6-terra-openrouter` | OpenAI through OpenRouter |
-| `claude-sonnet-5-openrouter` | Anthropic through OpenRouter |
-
-GLM-4.7-Flash and Kimi-Linear are smaller replacements for the GLM-5.2 and Kimi-K3 models named in the original outline. Report their exact names in the paper.
-
-## One-time setup on Sharanga
-
-### A. Paste on the login node
-
-Define the scratch location and start an interactive compute shell:
-
-```bash
-export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
-cd "$ARNAVSCRATCH/src"
-srun --partition=compute \
-  --nodes=1 \
-  --ntasks=1 \
-  --cpus-per-task=8 \
-  --mem=32G \
-  --time=02:00:00 \
-  --pty bash -l
-```
-
-Wait for the prompt to change from `hpc01` to `node...`.
-
-### B. Paste on the compute node
-
-Create the Python environment:
-
-```bash
-export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
-export PIP_CACHE_DIR="$ARNAVSCRATCH/cache/pip"
-export HF_HOME="$ARNAVSCRATCH/huggingface"
-mkdir -p "$PIP_CACHE_DIR" "$HF_HOME"
-cd "$ARNAVSCRATCH/src"
-spack unload --all
-spack load anaconda3/lddgbyw
-python3 -c "import sqlite3, sys; assert sys.version_info >= (3, 10); print(sys.version); print('SQLite', sqlite3.sqlite_version)"
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -e ".[local]"
-```
-
-The check must print Python 3.10 or newer and an SQLite version. Sharanga's standalone Python 3.10 build has no `_sqlite3` module, so do not use `spack load python/wikzev7` for this project.
-
-If `.venv` was created with Python 3.6 or with `python/wikzev7`, replace it before installing packages:
-
-```bash
-deactivate
-mv .venv .venv-without-sqlite
-spack unload --all
-spack load anaconda3/lddgbyw
-python3 -c "import sqlite3, sys; assert sys.version_info >= (3, 10); print(sys.version); print('SQLite', sqlite3.sqlite_version)"
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -e ".[local]"
-```
-
-The moved `.venv-without-sqlite` directory is only a backup. You can delete it after the new environment works. The model downloads under `$HF_HOME` are separate and do not need to be downloaded again. Stay in the compute shell and continue with Steps 1, 2, and 3 below.
+Run GPU jobs one at a time. Wait for each job before submitting the next. Never run the full benchmark for a model that fails calibration.
 
 ## Repeat after every login
 
-Paste this block on the login node whenever you log in again. It prepares the shell for commands that submit experiment jobs:
+Paste this on the login node:
 
 ```bash
 export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
-export PIP_CACHE_DIR="$ARNAVSCRATCH/cache/pip"
-export HF_HOME="$ARNAVSCRATCH/huggingface"
-cd "$ARNAVSCRATCH/src"
+export PIP_CACHE_DIR="/scratch/kudhru/arnavbharti/cache/pip"
+export HF_HOME="/scratch/kudhru/arnavbharti/huggingface"
+cd "/scratch/kudhru/arnavbharti/src"
+git pull origin main --ff-only
 spack unload --all
 spack load anaconda3/lddgbyw
 source .venv/bin/activate
 python -c "import sqlite3, sys; assert sys.version_info >= (3, 10); print(sys.version); print('SQLite', sqlite3.sqlite_version)"
 ```
 
-The last command must print Python 3.10 or newer and an SQLite version, and the prompt should begin with `(.venv)`. Do not run a numbered script from the login node until all checks are true.
+Define this helper after each login. It submits one job, waits for that exact job ID, and prints the final Slurm state:
 
-Before submitting a GPT or Claude job in that shell, also run:
+```bash
+run_and_wait() {
+  output=$("$@" 2>&1)
+  command_status=$?
+  printf '%s\n' "$output"
+  job_id=$(printf '%s\n' "$output" | awk '/Submitted one job:/ {print $NF}' | tail -n 1)
+  if [ -z "$job_id" ]; then
+    return "$command_status"
+  fi
+  while squeue --noheader --jobs "$job_id" | grep -q .; do
+    squeue --noheader --jobs "$job_id" --format='%i %T %M/%l %R'
+    sleep 60
+  done
+  sacct -j "$job_id" --format=JobID,JobName,State,Elapsed,ExitCode
+}
+```
+
+Commands written as `run_and_wait python ...` can safely be pasted as one complete block. The next command starts only after the previous job leaves the queue.
+
+Before an OpenRouter job, also run:
 
 ```bash
 export OPENROUTER_API_KEY="replace-with-your-key"
 ```
 
-You do not need the OpenRouter key for Qwen, GLM, or Kimi. Slurm receives the environment values that are set when you submit the job.
+## One-time Python setup
 
-## Start an interactive compute shell again
-
-Steps 1, 2, 3, and 6 require an interactive compute shell. If your prompt says `hpc01`, paste:
-
-```bash
-srun --partition=compute \
-  --nodes=1 \
-  --ntasks=1 \
-  --cpus-per-task=8 \
-  --mem=32G \
-  --time=02:00:00 \
-  --pty bash -l
-```
-
-After the prompt changes to `node...`, paste:
+On the login node:
 
 ```bash
 export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
-export PIP_CACHE_DIR="$ARNAVSCRATCH/cache/pip"
-export HF_HOME="$ARNAVSCRATCH/huggingface"
-cd "$ARNAVSCRATCH/src"
+cd "/scratch/kudhru/arnavbharti/src"
+git pull origin main --ff-only
+srun --partition=compute --nodes=1 --ntasks=1 --cpus-per-task=8 --mem=32G --time=02:00:00 --pty bash -l
+```
+
+On the compute node:
+
+```bash
+export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
+export PIP_CACHE_DIR="/scratch/kudhru/arnavbharti/cache/pip"
+export HF_HOME="/scratch/kudhru/arnavbharti/huggingface"
+cd "/scratch/kudhru/arnavbharti/src"
 spack unload --all
 spack load anaconda3/lddgbyw
+python3 -m venv .venv
 source .venv/bin/activate
-python -c "import sqlite3, sys; assert sys.version_info >= (3, 10); print(sys.version); print('SQLite', sqlite3.sqlite_version)"
+python -m pip install --upgrade pip
+python -m pip install -e ".[local]"
+python -m unittest discover -s tests -v
 ```
 
-The last command must print Python 3.10 or newer and an SQLite version.
-
-## Repeat after every submitted job
-
-Each experiment command submits one job and then returns to the terminal. Check the queue:
+If `.venv` already works, do not recreate it. Run only:
 
 ```bash
-squeue -u "$USER"
+source .venv/bin/activate
+python -m pip install -e ".[local]"
+python -m unittest discover -s tests -v
 ```
 
-Wait until the submitted group is no longer listed. Then check what completed and which command comes next:
+## Delete old downloaded weights
+
+Old result files are useful development evidence. Do not delete `experiment_outputs/`.
+
+First inspect the exact old cache directories:
 
 ```bash
-python status.py
+du -sh \
+  /scratch/kudhru/arnavbharti/huggingface/hub/models--Qwen--Qwen3.8-27B \
+  /scratch/kudhru/arnavbharti/huggingface/hub/models--zai-org--GLM-4.7-Flash \
+  /scratch/kudhru/arnavbharti/huggingface/hub/models--moonshotai--Kimi-Linear-48B-A3B-Instruct
 ```
 
-Do not start the next step, or the next Step 7 part, until the current group has finished.
+If those paths are correct, delete exactly those recoverable downloads:
 
-## Which jobs can run together
+```bash
+rm -rf -- \
+  /scratch/kudhru/arnavbharti/huggingface/hub/models--Qwen--Qwen3.8-27B \
+  /scratch/kudhru/arnavbharti/huggingface/hub/models--zai-org--GLM-4.7-Flash \
+  /scratch/kudhru/arnavbharti/huggingface/hub/models--moonshotai--Kimi-Linear-48B-A3B-Instruct
+```
 
-The commands in one allowed group may be pasted together. Each command still creates a separate Slurm job.
+If the obsolete Python backup exists and the current `.venv` passes tests:
 
-| Step | Commands that may be submitted together |
-|---|---|
-| 1 | One direct command on an interactive compute node. |
-| 2 | One direct command; it downloads all three local models. |
-| 3 | One direct command on an interactive compute node. |
-| 4 calibration | Run one local calibration profile at a time. These runs are excluded from the paper results. |
-| 4 qualification | Run one local-model qualification job at a time. The two OpenRouter jobs may run together later. |
-| 5 | All five model pilot jobs, after every model has passed Step 4. |
-| 6 | One direct command, after all five pilot jobs finish. |
-| 7 | One part per model at a time: submit the five Part 1 jobs together, wait, then Part 2, and so on. |
-| 8 | All five model jobs, after Step 7 is complete. |
-| 9 | All three local-model jobs. |
-| 10 | All five model jobs. |
-| 11 | All five model jobs. |
-| 12 | All five model jobs. |
-| 13 | All five analysis jobs, after the required experiments finish. |
+```bash
+du -sh /scratch/kudhru/arnavbharti/src/.venv-without-sqlite
+rm -rf -- /scratch/kudhru/arnavbharti/src/.venv-without-sqlite
+```
 
-Do not submit different numbered steps together. For OpenRouter jobs, your account must have enough credit and rate-limit capacity for GPT and Claude to run at the same time.
+## Step 1: prepare the dataset
 
-## Step 1: prepare and check the Sudoku data
-
-Run this on the interactive compute node. If your prompt says `hpc01`, first use the two copy-and-paste blocks under **Start an interactive compute shell again**.
+Run on the interactive compute node:
 
 ```bash
 python 01_prepare_data.py
 ```
 
-The command runs the tests, keeps the existing dataset when it is valid, and independently checks all 300 puzzles. It is safe to run again.
+## Step 2: download local models
 
-Check without changing anything:
+Stay on the interactive compute node. Download one at a time:
 
 ```bash
-python 01_prepare_data.py --status
+python 02_download_models.py --model nemotron-local
 ```
 
-## Step 2: download the local models
-
-Stay on the interactive compute node and run:
-
 ```bash
-python 02_download_models.py
+python 02_download_models.py --model mistral-small-4-local
 ```
 
-Existing downloaded files are reused. If the interactive allocation ends during a download, start another interactive compute shell and run the same command again. Verify the downloads later without downloading:
+Verify the downloads:
 
 ```bash
-python 02_download_models.py --verify-only
+python 02_download_models.py --verify-only --model nemotron-local
+python 02_download_models.py --verify-only --model mistral-small-4-local
 ```
 
-## Step 3: check the complete setup
-
-Stay on the interactive compute node and run:
+## Step 3: check the setup
 
 ```bash
-python 03_check_setup.py
-```
-
-Every item should print `READY`.
-
-Return to the login node:
-
-```bash
+python 03_check_setup.py --model nemotron-local
+python 03_check_setup.py --model mistral-small-4-local
 exit
 ```
 
-After the prompt changes back to `hpc01`, paste the block under **Repeat after every login** before continuing with Step 4.
+Back on the login node, paste **Repeat after every login** again.
 
-## Step 4 calibration: choose usable local-model settings
+## Step 4A: calibrate local models
 
-Do this before starting the final Step 4 qualification. Each command submits one
-GPU job. Run one command, wait for it to finish, and inspect its result before
-submitting the next command:
+Calibration uses 15 held-out Arabic puzzles. Passing requires at least 4/5 easy, 2/5 medium, 1/5 hard, and no operational failure.
+
+Submit Nemotron, then wait:
 
 ```bash
-python 04_calibrate_model.py qwen-bounded-final
+run_and_wait python 04_calibrate_model.py nemotron-bounded
+```
+
+After it finishes, submit Mistral:
+
+```bash
+run_and_wait python 04_calibrate_model.py mistral-small-4-bounded
+```
+
+For every submitted job, replace `JOB_ID` below with the printed ID:
+
+```bash
+squeue -j JOB_ID
+sacct -j JOB_ID --format=JobID,JobName,State,Elapsed,ExitCode
+```
+
+Code 1 can mean that the accuracy threshold was missed. Read the log before treating it as an operational error.
+
+## Step 4B: qualify all models
+
+Run one command, wait for it to finish, then run the next:
+
+```bash
+run_and_wait python 04_qualify_model.py nemotron-local
 ```
 
 ```bash
-python 04_calibrate_model.py glm-bounded-final
+run_and_wait python 04_qualify_model.py mistral-small-4-local
 ```
 
 ```bash
-python 04_calibrate_model.py kimi-bounded-final
-```
-
-Each profile receives the same five easy and ten hard Arabic-digit puzzles. These
-15 puzzles are deterministically selected from data that is not used by either the
-pilot or the confirmatory main benchmark. A profile is ready when it:
-
-- solves at least 4 of 5 easy puzzles;
-- solves at least 2 of 10 hard puzzles; and
-- has no operational failures.
-
-The Qwen and GLM profiles use the sampling parameters recommended in their pinned
-model cards. They reserve 1,024 tokens for a final answer if reasoning has not
-finished after 15,360 tokens. Kimi reasons for at most 7,168 tokens and then receives
-a separate final-answer request of at most 1,024 tokens. Kimi also uses bounded
-sampling and a small repetition penalty to avoid the greedy-decoding loop observed
-during the earlier qualification. Both phases and their total token use are recorded.
-
-Calibration runs are stored under separate `configuration-calibration-v1-*` run
-IDs and must not be included in confirmatory statistics. When the usable profiles
-are known, copy their fixed settings into `config/experiments.json`, choose a new
-confirmatory `run_id`, and do not change those settings after Step 6.
-
-## Step 4: qualify every model
-
-Submit the local models one at a time. Run the first command, wait for the job to
-finish, and check its result before running the next command:
-
-```bash
-python 04_qualify_model.py qwen-local
+export OPENROUTER_API_KEY="replace-with-your-key"
+run_and_wait python 04_qualify_model.py gpt-5.6-terra-openrouter
 ```
 
 ```bash
-python 04_qualify_model.py glm-flash-local
+run_and_wait python 04_qualify_model.py claude-sonnet-5-openrouter
 ```
-
-```bash
-python 04_qualify_model.py kimi-linear-local
-```
-
-When you are ready to test the API models, these two commands may be submitted
-together:
-
-```bash
-python 04_qualify_model.py gpt-5.6-terra-openrouter
-python 04_qualify_model.py claude-sonnet-5-openrouter
-```
-
-Each model must solve all five qualification puzzles. A failed model is not silently replaced.
-Qualification uses five easy puzzles, one in each required symbol system. Hard-puzzle
-capability is measured separately in the excluded pilot instead of selecting models for
-already succeeding on the effect studied by the benchmark.
-The qualification configuration gives every model the same maximum of 28,672 generated
-tokens. Reasoning-model traces are saved, but only their final-answer channel is passed
-to the strict Sudoku parser. Qwen uses its native `medium` reasoning effort, which remains
-fixed for every Qwen condition. GLM uses its native non-thinking mode because its thinking
-mode did not reach a final-answer channel within the calibrated limit; this also remains
-fixed for every GLM condition.
 
 ## Step 5: run the pilot
 
-After all five models pass Step 4, paste all five commands together:
+Run one at a time and wait after each:
 
 ```bash
-python 05_run_pilot.py qwen-local
-python 05_run_pilot.py glm-flash-local
-python 05_run_pilot.py kimi-linear-local
-python 05_run_pilot.py gpt-5.6-terra-openrouter
-python 05_run_pilot.py claude-sonnet-5-openrouter
+run_and_wait python 05_run_pilot.py nemotron-local
+run_and_wait python 05_run_pilot.py mistral-small-4-local
+run_and_wait python 05_run_pilot.py gpt-5.6-terra-openrouter
+run_and_wait python 05_run_pilot.py claude-sonnet-5-openrouter
 ```
 
-The pilot uses 60 puzzles and four representations. Pilot puzzles are not used in the confirmatory main sample.
+## Step 6: freeze the protocol
 
-## Step 6: freeze the reduced protocol
-
-Run this only after all five pilot jobs are complete. From `hpc01`, use the two blocks under **Start an interactive compute shell again**. Then run this on the compute node:
+From the login node:
 
 ```bash
+srun --partition=compute --nodes=1 --ntasks=1 --cpus-per-task=8 --mem=32G --time=02:00:00 --pty bash -l
+```
+
+On the compute node:
+
+```bash
+export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
+export HF_HOME="/scratch/kudhru/arnavbharti/huggingface"
+cd "/scratch/kudhru/arnavbharti/src"
+spack unload --all
+spack load anaconda3/lddgbyw
+source .venv/bin/activate
 python 06_freeze_protocol.py
-```
-
-Return to the login node when it finishes:
-
-```bash
 exit
 ```
 
-This freezes these deterministic samples:
+This freezes 15 pilot puzzles, 60 different main puzzles, 15 mechanism puzzles, and 9 ablation puzzles.
 
-- Pilot: 20 puzzles per difficulty, 60 total.
-- Main benchmark: 50 different puzzles per difficulty, 150 total.
-- Mechanism experiments: 10 main puzzles per difficulty, 30 total.
-- Ablation and revision experiments: 5 main puzzles per difficulty, 15 total.
+## Step 7: main benchmark
 
-The command also writes and prints the Arabic pilot accuracy for each model. A warning means a difficulty tier is outside the planned calibration range. Keep the warning and report the observed floor or ceiling in the paper; do not silently replace puzzles after seeing confirmatory results.
-
-Do not change prompts, samples, models, or inference settings after this step. If a real protocol change is necessary, use a new `run_id` in `config/experiments.json`.
-
-## Step 7: run the main benchmark
-
-The main benchmark has six parts per model. Submit one part for all five models together. Wait for those five jobs to finish before submitting the next part.
-
-Part 1:
+Paste **Repeat after every login** first. For each model, run Parts 1 through 6 in order. Wait after every line.
 
 ```bash
-python 07_run_main_benchmark.py qwen-local --part 1
-python 07_run_main_benchmark.py glm-flash-local --part 1
-python 07_run_main_benchmark.py kimi-linear-local --part 1
-python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 1
-python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 1
+run_and_wait python 07_run_main_benchmark.py nemotron-local --part 1
+run_and_wait python 07_run_main_benchmark.py nemotron-local --part 2
+run_and_wait python 07_run_main_benchmark.py nemotron-local --part 3
+run_and_wait python 07_run_main_benchmark.py nemotron-local --part 4
+run_and_wait python 07_run_main_benchmark.py nemotron-local --part 5
+run_and_wait python 07_run_main_benchmark.py nemotron-local --part 6
 ```
-
-Part 2, after all Part 1 jobs finish:
 
 ```bash
-python 07_run_main_benchmark.py qwen-local --part 2
-python 07_run_main_benchmark.py glm-flash-local --part 2
-python 07_run_main_benchmark.py kimi-linear-local --part 2
-python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 2
-python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 2
+run_and_wait python 07_run_main_benchmark.py mistral-small-4-local --part 1
+run_and_wait python 07_run_main_benchmark.py mistral-small-4-local --part 2
+run_and_wait python 07_run_main_benchmark.py mistral-small-4-local --part 3
+run_and_wait python 07_run_main_benchmark.py mistral-small-4-local --part 4
+run_and_wait python 07_run_main_benchmark.py mistral-small-4-local --part 5
+run_and_wait python 07_run_main_benchmark.py mistral-small-4-local --part 6
 ```
-
-Part 3, after all Part 2 jobs finish:
 
 ```bash
-python 07_run_main_benchmark.py qwen-local --part 3
-python 07_run_main_benchmark.py glm-flash-local --part 3
-python 07_run_main_benchmark.py kimi-linear-local --part 3
-python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 3
-python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 3
+run_and_wait python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 1
+run_and_wait python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 2
+run_and_wait python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 3
+run_and_wait python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 4
+run_and_wait python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 5
+run_and_wait python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 6
 ```
-
-Part 4, after all Part 3 jobs finish:
 
 ```bash
-python 07_run_main_benchmark.py qwen-local --part 4
-python 07_run_main_benchmark.py glm-flash-local --part 4
-python 07_run_main_benchmark.py kimi-linear-local --part 4
-python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 4
-python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 4
+run_and_wait python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 1
+run_and_wait python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 2
+run_and_wait python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 3
+run_and_wait python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 4
+run_and_wait python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 5
+run_and_wait python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 6
 ```
 
-Part 5, after all Part 4 jobs finish:
+## Steps 8 to 12: mechanism experiments
+
+Run one line at a time and wait after each submitted job.
+
+Step 8, input/output cross:
 
 ```bash
-python 07_run_main_benchmark.py qwen-local --part 5
-python 07_run_main_benchmark.py glm-flash-local --part 5
-python 07_run_main_benchmark.py kimi-linear-local --part 5
-python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 5
-python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 5
+run_and_wait python 08_run_input_output_cross.py nemotron-local
+run_and_wait python 08_run_input_output_cross.py mistral-small-4-local
+run_and_wait python 08_run_input_output_cross.py gpt-5.6-terra-openrouter
+run_and_wait python 08_run_input_output_cross.py claude-sonnet-5-openrouter
 ```
 
-Part 6, after all Part 5 jobs finish:
+Step 9, token length for local models:
 
 ```bash
-python 07_run_main_benchmark.py qwen-local --part 6
-python 07_run_main_benchmark.py glm-flash-local --part 6
-python 07_run_main_benchmark.py kimi-linear-local --part 6
-python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 6
-python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 6
+run_and_wait python 09_run_token_length.py nemotron-local
+run_and_wait python 09_run_token_length.py mistral-small-4-local
 ```
 
-## Step 8: run the input/output experiment
-
-After all Step 7 jobs finish, paste all five commands together:
+Step 10, arbitrary binding:
 
 ```bash
-python 08_run_input_output_cross.py qwen-local
-python 08_run_input_output_cross.py glm-flash-local
-python 08_run_input_output_cross.py kimi-linear-local
-python 08_run_input_output_cross.py gpt-5.6-terra-openrouter
-python 08_run_input_output_cross.py claude-sonnet-5-openrouter
+run_and_wait python 10_run_binding.py nemotron-local
+run_and_wait python 10_run_binding.py mistral-small-4-local
+run_and_wait python 10_run_binding.py gpt-5.6-terra-openrouter
+run_and_wait python 10_run_binding.py claude-sonnet-5-openrouter
 ```
 
-Matching Arabic and Greek baseline answers are reused from Step 7, so they do not make duplicate model calls.
-
-## Step 9: run the token-length experiment
-
-This step requires exact token IDs and therefore runs only for local models. Paste all three commands together:
+Step 11, prompt and output ablations:
 
 ```bash
-python 09_run_token_length.py qwen-local
-python 09_run_token_length.py glm-flash-local
-python 09_run_token_length.py kimi-linear-local
+run_and_wait python 11_run_ablations.py nemotron-local
+run_and_wait python 11_run_ablations.py mistral-small-4-local
+run_and_wait python 11_run_ablations.py gpt-5.6-terra-openrouter
+run_and_wait python 11_run_ablations.py claude-sonnet-5-openrouter
 ```
 
-## Step 10: run the binding experiment
-
-Paste all five commands together:
+Step 12, revisions:
 
 ```bash
-python 10_run_binding.py qwen-local
-python 10_run_binding.py glm-flash-local
-python 10_run_binding.py kimi-linear-local
-python 10_run_binding.py gpt-5.6-terra-openrouter
-python 10_run_binding.py claude-sonnet-5-openrouter
+run_and_wait python 12_run_revisions.py nemotron-local
+run_and_wait python 12_run_revisions.py mistral-small-4-local
+run_and_wait python 12_run_revisions.py gpt-5.6-terra-openrouter
+run_and_wait python 12_run_revisions.py claude-sonnet-5-openrouter
 ```
 
-Three exact baseline conditions are reused from Step 7.
-
-## Step 11: run the prompt ablations
-
-Paste all five commands together:
+## Step 13: analyze results
 
 ```bash
-python 11_run_ablations.py qwen-local
-python 11_run_ablations.py glm-flash-local
-python 11_run_ablations.py kimi-linear-local
-python 11_run_ablations.py gpt-5.6-terra-openrouter
-python 11_run_ablations.py claude-sonnet-5-openrouter
+run_and_wait python 13_analyze_results.py nemotron-local
+run_and_wait python 13_analyze_results.py mistral-small-4-local
+run_and_wait python 13_analyze_results.py gpt-5.6-terra-openrouter
+run_and_wait python 13_analyze_results.py claude-sonnet-5-openrouter
 ```
 
-These 15-puzzle analyses are exploratory and should be described that way in the paper.
-
-## Step 12: run the revision experiment
-
-Paste all five commands together:
-
-```bash
-python 12_run_revisions.py qwen-local
-python 12_run_revisions.py glm-flash-local
-python 12_run_revisions.py kimi-linear-local
-python 12_run_revisions.py gpt-5.6-terra-openrouter
-python 12_run_revisions.py claude-sonnet-5-openrouter
-```
-
-Each revision condition starts from the same saved Step 7 answer. The revision branches are separate, so feedback from one branch cannot enter another branch.
-
-## Step 13: analyze each model
-
-After all required experiment jobs finish, paste all five commands together:
-
-```bash
-python 13_analyze_results.py qwen-local
-python 13_analyze_results.py glm-flash-local
-python 13_analyze_results.py kimi-linear-local
-python 13_analyze_results.py gpt-5.6-terra-openrouter
-python 13_analyze_results.py claude-sonnet-5-openrouter
-```
-
-These are small CPU jobs.
-
-## Check progress
-
-Run this at any time:
-
-```bash
-python status.py
-```
-
-For one model:
-
-```bash
-python status.py --model qwen-local
-```
-
-The script prints the next command to run.
-
-Check the Slurm queue:
+## Check status and logs
 
 ```bash
 squeue -u "$USER"
+python status.py
+python status.py --model nemotron-local
 ```
+
+For one job:
+
+```bash
+sacct -j JOB_ID --format=JobID,JobName,State,Elapsed,ExitCode
+```
+
+Follow its logs:
+
+```bash
+tail -f slurm/generated/thesis-confirmatory-compact-v1/MODEL_NAME/logs/*-JOB_ID.out
+tail -f slurm/generated/thesis-confirmatory-compact-v1/MODEL_NAME/logs/*-JOB_ID.err
+```
+
+Press `Ctrl+C` to stop following a log. It does not cancel the job.
 
 ## Safe reruns
 
-Every numbered script can be run again:
+- Completed request IDs are skipped.
+- An active job is not submitted twice.
+- An interrupted job continues from saved results.
+- Results are append-only.
+- Frozen manifests reject changed settings.
 
-- A completed step prints `SKIP`.
-- A job that is already queued or running is not submitted again.
-- An interrupted job can be submitted again with the same command.
-- Existing request IDs in append-only result files are skipped.
-- A step is marked complete only after every expected request is stored.
-- Frozen manifests prevent changed code or settings from being mixed into the same run.
-
-Preview a job without submitting it:
-
-```bash
-python 07_run_main_benchmark.py qwen-local --part 1 --dry-run
-```
-
-Ask Slurm to validate the resources without submitting:
-
-```bash
-python 07_run_main_benchmark.py qwen-local --part 1 --test-only
-```
-
-## Reduced study size
-
-The design uses approximately 12,595 to 12,820 model calls before retries. The exact Experiment 10 count depends on whether checker-guided revision is needed. The original design required approximately 27,265 to 27,715 calls.
-
-The full workflow uses 68 one-at-a-time Slurm jobs:
-
-- 5 qualification jobs.
-- 5 pilot jobs.
-- 30 main-benchmark jobs.
-- 5 input/output jobs.
-- 3 token-length jobs.
-- 5 binding jobs.
-- 5 ablation jobs.
-- 5 revision jobs.
-- 5 analysis jobs.
-
-## If vLLM reports a CUDA compiler error
-
-The generated GPU jobs automatically find the CUDA compiler installed inside
-`.venv` and put it on `PATH`. They also store vLLM, TorchInductor, and Triton
-compilation caches under `$ARNAVSCRATCH/cache`, not under your small home quota.
-The local dependency list pins the compiler to the same CUDA 13.0 release used
-by PyTorch. The jobs use vLLM's native sampler instead of FlashInfer's optional
-JIT-compiled sampler. Qwen uses the supported Triton GDN prefill backend. Since
-the executor sends one request at a time, vLLM is configured for one concurrent
-sequence instead of reserving cache and CUDA graphs for its much larger default.
-
-If the log says that the CUDA compiler and toolkit headers are incompatible,
-update the environment in an interactive compute shell. Start on the login
-node:
-
-```bash
-export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
-cd "$ARNAVSCRATCH/src"
-git pull --ff-only
-srun --partition=compute \
-  --nodes=1 \
-  --ntasks=1 \
-  --cpus-per-task=8 \
-  --mem=32G \
-  --time=02:00:00 \
-  --pty bash -l
-```
-
-After the prompt changes to `node...`, repair and verify the environment:
-
-```bash
-export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
-export PIP_CACHE_DIR="$ARNAVSCRATCH/cache/pip"
-export HF_HOME="$ARNAVSCRATCH/huggingface"
-cd "$ARNAVSCRATCH/src"
-spack unload --all
-spack load anaconda3/lddgbyw
-source .venv/bin/activate
-python -m pip install -e ".[local]"
-python 03_check_setup.py --model qwen-local
-exit
-```
-
-`CUDA compiler` must print `READY`. Back on the login node, load the environment
-and submit the failed qualification job again:
-
-```bash
-export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
-export HF_HOME="$ARNAVSCRATCH/huggingface"
-cd "$ARNAVSCRATCH/src"
-spack unload --all
-spack load anaconda3/lddgbyw
-source .venv/bin/activate
-python 04_qualify_model.py qwen-local
-```
-
-The last command replaces the generated `.sbatch` file and submits a new job.
-It does not repeat any completed requests.
-
-## Results
-
-Results are stored under:
-
-```text
-experiment_outputs/thesis-confirmatory-lean-v6/
-```
-
-Important files include:
-
-- `sample-plan.json`: frozen pilot, main, mechanism, and ablation puzzle IDs.
-- `protocol.json`: frozen global design.
-- `<model>/provenance.json`: model, software, Git, host, and GPU information.
-- `<model>/<experiment>/request-manifest.json`: exact request count and digest.
-- `<model>/<experiment>/shard-*.jsonl`: append-only raw responses and evaluations.
-- `<model>/analysis/summary.json`: final statistical summary.
-- `<model>/analysis/observations.jsonl`: analysis-ready request-level records.
-
-Do not manually edit result files.
-
-## Run tests manually
-
-```bash
-python -m unittest discover -s tests -v
-```
-
-## Sharanga documentation
-
-- [GPU jobs](https://sharanga.hpc.bits-hyderabad.ac.in/docs/faq/jobs/gpu/)
-- [GPU configuration](https://sharanga.hpc.bits-hyderabad.ac.in/docs/misc_docs/configuration/)
-- [Scratch storage](https://sharanga.hpc.bits-hyderabad.ac.in/docs/faq/storage/)
+Do not manually edit anything under `experiment_outputs/`.

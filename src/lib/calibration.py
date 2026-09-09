@@ -17,83 +17,18 @@ class CalibrationProfile:
 
 
 PROFILES = {
-    "qwen-official-thinking": CalibrationProfile(
-        name="qwen-official-thinking",
-        model_name="qwen-local",
+    "mistral-small-4-bounded": CalibrationProfile(
+        name="mistral-small-4-bounded",
+        model_name="mistral-small-4-local",
         inference=InferenceConfig(
             max_new_tokens=16384,
-            temperature=1.0,
+            temperature=0.6,
             top_p=0.95,
             seed=20260826,
         ),
         extra={
-            "chat_template": {
-                "enable_thinking": True,
-                "preserve_thinking": False,
-                "reasoning_effort": "medium",
-            },
-            "reasoning_output": "think_tags",
-            "sampling": {
-                "top_k": 20,
-                "min_p": 0.0,
-                "presence_penalty": 0.0,
-                "repetition_penalty": 1.0,
-            },
-        },
-    ),
-    "glm-official-thinking": CalibrationProfile(
-        name="glm-official-thinking",
-        model_name="glm-flash-local",
-        inference=InferenceConfig(
-            max_new_tokens=16384,
-            temperature=1.0,
-            top_p=0.95,
-            seed=20260826,
-        ),
-        extra={
-            "chat_template": {"enable_thinking": True},
-            "reasoning_output": "think_tags",
-            "sampling": {},
-        },
-    ),
-    "kimi-sampled-guarded": CalibrationProfile(
-        name="kimi-sampled-guarded",
-        model_name="kimi-linear-local",
-        inference=InferenceConfig(
-            max_new_tokens=8192,
-            temperature=0.7,
-            top_p=0.9,
-            seed=20260826,
-        ),
-        extra={
-            "sampling": {
-                "top_k": 20,
-                "repetition_penalty": 1.05,
-            },
-        },
-    ),
-    "qwen-bounded-final": CalibrationProfile(
-        name="qwen-bounded-final",
-        model_name="qwen-local",
-        inference=InferenceConfig(
-            max_new_tokens=16384,
-            temperature=1.0,
-            top_p=0.95,
-            seed=20260826,
-        ),
-        extra={
-            "chat_template": {
-                "enable_thinking": True,
-                "preserve_thinking": False,
-                "reasoning_effort": "medium",
-            },
-            "reasoning_output": "think_tags",
-            "sampling": {
-                "top_k": 20,
-                "min_p": 0.0,
-                "presence_penalty": 0.0,
-                "repetition_penalty": 1.0,
-            },
+            "chat_template": {"reasoning_effort": "high"},
+            "reasoning_output": "mistral_think_tags",
             "bounded_final": {
                 "mode": "close_think",
                 "reasoning_tokens": 15360,
@@ -101,43 +36,20 @@ PROFILES = {
             },
         },
     ),
-    "glm-bounded-final": CalibrationProfile(
-        name="glm-bounded-final",
-        model_name="glm-flash-local",
+    "nemotron-bounded": CalibrationProfile(
+        name="nemotron-bounded",
+        model_name="nemotron-local",
         inference=InferenceConfig(
             max_new_tokens=16384,
-            temperature=1.0,
+            temperature=0.6,
             top_p=0.95,
             seed=20260826,
         ),
         extra={
-            "chat_template": {"enable_thinking": True},
             "reasoning_output": "think_tags",
-            "sampling": {},
             "bounded_final": {
                 "mode": "close_think",
                 "reasoning_tokens": 15360,
-                "final_tokens": 1024,
-            },
-        },
-    ),
-    "kimi-bounded-final": CalibrationProfile(
-        name="kimi-bounded-final",
-        model_name="kimi-linear-local",
-        inference=InferenceConfig(
-            max_new_tokens=8192,
-            temperature=0.7,
-            top_p=0.9,
-            seed=20260826,
-        ),
-        extra={
-            "sampling": {
-                "top_k": 20,
-                "repetition_penalty": 1.05,
-            },
-            "bounded_final": {
-                "mode": "followup",
-                "reasoning_tokens": 7168,
                 "final_tokens": 1024,
             },
         },

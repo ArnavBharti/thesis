@@ -57,6 +57,17 @@ class ModelHelpersTests(unittest.TestCase):
         with self.assertRaises(BackendError):
             final_answer_text("answer", model)
 
+    def test_mistral_think_tags_leave_only_the_final_answer(self) -> None:
+        model = ModelConfig(
+            name="mistral",
+            model_id="model",
+            extra={"reasoning_output": "mistral_think_tags"},
+        )
+        raw = "[THINK]reasoning[/THINK]\n1 2 3"
+
+        self.assertEqual(final_answer_text(raw, model), "1 2 3")
+        self.assertEqual(final_answer_text("[THINK]unfinished", model), "")
+
     def test_model_sampling_settings_extend_frozen_inference_settings(self) -> None:
         model = ModelConfig(
             name="sampled-model",

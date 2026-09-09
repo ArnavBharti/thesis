@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Step 2: download or verify the three pinned local model snapshots."""
+"""Step 2: download or verify the two pinned local model snapshots."""
 
 from __future__ import annotations
 

@@ -15,17 +15,20 @@ ROOT = Path(__file__).resolve().parents[1]
 class ExperimentFoundationTests(unittest.TestCase):
     def test_example_configuration_loads(self) -> None:
         config = load_config(ROOT / "config" / "experiments.example.json")
-        self.assertEqual(config.run_id, "thesis-confirmatory-lean-v6")
-        self.assertEqual(config.main_per_tier, 50)
-        self.assertEqual(config.inference.max_new_tokens, 28672)
+        self.assertEqual(config.run_id, "thesis-confirmatory-compact-v1")
+        self.assertEqual(config.pilot_per_tier, 5)
+        self.assertEqual(config.main_per_tier, 20)
+        self.assertEqual(config.inference.max_new_tokens, 16384)
         self.assertTrue(config.dataset_path.is_file())
-        self.assertEqual(config.enabled_models[0].name, "qwen-local")
+        self.assertEqual(len(config.enabled_models), 4)
+        self.assertEqual(config.enabled_models[0].name, "mistral-small-4-local")
         self.assertEqual(
-            config.model("qwen-local").extra["chat_template"]["reasoning_effort"],
-            "medium",
+            config.model("mistral-small-4-local").extra["chat_template"]["reasoning_effort"],
+            "high",
         )
-        self.assertFalse(
-            config.model("glm-flash-local").extra["chat_template"]["enable_thinking"]
+        self.assertEqual(
+            config.model("nemotron-local").extra["vllm"]["quantization"],
+            "modelopt",
         )
 
     def test_only_gpt_and_claude_use_openrouter(self) -> None:

@@ -117,10 +117,10 @@ class ExperimentConfig:
     models: tuple[ModelConfig, ...]
     inference: InferenceConfig = InferenceConfig()
     retry: RetryConfig = RetryConfig()
-    pilot_per_tier: int = 20
-    main_per_tier: int = 50
-    mechanism_per_tier: int = 10
-    ablation_per_tier: int = 5
+    pilot_per_tier: int = 5
+    main_per_tier: int = 20
+    mechanism_per_tier: int = 5
+    ablation_per_tier: int = 3
     experiment_shards: dict[str, int] = field(
         default_factory=lambda: dict(DEFAULT_EXPERIMENT_SHARDS)
     )
@@ -187,10 +187,10 @@ def load_config(path: Path) -> ExperimentConfig:
             models=models,
             inference=inference,
             retry=retry,
-            pilot_per_tier=raw.get("pilot_per_tier", 20),
-            main_per_tier=raw.get("main_per_tier", 50),
-            mechanism_per_tier=raw.get("mechanism_per_tier", 10),
-            ablation_per_tier=raw.get("ablation_per_tier", 5),
+            pilot_per_tier=raw.get("pilot_per_tier", 5),
+            main_per_tier=raw.get("main_per_tier", 20),
+            mechanism_per_tier=raw.get("mechanism_per_tier", 5),
+            ablation_per_tier=raw.get("ablation_per_tier", 3),
             experiment_shards=dict(raw.get("experiment_shards", DEFAULT_EXPERIMENT_SHARDS)),
         )
     except (KeyError, TypeError, ValueError) as error:

@@ -19,14 +19,14 @@ class SamplePlanTests(unittest.TestCase):
 
     def test_reduced_samples_are_balanced_nested_and_non_overlapping(self) -> None:
         plan = build_sample_plan(self.config, self.records)
-        self.assertEqual(len(plan.pilot_ids), 60)
-        self.assertEqual(len(plan.main_ids), 150)
-        self.assertEqual(len(plan.mechanism_ids), 30)
-        self.assertEqual(len(plan.ablation_ids), 15)
+        self.assertEqual(len(plan.pilot_ids), 15)
+        self.assertEqual(len(plan.main_ids), 60)
+        self.assertEqual(len(plan.mechanism_ids), 15)
+        self.assertEqual(len(plan.ablation_ids), 9)
         self.assertTrue(set(plan.pilot_ids).isdisjoint(plan.main_ids))
         self.assertLessEqual(set(plan.mechanism_ids), set(plan.main_ids))
         self.assertLessEqual(set(plan.ablation_ids), set(plan.mechanism_ids))
-        for name, per_tier in (("pilot", 20), ("main", 50), ("mechanism", 10), ("ablation", 5)):
+        for name, per_tier in (("pilot", 5), ("main", 20), ("mechanism", 5), ("ablation", 3)):
             selected = plan.records(name, self.records)
             counts = {tier: sum(record.difficulty == tier for record in selected) for tier in ("easy", "medium", "hard")}
             self.assertEqual(counts, {"easy": per_tier, "medium": per_tier, "hard": per_tier})
@@ -47,7 +47,7 @@ class SamplePlanTests(unittest.TestCase):
             plan = build_sample_plan(config, self.records)
             freeze_sample_plan(config, plan)
             value = global_protocol(config, plan)
-            self.assertEqual(len(value["models"]), 5)
+            self.assertEqual(len(value["models"]), 4)
             path = config.output_directory / config.run_id / "protocol.json"
             freeze_json(path, value)
             verify_global_protocol(config, plan)

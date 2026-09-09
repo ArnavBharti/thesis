@@ -227,7 +227,7 @@ class VLLMBackend(InferenceBackend):
         )
         if needs_final_phase:
             if bounded["mode"] == "close_think":
-                final_prompt = prompt + raw_text + "\n</think>\n\n"
+                final_prompt = prompt + raw_text + "\n" + reasoning_closing_tag(self.model) + "\n\n"
             else:
                 followup = tuple(messages) + (
                     Message("assistant", raw_text),
@@ -397,14 +397,22 @@ def final_answer_text(raw_text: str, model: ModelConfig) -> str:
     reasoning_format = model.extra.get("reasoning_output")
     if reasoning_format is None:
         return raw_text
-    if reasoning_format != "think_tags":
+    if reasoning_format not in {"think_tags", "mistral_think_tags"}:
         raise BackendError(
             f"model {model.name}: unsupported extra.reasoning_output {reasoning_format!r}"
         )
-    closing_tag = "</think>"
+    closing_tag = reasoning_closing_tag(model)
     if closing_tag not in raw_text:
         return ""
     return raw_text.rsplit(closing_tag, 1)[1].strip()
+
+
+def reasoning_closing_tag(model: ModelConfig) -> str:
+    """Return the model family's marker that ends hidden reasoning."""
+
+    if model.extra.get("reasoning_output") == "mistral_think_tags":
+        return "[/THINK]"
+    return "</think>"
 
 
 def vllm_runtime_options(model: ModelConfig) -> dict[str, Any]:
@@ -413,8 +421,6 @@ def vllm_runtime_options(model: ModelConfig) -> dict[str, Any]:
     options = dict(model.extra.get("vllm", {}))
     # ExperimentExecutor sends one prompt per generate call.
     options.setdefault("max_num_seqs", 1)
-    if model.resolved_model_id == "Qwen/Qwen3.8-27B":
-        options.setdefault("gdn_prefill_backend", "triton")
     return options
 
 
