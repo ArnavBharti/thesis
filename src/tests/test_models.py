@@ -1,7 +1,13 @@
 import unittest
 
 from lib.config import ModelConfig
-from lib.models import BackendError, HuggingFaceTokenizerAdapter, final_answer_text
+from lib.config import InferenceConfig
+from lib.models import (
+    BackendError,
+    HuggingFaceTokenizerAdapter,
+    final_answer_text,
+    vllm_sampling_options,
+)
 from lib.records import Message
 
 
@@ -49,6 +55,35 @@ class ModelHelpersTests(unittest.TestCase):
 
         with self.assertRaises(BackendError):
             final_answer_text("answer", model)
+
+    def test_model_sampling_settings_extend_frozen_inference_settings(self) -> None:
+        model = ModelConfig(
+            name="sampled-model",
+            model_id="model",
+            extra={"sampling": {"top_k": 20, "repetition_penalty": 1.05}},
+        )
+        inference = InferenceConfig(max_new_tokens=4096, temperature=0.7, top_p=0.9, seed=7)
+
+        self.assertEqual(
+            vllm_sampling_options(model, inference),
+            {
+                "max_tokens": 4096,
+                "temperature": 0.7,
+                "top_p": 0.9,
+                "seed": 7,
+                "top_k": 20,
+                "repetition_penalty": 1.05,
+            },
+        )
+
+    def test_unknown_model_sampling_setting_is_rejected(self) -> None:
+        model = ModelConfig(
+            name="sampled-model",
+            model_id="model",
+            extra={"sampling": {"unsupported": 1}},
+        )
+        with self.assertRaises(BackendError):
+            vllm_sampling_options(model, InferenceConfig())
 
 
 if __name__ == "__main__":

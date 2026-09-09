@@ -159,7 +159,8 @@ The commands in one allowed group may be pasted together. Each command still cre
 | 1 | One direct command on an interactive compute node. |
 | 2 | One direct command; it downloads all three local models. |
 | 3 | One direct command on an interactive compute node. |
-| 4 | Run one local-model qualification job at a time. The two OpenRouter jobs may run together later. |
+| 4 calibration | Run one local calibration profile at a time. These runs are excluded from the paper results. |
+| 4 qualification | Run one local-model qualification job at a time. The two OpenRouter jobs may run together later. |
 | 5 | All five model pilot jobs, after every model has passed Step 4. |
 | 6 | One direct command, after all five pilot jobs finish. |
 | 7 | One part per model at a time: submit the five Part 1 jobs together, wait, then Part 2, and so on. |
@@ -219,6 +220,42 @@ exit
 ```
 
 After the prompt changes back to `hpc01`, paste the block under **Repeat after every login** before continuing with Step 4.
+
+## Step 4 calibration: choose usable local-model settings
+
+Do this before starting the final Step 4 qualification. Each command submits one
+GPU job. Run one command, wait for it to finish, and inspect its result before
+submitting the next command:
+
+```bash
+python 04_calibrate_model.py qwen-official-thinking
+```
+
+```bash
+python 04_calibrate_model.py glm-official-thinking
+```
+
+```bash
+python 04_calibrate_model.py kimi-sampled-guarded
+```
+
+Each profile receives the same five easy and ten hard Arabic-digit puzzles. These
+15 puzzles are deterministically selected from data that is not used by either the
+pilot or the confirmatory main benchmark. A profile is ready when it:
+
+- solves at least 4 of 5 easy puzzles;
+- solves at least 2 of 10 hard puzzles; and
+- has no operational failures.
+
+The Qwen and GLM profiles use the sampling parameters recommended in their pinned
+model cards. The Kimi profile uses bounded sampling and a small repetition penalty
+to test whether it avoids the greedy-decoding loop observed during the earlier
+qualification. Its 8,192-token limit prevents another unbounded reasoning loop.
+
+Calibration runs are stored under separate `configuration-calibration-v1-*` run
+IDs and must not be included in confirmatory statistics. When the usable profiles
+are known, copy their fixed settings into `config/experiments.json`, choose a new
+confirmatory `run_id`, and do not change those settings after Step 6.
 
 ## Step 4: qualify every model
 

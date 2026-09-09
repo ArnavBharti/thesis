@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from .config import ExperimentConfig, ModelConfig
-from .models import vllm_runtime_options
+from .models import vllm_runtime_options, vllm_sampling_options
 
 
 def collect_provenance(config: ExperimentConfig, model: ModelConfig) -> dict[str, Any]:
@@ -28,6 +28,9 @@ def collect_provenance(config: ExperimentConfig, model: ModelConfig) -> dict[str
         "tensor_parallel_size": model.tensor_parallel_size,
         "runtime_options": (
             vllm_runtime_options(model) if model.backend == "vllm" else {}
+        ),
+        "sampling_options": (
+            vllm_sampling_options(model, config.inference) if model.backend == "vllm" else {}
         ),
         "python": sys.version,
         "platform": platform.platform(),

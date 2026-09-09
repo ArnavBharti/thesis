@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 class NumberedWorkflowTests(unittest.TestCase):
     def test_every_numbered_script_has_working_help(self) -> None:
         scripts = sorted(ROOT.glob("[0-9][0-9]_*.py"))
-        self.assertEqual(len(scripts), 13)
+        self.assertEqual(len(scripts), 14)
         for script in scripts:
             result = subprocess.run(
                 [sys.executable, str(script), "--help"],
@@ -52,8 +52,8 @@ class NumberedWorkflowTests(unittest.TestCase):
             self.assertIn("export TRITON_CACHE_DIR=", text)
             self.assertIn("export FLASHINFER_WORKSPACE_BASE=", text)
             self.assertIn("site-packages/nvidia/cu*/bin/nvcc", text)
-            self.assertIn("site-packages/flashinfer/comm/fd_exchange.py", text)
-            self.assertIn("from __future__ import annotations", text)
+            self.assertNotIn("site-packages/flashinfer/comm/fd_exchange.py", text)
+            self.assertNotIn("sed -i", text)
             self.assertIn('export CUDACXX="$NVCC_PATH"', text)
             self.assertIn("export VLLM_USE_FLASHINFER_SAMPLER=0", text)
             syntax = subprocess.run(["bash", "-n", str(path)], capture_output=True, text=True)

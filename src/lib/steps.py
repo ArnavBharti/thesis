@@ -48,7 +48,7 @@ def execute_requests(
         raise ValueError(f"part must be between 1 and {parts}")
     all_requests = tuple(all_requests)
     inference_requests = tuple(inference_requests if inference_requests is not None else all_requests)
-    if step_name not in {"qualification", "exp2"}:
+    if step_name not in {"calibration", "qualification", "exp2"}:
         verify_global_protocol(config, load_sample_plan(config))
     freeze_step_requests(config, model, step_name, all_requests, notes=manifest_notes)
 

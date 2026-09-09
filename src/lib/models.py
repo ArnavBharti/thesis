@@ -206,12 +206,7 @@ class VLLMBackend(InferenceBackend):
             raise BackendError(f"vLLM could not be imported: {error}") from error
         started = time.monotonic()
         prompt = self._tokenizer_adapter.format_chat(messages)
-        parameters = SamplingParams(
-            max_tokens=self.inference.max_new_tokens,
-            temperature=self.inference.temperature,
-            top_p=self.inference.top_p,
-            seed=self.inference.seed,
-        )
+        parameters = SamplingParams(**vllm_sampling_options(self.model, self.inference))
         result = self._llm.generate([prompt], parameters, use_tqdm=False)[0]
         candidate = result.outputs[0]
         prompt_token_ids = getattr(result, "prompt_token_ids", None)
@@ -375,6 +370,36 @@ def vllm_runtime_options(model: ModelConfig) -> dict[str, Any]:
     options.setdefault("max_num_seqs", 1)
     if model.resolved_model_id == "Qwen/Qwen3.8-27B":
         options.setdefault("gdn_prefill_backend", "triton")
+    return options
+
+
+def vllm_sampling_options(
+    model: ModelConfig,
+    inference: InferenceConfig,
+) -> dict[str, Any]:
+    """Return recorded sampling settings, including model-specific calibration settings."""
+
+    options: dict[str, Any] = {
+        "max_tokens": inference.max_new_tokens,
+        "temperature": inference.temperature,
+        "top_p": inference.top_p,
+        "seed": inference.seed,
+    }
+    overrides = model.extra.get("sampling", {})
+    if not isinstance(overrides, dict):
+        raise BackendError(f"model {model.name}: extra.sampling must be an object")
+    allowed = {
+        "top_k",
+        "min_p",
+        "presence_penalty",
+        "frequency_penalty",
+        "repetition_penalty",
+    }
+    unknown = set(overrides) - allowed
+    if unknown:
+        names = ", ".join(sorted(unknown))
+        raise BackendError(f"model {model.name}: unsupported sampling settings: {names}")
+    options.update(overrides)
     return options
 
 
