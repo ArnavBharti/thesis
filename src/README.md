@@ -228,15 +228,15 @@ GPU job. Run one command, wait for it to finish, and inspect its result before
 submitting the next command:
 
 ```bash
-python 04_calibrate_model.py qwen-official-thinking
+python 04_calibrate_model.py qwen-bounded-final
 ```
 
 ```bash
-python 04_calibrate_model.py glm-official-thinking
+python 04_calibrate_model.py glm-bounded-final
 ```
 
 ```bash
-python 04_calibrate_model.py kimi-sampled-guarded
+python 04_calibrate_model.py kimi-bounded-final
 ```
 
 Each profile receives the same five easy and ten hard Arabic-digit puzzles. These
@@ -248,9 +248,11 @@ pilot or the confirmatory main benchmark. A profile is ready when it:
 - has no operational failures.
 
 The Qwen and GLM profiles use the sampling parameters recommended in their pinned
-model cards. The Kimi profile uses bounded sampling and a small repetition penalty
-to test whether it avoids the greedy-decoding loop observed during the earlier
-qualification. Its 8,192-token limit prevents another unbounded reasoning loop.
+model cards. They reserve 1,024 tokens for a final answer if reasoning has not
+finished after 15,360 tokens. Kimi reasons for at most 7,168 tokens and then receives
+a separate final-answer request of at most 1,024 tokens. Kimi also uses bounded
+sampling and a small repetition penalty to avoid the greedy-decoding loop observed
+during the earlier qualification. Both phases and their total token use are recorded.
 
 Calibration runs are stored under separate `configuration-calibration-v1-*` run
 IDs and must not be included in confirmatory statistics. When the usable profiles

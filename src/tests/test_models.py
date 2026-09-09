@@ -5,6 +5,7 @@ from lib.config import InferenceConfig
 from lib.models import (
     BackendError,
     HuggingFaceTokenizerAdapter,
+    bounded_final_options,
     final_answer_text,
     vllm_sampling_options,
 )
@@ -84,6 +85,42 @@ class ModelHelpersTests(unittest.TestCase):
         )
         with self.assertRaises(BackendError):
             vllm_sampling_options(model, InferenceConfig())
+
+    def test_bounded_final_reserves_tokens_within_total_limit(self) -> None:
+        model = ModelConfig(
+            name="bounded-model",
+            model_id="model",
+            extra={
+                "bounded_final": {
+                    "mode": "close_think",
+                    "reasoning_tokens": 3000,
+                    "final_tokens": 1000,
+                }
+            },
+        )
+        self.assertEqual(
+            bounded_final_options(model, InferenceConfig(max_new_tokens=4096)),
+            {
+                "mode": "close_think",
+                "reasoning_tokens": 3000,
+                "final_tokens": 1000,
+            },
+        )
+
+    def test_bounded_final_cannot_exceed_total_limit(self) -> None:
+        model = ModelConfig(
+            name="bounded-model",
+            model_id="model",
+            extra={
+                "bounded_final": {
+                    "mode": "followup",
+                    "reasoning_tokens": 3500,
+                    "final_tokens": 1000,
+                }
+            },
+        )
+        with self.assertRaises(BackendError):
+            bounded_final_options(model, InferenceConfig(max_new_tokens=4096))
 
 
 if __name__ == "__main__":

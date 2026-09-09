@@ -206,21 +206,66 @@ class VLLMBackend(InferenceBackend):
             raise BackendError(f"vLLM could not be imported: {error}") from error
         started = time.monotonic()
         prompt = self._tokenizer_adapter.format_chat(messages)
-        parameters = SamplingParams(**vllm_sampling_options(self.model, self.inference))
-        result = self._llm.generate([prompt], parameters, use_tqdm=False)[0]
+        sampling = vllm_sampling_options(self.model, self.inference)
+        result = self._llm.generate(
+            [prompt], SamplingParams(**_phase_sampling(sampling, self.model, "reasoning")), use_tqdm=False
+        )[0]
         candidate = result.outputs[0]
         prompt_token_ids = getattr(result, "prompt_token_ids", None)
         completion_token_ids = getattr(candidate, "token_ids", None)
         raw_text = candidate.text
         text = final_answer_text(raw_text, self.model)
+        total_prompt_tokens = len(prompt_token_ids) if prompt_token_ids is not None else None
+        total_completion_tokens = (
+            len(completion_token_ids) if completion_token_ids is not None else None
+        )
+        phases = 1
+
+        bounded = bounded_final_options(self.model, self.inference)
+        needs_final_phase = bounded is not None and (
+            bounded["mode"] == "followup" or not text
+        )
+        if needs_final_phase:
+            if bounded["mode"] == "close_think":
+                final_prompt = prompt + raw_text + "\n</think>\n\n"
+            else:
+                followup = tuple(messages) + (
+                    Message("assistant", raw_text),
+                    Message(
+                        "user",
+                        "Stop reasoning now. Return only the final answer as exactly 9 lines "
+                        "of 9 space-separated symbols.",
+                    ),
+                )
+                final_prompt = self._tokenizer_adapter.format_chat(followup)
+            final_result = self._llm.generate(
+                [final_prompt],
+                SamplingParams(**_phase_sampling(sampling, self.model, "final")),
+                use_tqdm=False,
+            )[0]
+            final_candidate = final_result.outputs[0]
+            final_prompt_ids = getattr(final_result, "prompt_token_ids", None)
+            final_completion_ids = getattr(final_candidate, "token_ids", None)
+            text = final_candidate.text.strip()
+            raw_text = raw_text + "\n\n[FINAL PHASE]\n" + final_candidate.text
+            candidate = final_candidate
+            if total_prompt_tokens is not None and final_prompt_ids is not None:
+                total_prompt_tokens += len(final_prompt_ids)
+            else:
+                total_prompt_tokens = None
+            if total_completion_tokens is not None and final_completion_ids is not None:
+                total_completion_tokens += len(final_completion_ids)
+            else:
+                total_completion_tokens = None
+            phases = 2
         return Generation(
             text=text,
             finish_reason=str(getattr(candidate, "finish_reason", "stop")),
-            prompt_tokens=len(prompt_token_ids) if prompt_token_ids is not None else None,
-            completion_tokens=len(completion_token_ids) if completion_token_ids is not None else None,
+            prompt_tokens=total_prompt_tokens,
+            completion_tokens=total_completion_tokens,
             latency_seconds=time.monotonic() - started,
             raw_text=raw_text if text != raw_text else None,
-            provider_metadata={"backend": "vllm"},
+            provider_metadata={"backend": "vllm", "generation_phases": phases},
         )
 
 
@@ -401,6 +446,67 @@ def vllm_sampling_options(
         raise BackendError(f"model {model.name}: unsupported sampling settings: {names}")
     options.update(overrides)
     return options
+
+
+def bounded_final_options(
+    model: ModelConfig,
+    inference: InferenceConfig,
+) -> dict[str, Any] | None:
+    """Validate an optional two-phase reasoning/final-answer token budget."""
+
+    value = model.extra.get("bounded_final")
+    if value is None:
+        return None
+    if not isinstance(value, dict):
+        raise BackendError(f"model {model.name}: extra.bounded_final must be an object")
+    allowed = {"mode", "reasoning_tokens", "final_tokens"}
+    unknown = set(value) - allowed
+    if unknown:
+        names = ", ".join(sorted(unknown))
+        raise BackendError(f"model {model.name}: unsupported bounded-final settings: {names}")
+    mode = value.get("mode")
+    reasoning_tokens = value.get("reasoning_tokens")
+    final_tokens = value.get("final_tokens")
+    if mode not in {"close_think", "followup"}:
+        raise BackendError(f"model {model.name}: bounded-final mode must be close_think or followup")
+    if not isinstance(reasoning_tokens, int) or not isinstance(final_tokens, int):
+        raise BackendError(f"model {model.name}: bounded-final token budgets must be integers")
+    if reasoning_tokens < 81 or final_tokens < 81:
+        raise BackendError(f"model {model.name}: bounded-final token budgets are too small")
+    if reasoning_tokens + final_tokens > inference.max_new_tokens:
+        raise BackendError(
+            f"model {model.name}: bounded-final budgets exceed max_new_tokens"
+        )
+    return {
+        "mode": mode,
+        "reasoning_tokens": reasoning_tokens,
+        "final_tokens": final_tokens,
+    }
+
+
+def _phase_sampling(
+    sampling: dict[str, Any],
+    model: ModelConfig,
+    phase: str,
+) -> dict[str, Any]:
+    bounded = bounded_final_options(model, InferenceConfig(
+        max_new_tokens=int(sampling["max_tokens"]),
+        temperature=float(sampling["temperature"]),
+        top_p=float(sampling["top_p"]),
+        seed=int(sampling["seed"]),
+    ))
+    if bounded is None:
+        return sampling
+    result = dict(sampling)
+    if phase == "reasoning":
+        result["max_tokens"] = bounded["reasoning_tokens"]
+    elif phase == "final":
+        result["max_tokens"] = bounded["final_tokens"]
+        result["temperature"] = 0.0
+        result["top_p"] = 1.0
+    else:
+        raise ValueError(f"unknown generation phase {phase!r}")
+    return result
 
 
 def build_backend(
