@@ -55,7 +55,7 @@
       "tensor_parallel_size": 2,
       "trust_remote_code": true,
       "local_files_only": true,
-      "slurm": {"partition": "gpu_h200_8", "gpus": 2, "cpus": 12, "memory": "256G", "time_limit": "0-23:30"},
+      "slurm": {"partition": "gpu_h200_8", "gpus": 2, "cpus": 8, "memory": "256G", "time_limit": "0-23:30"},
       "extra": {"protocol": {"replaces_outline_model": "moonshotai/Kimi-K3"}, "vllm": {"max_model_len": 32768, "gpu_memory_utilization": 0.9}},
       "enabled": true
     },
