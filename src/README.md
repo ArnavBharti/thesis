@@ -177,6 +177,12 @@ Submit Nemotron, then wait:
 run_and_wait python 04_calibrate_model.py nemotron-answer-only
 ```
 
+If the greedy answer-only profile fails, test the fixed sampled profile:
+
+```bash
+run_and_wait python 04_calibrate_model.py nemotron-answer-only-sampled
+```
+
 After it finishes, submit Mistral:
 
 ```bash

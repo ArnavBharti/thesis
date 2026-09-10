@@ -32,6 +32,17 @@ class CalibrationTests(unittest.TestCase):
         self.assertIsNone(model.extra["reasoning_output"])
         self.assertIsNone(model.extra["bounded_final"])
 
+    def test_nemotron_sampled_profile_changes_only_decoding_budget(self) -> None:
+        config, model = apply_calibration_profile(
+            self.config, "nemotron-answer-only-sampled"
+        )
+        self.assertEqual(config.inference.max_new_tokens, 1024)
+        self.assertEqual(config.inference.temperature, 0.6)
+        self.assertEqual(config.inference.top_p, 0.95)
+        self.assertEqual(model.extra["system_prompt"], "/no_think")
+        self.assertIsNone(model.extra["reasoning_output"])
+        self.assertIsNone(model.extra["bounded_final"])
+
 
 if __name__ == "__main__":
     unittest.main()

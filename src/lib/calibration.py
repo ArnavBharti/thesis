@@ -51,6 +51,21 @@ PROFILES = {
             "bounded_final": None,
         },
     ),
+    "nemotron-answer-only-sampled": CalibrationProfile(
+        name="nemotron-answer-only-sampled",
+        model_name="nemotron-local",
+        inference=InferenceConfig(
+            max_new_tokens=1024,
+            temperature=0.6,
+            top_p=0.95,
+            seed=20260826,
+        ),
+        extra={
+            "system_prompt": "/no_think",
+            "reasoning_output": None,
+            "bounded_final": None,
+        },
+    ),
 }
 
 
