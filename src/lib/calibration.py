@@ -36,22 +36,19 @@ PROFILES = {
             },
         },
     ),
-    "nemotron-bounded": CalibrationProfile(
-        name="nemotron-bounded",
+    "nemotron-answer-only": CalibrationProfile(
+        name="nemotron-answer-only",
         model_name="nemotron-local",
         inference=InferenceConfig(
-            max_new_tokens=16384,
-            temperature=0.6,
-            top_p=0.95,
+            max_new_tokens=256,
+            temperature=0.0,
+            top_p=1.0,
             seed=20260826,
         ),
         extra={
-            "reasoning_output": "think_tags",
-            "bounded_final": {
-                "mode": "close_think",
-                "reasoning_tokens": 15360,
-                "final_tokens": 1024,
-            },
+            "system_prompt": "/no_think",
+            "reasoning_output": None,
+            "bounded_final": None,
         },
     ),
 }

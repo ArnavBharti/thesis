@@ -44,7 +44,7 @@
       "trust_remote_code": true,
       "local_files_only": true,
       "slurm": {"partition": "gpu_h100_4", "gpus": 1, "cpus": 12, "memory": "192G", "time_limit": "0-23:30"},
-      "extra": {"reasoning_output": "think_tags", "bounded_final": {"mode": "close_think", "reasoning_tokens": 15360, "final_tokens": 1024}, "vllm": {"max_model_len": 32768, "gpu_memory_utilization": 0.9, "enforce_eager": true, "quantization": "modelopt"}},
+      "extra": {"system_prompt": "/no_think", "vllm": {"max_model_len": 32768, "gpu_memory_utilization": 0.9, "enforce_eager": true, "quantization": "modelopt"}},
       "enabled": true
     },
     {

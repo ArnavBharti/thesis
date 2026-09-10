@@ -81,12 +81,7 @@
         "time_limit": "0-23:30"
       },
       "extra": {
-        "reasoning_output": "think_tags",
-        "bounded_final": {
-          "mode": "close_think",
-          "reasoning_tokens": 15360,
-          "final_tokens": 1024
-        },
+        "system_prompt": "/no_think",
         "protocol": {
           "cohort_role": "efficient Llama-family open-weight reasoning model",
           "replaces_outline_model": "Qwen/Qwen3.8-27B",

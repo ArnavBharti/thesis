@@ -23,6 +23,15 @@ class CalibrationTests(unittest.TestCase):
             config, _ = apply_calibration_profile(self.config, name)
             self.assertLessEqual(config.inference.max_new_tokens, 16384)
 
+    def test_nemotron_uses_documented_reasoning_off_settings(self) -> None:
+        config, model = apply_calibration_profile(self.config, "nemotron-answer-only")
+        self.assertEqual(config.inference.max_new_tokens, 256)
+        self.assertEqual(config.inference.temperature, 0.0)
+        self.assertEqual(config.inference.top_p, 1.0)
+        self.assertEqual(model.extra["system_prompt"], "/no_think")
+        self.assertIsNone(model.extra["reasoning_output"])
+        self.assertIsNone(model.extra["bounded_final"])
+
 
 if __name__ == "__main__":
     unittest.main()

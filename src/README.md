@@ -174,7 +174,7 @@ Calibration uses 15 held-out Arabic puzzles. Passing requires at least 4/5 easy,
 Submit Nemotron, then wait:
 
 ```bash
-run_and_wait python 04_calibrate_model.py nemotron-bounded
+run_and_wait python 04_calibrate_model.py nemotron-answer-only
 ```
 
 After it finishes, submit Mistral:

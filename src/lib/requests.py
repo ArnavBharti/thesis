@@ -34,21 +34,28 @@ def sudoku_request(
     if metadata:
         request_metadata.update(metadata)
     puzzle = grid_from_compact(record.puzzle)
+    messages: list[Message] = []
+    system_prompt = model.extra.get("system_prompt")
+    if system_prompt is not None:
+        if not isinstance(system_prompt, str) or not system_prompt.strip():
+            raise ValueError(f"model {model.name}: extra.system_prompt must be a non-empty string")
+        messages.append(Message("system", system_prompt.strip()))
+    messages.append(
+        Message(
+            "user",
+            solve_prompt(
+                puzzle,
+                input_alphabet,
+                output_alphabet,
+                options=options,
+            ),
+        )
+    )
     return ExperimentRequest(
         experiment=experiment,
         condition=condition,
         model=model.name,
-        messages=(
-            Message(
-                "user",
-                solve_prompt(
-                    puzzle,
-                    input_alphabet,
-                    output_alphabet,
-                    options=options,
-                ),
-            ),
-        ),
+        messages=tuple(messages),
         puzzle_id=record.puzzle_id,
         input_alphabet=input_alphabet.name,
         output_alphabet=output_alphabet.name,
