@@ -183,6 +183,12 @@ If the greedy answer-only profile fails, test the fixed sampled profile:
 run_and_wait python 04_calibrate_model.py nemotron-answer-only-sampled
 ```
 
+If the model still adds prose, test grammar-constrained greedy decoding:
+
+```bash
+run_and_wait python 04_calibrate_model.py nemotron-constrained-greedy
+```
+
 After it finishes, submit Mistral:
 
 ```bash

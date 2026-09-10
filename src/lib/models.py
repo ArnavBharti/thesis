@@ -202,11 +202,19 @@ class VLLMBackend(InferenceBackend):
     def generate(self, messages: Sequence[Message]) -> Generation:
         try:
             from vllm import SamplingParams
+            from vllm.sampling_params import StructuredOutputsParams
         except ImportError as error:  # pragma: no cover
             raise BackendError(f"vLLM could not be imported: {error}") from error
         started = time.monotonic()
         prompt = self._tokenizer_adapter.format_chat(messages)
         sampling = vllm_sampling_options(self.model, self.inference)
+        structured_regex = self.model.extra.get("structured_regex")
+        if structured_regex is not None:
+            if not isinstance(structured_regex, str) or not structured_regex:
+                raise BackendError(
+                    f"model {self.model.name}: extra.structured_regex must be a non-empty string"
+                )
+            sampling["structured_outputs"] = StructuredOutputsParams(regex=structured_regex)
         result = self._llm.generate(
             [prompt], SamplingParams(**_phase_sampling(sampling, self.model, "reasoning")), use_tqdm=False
         )[0]

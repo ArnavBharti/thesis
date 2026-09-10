@@ -43,6 +43,18 @@ class CalibrationTests(unittest.TestCase):
         self.assertIsNone(model.extra["reasoning_output"])
         self.assertIsNone(model.extra["bounded_final"])
 
+    def test_nemotron_constrained_profile_requires_exact_grid_shape(self) -> None:
+        config, model = apply_calibration_profile(
+            self.config, "nemotron-constrained-greedy"
+        )
+        self.assertEqual(config.inference.temperature, 0.0)
+        regex = model.extra["structured_regex"]
+        import re
+
+        grid = "1 2 3 4 5 6 7 8 9\n" * 8 + "1 2 3 4 5 6 7 8 9"
+        self.assertIsNotNone(re.fullmatch(regex, grid))
+        self.assertIsNone(re.fullmatch(regex, "Here is the answer:\n" + grid))
+
 
 if __name__ == "__main__":
     unittest.main()

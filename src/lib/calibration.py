@@ -66,6 +66,22 @@ PROFILES = {
             "bounded_final": None,
         },
     ),
+    "nemotron-constrained-greedy": CalibrationProfile(
+        name="nemotron-constrained-greedy",
+        model_name="nemotron-local",
+        inference=InferenceConfig(
+            max_new_tokens=256,
+            temperature=0.0,
+            top_p=1.0,
+            seed=20260826,
+        ),
+        extra={
+            "system_prompt": "/no_think",
+            "reasoning_output": None,
+            "bounded_final": None,
+            "structured_regex": r"[1-9]( [1-9]){8}(\n[1-9]( [1-9]){8}){8}",
+        },
+    ),
 }
 
 
