@@ -15,6 +15,7 @@ class CalibrationProfile:
     inference: InferenceConfig
     extra: dict[str, Any]
     verify_before_answer: bool = False
+    time_limit: str | None = None
 
 
 PROFILES = {
@@ -99,6 +100,7 @@ PROFILES = {
             "structured_regex": r"[1-9]( [1-9]){8}(\n[1-9]( [1-9]){8}){8}",
         },
         verify_before_answer=True,
+        time_limit="0-00:30",
     ),
     "mistral-verified-constrained": CalibrationProfile(
         name="mistral-verified-constrained",
@@ -116,6 +118,7 @@ PROFILES = {
             "structured_regex": r"[1-9]( [1-9]){8}(\n[1-9]( [1-9]){8}){8}",
         },
         verify_before_answer=True,
+        time_limit="0-00:30",
     ),
 }
 
@@ -134,7 +137,8 @@ def apply_calibration_profile(
 
     model = config.model(profile.model_name)
     extra = _merge_extra(model.extra, profile.extra)
-    calibrated_model = replace(model, extra=extra)
+    slurm = replace(model.slurm, time_limit=profile.time_limit) if profile.time_limit else model.slurm
+    calibrated_model = replace(model, extra=extra, slurm=slurm)
     calibrated_config = replace(
         config,
         run_id=f"configuration-calibration-v1-{profile.name}",

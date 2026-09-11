@@ -65,6 +65,9 @@ class CalibrationTests(unittest.TestCase):
             self.assertEqual(profile.model_name, model_name)
             self.assertTrue(profile.verify_before_answer)
             self.assertIn("structured_regex", profile.extra)
+            self.assertEqual(profile.time_limit, "0-00:30")
+            config, model = apply_calibration_profile(self.config, name)
+            self.assertEqual(model.slurm.time_limit, "0-00:30")
 
 
 if __name__ == "__main__":
