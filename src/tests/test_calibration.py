@@ -55,6 +55,17 @@ class CalibrationTests(unittest.TestCase):
         self.assertIsNotNone(re.fullmatch(regex, grid))
         self.assertIsNone(re.fullmatch(regex, "Here is the answer:\n" + grid))
 
+    def test_verified_profiles_cover_both_local_models(self) -> None:
+        expected = {
+            "nemotron-verified-constrained": "nemotron-local",
+            "mistral-verified-constrained": "mistral-small-4-local",
+        }
+        for name, model_name in expected.items():
+            profile = PROFILES[name]
+            self.assertEqual(profile.model_name, model_name)
+            self.assertTrue(profile.verify_before_answer)
+            self.assertIn("structured_regex", profile.extra)
+
 
 if __name__ == "__main__":
     unittest.main()

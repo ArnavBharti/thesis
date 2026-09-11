@@ -11,6 +11,7 @@ from pathlib import Path
 from lib.calibration import PROFILES, apply_calibration_profile
 from lib.config import load_config
 from lib.protocol import freeze_json
+from lib.prompts import PromptOptions
 from lib.requests import sudoku_request
 from lib.results import iter_result_values
 from lib.samples import build_sample_plan
@@ -35,6 +36,7 @@ def main() -> int:
     arguments = parser.parse_args()
 
     base_config = load_config(arguments.config)
+    profile = PROFILES[arguments.profile]
     config, model = apply_calibration_profile(base_config, arguments.profile)
     existing = calibration_status(config, model)
     if existing is not None:
@@ -74,6 +76,7 @@ def main() -> int:
             model,
             record,
             ALPHABETS["arabic_digits"],
+            options=PromptOptions(verify_before_answer=profile.verify_before_answer),
             metadata={"calibration_profile": arguments.profile},
         )
         for record in puzzles

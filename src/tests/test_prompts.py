@@ -30,6 +30,16 @@ class PromptTests(unittest.TestCase):
         self.assertEqual(len(format_solution(solution, alphabet, "string81")), 81)
         self.assertEqual(len(json.loads(format_solution(solution, alphabet, "json"))), 9)
 
+    def test_verification_prompt_requires_internal_checks(self) -> None:
+        prompt = solve_prompt(
+            Grid.parse(PUZZLE),
+            ALPHABETS["arabic_digits"],
+            options=PromptOptions(verify_before_answer=True),
+        )
+        self.assertIn("Copy every given symbol into the same cell", prompt)
+        self.assertIn("Verify every given cell, row, column, and 3x3 box", prompt)
+        self.assertTrue(prompt.endswith("Return only 9 lines of 9 space-separated output symbols."))
+
 
 if __name__ == "__main__":
     unittest.main()

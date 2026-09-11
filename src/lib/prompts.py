@@ -19,6 +19,7 @@ class PromptOptions:
     mapping_style: MappingStyle = "alphabet_only"
     output_format: OutputFormat = "spaced"
     empty_marker: str = "."
+    verify_before_answer: bool = False
 
 
 def solve_prompt(
@@ -77,6 +78,14 @@ def solve_prompt(
         "Puzzle:\n"
         + encode_grid(puzzle, input_alphabet, empty_marker=options.empty_marker)
     )
+    if options.verify_before_answer:
+        parts.append(
+            "Before answering:\n"
+            "1. Copy every given symbol into the same cell.\n"
+            "2. Solve all empty cells.\n"
+            "3. Verify every given cell, row, column, and 3x3 box.\n"
+            "4. If the grid fails any check, correct it internally before answering."
+        )
     parts.append(_output_instruction(options.output_format, output_alphabet))
     return "\n\n".join(parts)
 

@@ -189,6 +189,13 @@ If the model still adds prose, test grammar-constrained greedy decoding:
 run_and_wait python 04_calibrate_model.py nemotron-constrained-greedy
 ```
 
+To test the explicit solve-and-verify prompt, run the local models one at a time:
+
+```bash
+run_and_wait python 04_calibrate_model.py nemotron-verified-constrained
+run_and_wait python 04_calibrate_model.py mistral-verified-constrained
+```
+
 After it finishes, submit Mistral:
 
 ```bash
