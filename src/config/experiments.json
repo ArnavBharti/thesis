@@ -59,7 +59,8 @@
         "vllm": {
           "max_model_len": 32768,
           "gpu_memory_utilization": 0.8,
-          "attention_backend": "FLASH_ATTN_MLA"
+          "attention_backend": "FLASH_ATTN_MLA",
+          "moe_backend": "triton"
         }
       },
       "enabled": true

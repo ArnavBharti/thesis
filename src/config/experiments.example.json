@@ -31,7 +31,7 @@
       "trust_remote_code": true,
       "local_files_only": true,
       "slurm": {"partition": "gpu_h200_8", "gpus": 2, "cpus": 8, "memory": "256G", "time_limit": "0-23:30"},
-      "extra": {"chat_template": {"reasoning_effort": "high"}, "reasoning_output": "mistral_think_tags", "bounded_final": {"mode": "close_think", "reasoning_tokens": 15360, "final_tokens": 1024}, "vllm": {"max_model_len": 32768, "gpu_memory_utilization": 0.8, "attention_backend": "FLASH_ATTN_MLA"}},
+      "extra": {"chat_template": {"reasoning_effort": "high"}, "reasoning_output": "mistral_think_tags", "bounded_final": {"mode": "close_think", "reasoning_tokens": 15360, "final_tokens": 1024}, "vllm": {"max_model_len": 32768, "gpu_memory_utilization": 0.8, "attention_backend": "FLASH_ATTN_MLA", "moe_backend": "triton"}},
       "enabled": true
     },
     {

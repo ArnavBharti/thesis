@@ -27,6 +27,10 @@ class ExperimentFoundationTests(unittest.TestCase):
             "high",
         )
         self.assertEqual(
+            config.model("mistral-small-4-local").extra["vllm"]["moe_backend"],
+            "triton",
+        )
+        self.assertEqual(
             config.model("nemotron-local").extra["vllm"]["quantization"],
             "modelopt",
         )
