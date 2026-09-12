@@ -211,6 +211,15 @@ sacct -j JOB_ID --format=JobID,JobName,State,Elapsed,ExitCode
 
 Code 1 can mean that the accuracy threshold was missed. Read the log before treating it as an operational error.
 
+If both local models score zero on the normal easy tier, run the fixed 57-clue diagnostic
+one model at a time. `VE001` is uniquely solvable and is not part of the calibration,
+pilot, or main benchmark samples.
+
+```bash
+run_and_wait python diagnose_very_easy.py nemotron-local
+run_and_wait python diagnose_very_easy.py mistral-small-4-local
+```
+
 ## Step 4B: qualify all models
 
 Run one command, wait for it to finish, then run the next:
