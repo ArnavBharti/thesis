@@ -16,7 +16,10 @@ class CalibrationTests(unittest.TestCase):
             config, model = apply_calibration_profile(self.config, name)
             self.assertEqual(model.name, profile.model_name)
             self.assertEqual(config.models, (model,))
-            self.assertEqual(config.run_id, f"configuration-calibration-v1-{name}")
+            self.assertEqual(
+                config.run_id,
+                f"configuration-calibration-v{profile.run_version}-{name}",
+            )
 
     def test_profiles_bound_output_length(self) -> None:
         for name in PROFILES:

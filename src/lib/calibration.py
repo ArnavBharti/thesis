@@ -16,6 +16,7 @@ class CalibrationProfile:
     extra: dict[str, Any]
     verify_before_answer: bool = False
     time_limit: str | None = None
+    run_version: int = 1
 
 
 PROFILES = {
@@ -119,6 +120,7 @@ PROFILES = {
         },
         verify_before_answer=True,
         time_limit="0-00:30",
+        run_version=2,
     ),
 }
 
@@ -141,7 +143,7 @@ def apply_calibration_profile(
     calibrated_model = replace(model, extra=extra, slurm=slurm)
     calibrated_config = replace(
         config,
-        run_id=f"configuration-calibration-v1-{profile.name}",
+        run_id=f"configuration-calibration-v{profile.run_version}-{profile.name}",
         inference=profile.inference,
         models=(calibrated_model,),
     )
