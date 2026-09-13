@@ -122,6 +122,28 @@ PROFILES = {
         time_limit="0-00:30",
         run_version=2,
     ),
+    "mistral-reasoning-clue-constrained": CalibrationProfile(
+        name="mistral-reasoning-clue-constrained",
+        model_name="mistral-small-4-local",
+        inference=InferenceConfig(
+            max_new_tokens=8448,
+            temperature=0.6,
+            top_p=0.95,
+            seed=20260826,
+        ),
+        extra={
+            "chat_template": {"reasoning_effort": "high"},
+            "reasoning_output": "mistral_think_tags",
+            "bounded_final": {
+                "mode": "followup",
+                "reasoning_tokens": 8192,
+                "final_tokens": 256,
+            },
+            "structured_regex": None,
+        },
+        verify_before_answer=True,
+        time_limit="0-00:30",
+    ),
 }
 
 

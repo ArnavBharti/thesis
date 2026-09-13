@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from dataclasses import asdict, replace
 from pathlib import Path
 
@@ -29,6 +30,15 @@ PROFILE_BY_MODEL = {
     "nemotron-local": "nemotron-verified-constrained",
     "mistral-small-4-local": "mistral-verified-constrained",
 }
+
+
+def clue_preserving_regex(puzzle: str) -> str:
+    """Constrain given cells literally while leaving empty cells model-selected."""
+
+    tokens = [re.escape(value) if value != "." else "[1-9]" for value in puzzle]
+    return "\\n".join(
+        " ".join(tokens[row * 9 : (row + 1) * 9]) for row in range(9)
+    )
 
 
 def diagnostic_request(model) -> ExperimentRequest:
@@ -79,6 +89,11 @@ def diagnostic_request(model) -> ExperimentRequest:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("model", choices=sorted(PROFILE_BY_MODEL))
+    parser.add_argument(
+        "--reasoning",
+        action="store_true",
+        help="use two-phase Mistral reasoning with a clue-preserving final constraint",
+    )
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--test-only", action="store_true")
@@ -86,8 +101,25 @@ def main() -> int:
     arguments = parser.parse_args()
 
     base_config = load_config(arguments.config)
-    config, model = apply_calibration_profile(base_config, PROFILE_BY_MODEL[arguments.model])
-    config = replace(config, run_id=f"configuration-diagnostic-v1-very-easy-{model.name}")
+    if arguments.reasoning and arguments.model != "mistral-small-4-local":
+        parser.error("--reasoning is supported only for mistral-small-4-local")
+    profile_name = (
+        "mistral-reasoning-clue-constrained"
+        if arguments.reasoning
+        else PROFILE_BY_MODEL[arguments.model]
+    )
+    config, model = apply_calibration_profile(base_config, profile_name)
+    if arguments.reasoning:
+        model = replace(
+            model,
+            extra={
+                **model.extra,
+                "final_structured_regex": clue_preserving_regex(PUZZLE),
+            },
+        )
+        config = replace(config, models=(model,))
+    version = 2 if arguments.reasoning else 1
+    config = replace(config, run_id=f"configuration-diagnostic-v{version}-very-easy-{model.name}")
     request = diagnostic_request(model)
 
     if not arguments.execute:
@@ -96,7 +128,12 @@ def main() -> int:
             model,
             Path(__file__),
             "very-easy-diagnostic",
-            (arguments.model, "--config", str(arguments.config.resolve())),
+            (
+                arguments.model,
+                *(('--reasoning',) if arguments.reasoning else ()),
+                "--config",
+                str(arguments.config.resolve()),
+            ),
         )
         return finish_submission(path, dry_run=arguments.dry_run, test_only=arguments.test_only)
 

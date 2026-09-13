@@ -26,6 +26,19 @@ class CalibrationTests(unittest.TestCase):
             config, _ = apply_calibration_profile(self.config, name)
             self.assertLessEqual(config.inference.max_new_tokens, 16384)
 
+    def test_mistral_reasoning_diagnostic_has_two_phase_budget(self) -> None:
+        config, model = apply_calibration_profile(
+            self.config,
+            "mistral-reasoning-clue-constrained",
+        )
+        self.assertEqual(config.inference.max_new_tokens, 8448)
+        self.assertEqual(model.extra["chat_template"]["reasoning_effort"], "high")
+        self.assertEqual(
+            model.extra["bounded_final"],
+            {"mode": "followup", "reasoning_tokens": 8192, "final_tokens": 256},
+        )
+        self.assertIsNone(model.extra["structured_regex"])
+
     def test_nemotron_uses_documented_reasoning_off_settings(self) -> None:
         config, model = apply_calibration_profile(self.config, "nemotron-answer-only")
         self.assertEqual(config.inference.max_new_tokens, 256)

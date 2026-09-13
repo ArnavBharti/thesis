@@ -246,9 +246,20 @@ class VLLMBackend(InferenceBackend):
                     ),
                 )
                 final_prompt = self._tokenizer_adapter.format_chat(followup)
+            final_sampling = _phase_sampling(sampling, self.model, "final")
+            final_structured_regex = self.model.extra.get("final_structured_regex")
+            if final_structured_regex is not None:
+                if not isinstance(final_structured_regex, str) or not final_structured_regex:
+                    raise BackendError(
+                        f"model {self.model.name}: extra.final_structured_regex must be "
+                        "a non-empty string"
+                    )
+                final_sampling["structured_outputs"] = StructuredOutputsParams(
+                    regex=final_structured_regex
+                )
             final_result = self._llm.generate(
                 [final_prompt],
-                SamplingParams(**_phase_sampling(sampling, self.model, "final")),
+                SamplingParams(**final_sampling),
                 use_tqdm=False,
             )[0]
             final_candidate = final_result.outputs[0]

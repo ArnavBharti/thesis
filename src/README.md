@@ -220,6 +220,14 @@ run_and_wait python diagnose_very_easy.py nemotron-local
 run_and_wait python diagnose_very_easy.py mistral-small-4-local
 ```
 
+To test whether disabling reasoning caused the Mistral failure, run one two-phase
+diagnostic. The first phase receives 8,192 reasoning tokens; the 256-token final
+phase is constrained to the exact grid shape and the original clues.
+
+```bash
+run_and_wait python diagnose_very_easy.py mistral-small-4-local --reasoning
+```
+
 ## Step 4B: qualify all models
 
 Run one command, wait for it to finish, then run the next:
