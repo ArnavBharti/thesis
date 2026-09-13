@@ -118,7 +118,7 @@ def main() -> int:
             },
         )
         config = replace(config, models=(model,))
-    version = 2 if arguments.reasoning else 1
+    version = 3 if arguments.reasoning else 1
     config = replace(config, run_id=f"configuration-diagnostic-v{version}-very-easy-{model.name}")
     request = diagnostic_request(model)
 

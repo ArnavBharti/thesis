@@ -30,6 +30,7 @@ PROFILES = {
             seed=20260826,
         ),
         extra={
+            "chat_template_file": "chat_template.jinja",
             "chat_template": {"reasoning_effort": "high"},
             "reasoning_output": "mistral_think_tags",
             "bounded_final": {
@@ -132,6 +133,7 @@ PROFILES = {
             seed=20260826,
         ),
         extra={
+            "chat_template_file": "chat_template.jinja",
             "chat_template": {"reasoning_effort": "high"},
             "reasoning_output": "mistral_think_tags",
             "bounded_final": {

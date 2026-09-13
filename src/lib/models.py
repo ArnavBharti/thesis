@@ -94,6 +94,26 @@ def load_huggingface_tokenizer(model: ModelConfig) -> HuggingFaceTokenizerAdapte
     )
     if tokenizer.pad_token_id is None and tokenizer.eos_token_id is not None:
         tokenizer.pad_token_id = tokenizer.eos_token_id
+    chat_template_file = model.extra.get("chat_template_file")
+    if chat_template_file is not None:
+        if (
+            not isinstance(chat_template_file, str)
+            or Path(chat_template_file).name != chat_template_file
+        ):
+            raise BackendError(
+                f"model {model.name}: extra.chat_template_file must be a filename"
+            )
+        if not model.local_files_only:
+            raise BackendError(
+                f"model {model.name}: extra.chat_template_file requires local_files_only"
+            )
+        template_path = Path(_local_snapshot_path(model)) / chat_template_file
+        try:
+            tokenizer.chat_template = template_path.read_text(encoding="utf-8")
+        except OSError as error:
+            raise BackendError(
+                f"model {model.name}: could not read chat template {template_path}"
+            ) from error
     chat_template_kwargs = model.extra.get("chat_template", {})
     if not isinstance(chat_template_kwargs, dict):
         raise BackendError(f"model {model.name}: extra.chat_template must be an object")

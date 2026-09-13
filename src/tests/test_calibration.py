@@ -33,6 +33,7 @@ class CalibrationTests(unittest.TestCase):
         )
         self.assertEqual(config.inference.max_new_tokens, 8448)
         self.assertEqual(model.extra["chat_template"]["reasoning_effort"], "high")
+        self.assertEqual(model.extra["chat_template_file"], "chat_template.jinja")
         self.assertEqual(
             model.extra["bounded_final"],
             {"mode": "followup", "reasoning_tokens": 8192, "final_tokens": 256},
