@@ -146,26 +146,28 @@ PROFILES = {
         verify_before_answer=True,
         time_limit="0-00:30",
     ),
-    "qwen3-thinking-clue-constrained": CalibrationProfile(
-        name="qwen3-thinking-clue-constrained",
-        model_name="qwen3-thinking-local",
+    "qwen-timed-reasoning": CalibrationProfile(
+        name="qwen-timed-reasoning",
+        model_name="qwen-local",
         inference=InferenceConfig(
-            max_new_tokens=8448,
-            temperature=0.6,
+            max_new_tokens=32768,
+            temperature=1.0,
             top_p=0.95,
             seed=20260826,
         ),
         extra={
             "reasoning_output": "think_tags",
-            "bounded_final": {
-                "mode": "followup",
-                "reasoning_tokens": 8192,
-                "final_tokens": 256,
+            "sampling": {
+                "top_k": 20,
+                "min_p": 0.0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
             },
+            "bounded_final": None,
             "structured_regex": None,
         },
         verify_before_answer=True,
-        time_limit="0-00:30",
+        time_limit="0-01:00",
     ),
 }
 

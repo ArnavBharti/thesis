@@ -11,26 +11,31 @@
   },
   "models": [
     {
-      "name": "qwen3-thinking-local",
-      "model_id": "Qwen/Qwen3-235B-A22B-Thinking-2507-FP8",
-      "revision": "f07f63f2bbd7540917118ebdf3812696ef303b03",
+      "name": "qwen-local",
+      "model_id": "Qwen/Qwen3.8-27B",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
       "backend": "vllm",
       "dtype": "auto",
-      "tensor_parallel_size": 4,
+      "tensor_parallel_size": 1,
       "trust_remote_code": false,
       "local_files_only": true,
       "slurm": {
-        "partition": "gpu_h200_8",
-        "gpus": 4,
-        "cpus": 16,
-        "memory": "512G",
+        "partition": "gpu_h100_4",
+        "gpus": 1,
+        "cpus": 12,
+        "memory": "192G",
         "time_limit": "0-00:30"
       },
       "extra": {
+        "chat_template": {
+          "enable_thinking": true,
+          "preserve_thinking": false,
+          "reasoning_effort": "medium"
+        },
         "reasoning_output": "think_tags",
         "vllm": {
           "max_model_len": 32768,
-          "gpu_memory_utilization": 0.85
+          "gpu_memory_utilization": 0.9
         }
       },
       "enabled": true

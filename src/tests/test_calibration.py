@@ -6,16 +6,12 @@ from lib.config import load_config
 
 
 class CalibrationTests(unittest.TestCase):
-    def test_qwen_thinking_profile_uses_bounded_followup(self) -> None:
-        _, model = apply_calibration_profile(
-            self.qwen_config, "qwen3-thinking-clue-constrained"
-        )
+    def test_qwen_timed_profile_has_no_reasoning_token_budget(self) -> None:
+        config, model = apply_calibration_profile(self.qwen_config, "qwen-timed-reasoning")
 
-        self.assertEqual(model.tensor_parallel_size, 4)
-        self.assertEqual(
-            model.extra["bounded_final"],
-            {"mode": "followup", "reasoning_tokens": 8192, "final_tokens": 256},
-        )
+        self.assertEqual(model.tensor_parallel_size, 1)
+        self.assertEqual(config.inference.max_new_tokens, 32768)
+        self.assertIsNone(model.extra["bounded_final"])
 
     def setUp(self) -> None:
         config_directory = Path(__file__).resolve().parents[1] / "config"
@@ -28,7 +24,7 @@ class CalibrationTests(unittest.TestCase):
         for name, profile in PROFILES.items():
             source = (
                 self.qwen_config
-                if profile.model_name == "qwen3-thinking-local"
+                if profile.model_name == "qwen-local"
                 else self.config
             )
             config, model = apply_calibration_profile(source, name)
@@ -43,11 +39,11 @@ class CalibrationTests(unittest.TestCase):
         for name, profile in PROFILES.items():
             source = (
                 self.qwen_config
-                if profile.model_name == "qwen3-thinking-local"
+                if profile.model_name == "qwen-local"
                 else self.config
             )
             config, _ = apply_calibration_profile(source, name)
-            self.assertLessEqual(config.inference.max_new_tokens, 16384)
+            self.assertLessEqual(config.inference.max_new_tokens, 32768)
 
     def test_mistral_reasoning_diagnostic_has_two_phase_budget(self) -> None:
         config, model = apply_calibration_profile(

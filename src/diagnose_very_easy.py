@@ -29,7 +29,7 @@ SOLUTION = "89356142747593218626184739575269483194817365213625874962478591331742
 PROFILE_BY_MODEL = {
     "nemotron-local": "nemotron-verified-constrained",
     "mistral-small-4-local": "mistral-verified-constrained",
-    "qwen3-thinking-local": "qwen3-thinking-clue-constrained",
+    "qwen-local": "qwen-timed-reasoning",
 }
 
 
@@ -110,7 +110,7 @@ def main() -> int:
         else PROFILE_BY_MODEL[arguments.model]
     )
     config, model = apply_calibration_profile(base_config, profile_name)
-    if arguments.reasoning or arguments.model == "qwen3-thinking-local":
+    if arguments.reasoning:
         model = replace(
             model,
             extra={
