@@ -29,6 +29,7 @@ SOLUTION = "89356142747593218626184739575269483194817365213625874962478591331742
 PROFILE_BY_MODEL = {
     "nemotron-local": "nemotron-verified-constrained",
     "mistral-small-4-local": "mistral-verified-constrained",
+    "qwen3-thinking-local": "qwen3-thinking-clue-constrained",
 }
 
 
@@ -102,14 +103,14 @@ def main() -> int:
 
     base_config = load_config(arguments.config)
     if arguments.reasoning and arguments.model != "mistral-small-4-local":
-        parser.error("--reasoning is supported only for mistral-small-4-local")
+        parser.error("--reasoning is needed only for mistral-small-4-local")
     profile_name = (
         "mistral-reasoning-clue-constrained"
         if arguments.reasoning
         else PROFILE_BY_MODEL[arguments.model]
     )
     config, model = apply_calibration_profile(base_config, profile_name)
-    if arguments.reasoning:
+    if arguments.reasoning or arguments.model == "qwen3-thinking-local":
         model = replace(
             model,
             extra={

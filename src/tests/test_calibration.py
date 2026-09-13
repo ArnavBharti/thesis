@@ -6,14 +6,32 @@ from lib.config import load_config
 
 
 class CalibrationTests(unittest.TestCase):
+    def test_qwen_thinking_profile_uses_bounded_followup(self) -> None:
+        _, model = apply_calibration_profile(
+            self.qwen_config, "qwen3-thinking-clue-constrained"
+        )
+
+        self.assertEqual(model.tensor_parallel_size, 4)
+        self.assertEqual(
+            model.extra["bounded_final"],
+            {"mode": "followup", "reasoning_tokens": 8192, "final_tokens": 256},
+        )
+
     def setUp(self) -> None:
-        self.config = load_config(
-            Path(__file__).resolve().parents[1] / "config" / "experiments.example.json"
+        config_directory = Path(__file__).resolve().parents[1] / "config"
+        self.config = load_config(config_directory / "experiments.example.json")
+        self.qwen_config = load_config(
+            config_directory / "stronger-model-diagnostic.json"
         )
 
     def test_profiles_are_one_model_and_have_separate_run_ids(self) -> None:
         for name, profile in PROFILES.items():
-            config, model = apply_calibration_profile(self.config, name)
+            source = (
+                self.qwen_config
+                if profile.model_name == "qwen3-thinking-local"
+                else self.config
+            )
+            config, model = apply_calibration_profile(source, name)
             self.assertEqual(model.name, profile.model_name)
             self.assertEqual(config.models, (model,))
             self.assertEqual(
@@ -22,8 +40,13 @@ class CalibrationTests(unittest.TestCase):
             )
 
     def test_profiles_bound_output_length(self) -> None:
-        for name in PROFILES:
-            config, _ = apply_calibration_profile(self.config, name)
+        for name, profile in PROFILES.items():
+            source = (
+                self.qwen_config
+                if profile.model_name == "qwen3-thinking-local"
+                else self.config
+            )
+            config, _ = apply_calibration_profile(source, name)
             self.assertLessEqual(config.inference.max_new_tokens, 16384)
 
     def test_mistral_reasoning_diagnostic_has_two_phase_budget(self) -> None:
