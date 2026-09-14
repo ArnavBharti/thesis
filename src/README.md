@@ -220,8 +220,8 @@ run_and_wait python diagnose_very_easy.py nemotron-local
 run_and_wait python diagnose_very_easy.py mistral-small-4-local
 ```
 
-For the stronger-model screen, download and verify each pinned snapshot only from an
-allocated compute node, never from the login node:
+For the stronger-model screen, manually download and verify each pinned snapshot
+after logging in. Do not submit Slurm download jobs; reserve Slurm jobs for inference:
 
 ```bash
 python 02_download_models.py --config config/stronger-model-diagnostic.json --model gpt-oss-120b-local
