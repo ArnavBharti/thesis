@@ -436,6 +436,12 @@ def final_answer_text(raw_text: str, model: ModelConfig) -> str:
     reasoning_format = model.extra.get("reasoning_output")
     if reasoning_format is None:
         return raw_text
+    if reasoning_format == "harmony_channels":
+        marker = "<|channel|>final<|message|>"
+        if marker not in raw_text:
+            return ""
+        answer = raw_text.rsplit(marker, 1)[1]
+        return answer.split("<|end|>", 1)[0].strip()
     if reasoning_format not in {"think_tags", "mistral_think_tags"}:
         raise BackendError(
             f"model {model.name}: unsupported extra.reasoning_output {reasoning_format!r}"
@@ -479,11 +485,14 @@ def vllm_sampling_options(
     if not isinstance(overrides, dict):
         raise BackendError(f"model {model.name}: extra.sampling must be an object")
     allowed = {
+        "temperature",
+        "top_p",
         "top_k",
         "min_p",
         "presence_penalty",
         "frequency_penalty",
         "repetition_penalty",
+        "skip_special_tokens",
     }
     unknown = set(overrides) - allowed
     if unknown:

@@ -68,6 +68,20 @@ class ModelHelpersTests(unittest.TestCase):
         self.assertEqual(final_answer_text(raw, model), "1 2 3")
         self.assertEqual(final_answer_text("[THINK]unfinished", model), "")
 
+    def test_harmony_channels_leave_only_the_final_answer(self) -> None:
+        model = ModelConfig(
+            name="gpt-oss",
+            model_id="model",
+            extra={"reasoning_output": "harmony_channels"},
+        )
+        raw = (
+            "<|channel|>analysis<|message|>reasoning"
+            "<|channel|>final<|message|>1 2 3<|end|>"
+        )
+
+        self.assertEqual(final_answer_text(raw, model), "1 2 3")
+        self.assertEqual(final_answer_text("unfinished reasoning", model), "")
+
     def test_model_sampling_settings_extend_frozen_inference_settings(self) -> None:
         model = ModelConfig(
             name="sampled-model",

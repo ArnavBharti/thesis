@@ -33,6 +33,115 @@
           "reasoning_effort": "medium"
         },
         "reasoning_output": "think_tags",
+        "sampling": {
+          "temperature": 1.0,
+          "top_p": 0.95,
+          "top_k": 20,
+          "min_p": 0.0,
+          "presence_penalty": 0.0,
+          "repetition_penalty": 1.0
+        },
+        "vllm": {
+          "max_model_len": 131072,
+          "gpu_memory_utilization": 0.9
+        }
+      },
+      "enabled": true
+    },
+    {
+      "name": "gpt-oss-120b-local",
+      "model_id": "openai/gpt-oss-120b",
+      "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+      "backend": "vllm",
+      "dtype": "auto",
+      "tensor_parallel_size": 1,
+      "trust_remote_code": false,
+      "local_files_only": true,
+      "slurm": {
+        "partition": "gpu_h100_4",
+        "gpus": 1,
+        "cpus": 12,
+        "memory": "192G",
+        "time_limit": "0-01:00"
+      },
+      "extra": {
+        "chat_template": {"reasoning_effort": "high"},
+        "reasoning_output": "harmony_channels",
+        "sampling": {
+          "temperature": 1.0,
+          "top_p": 1.0,
+          "skip_special_tokens": false
+        },
+        "vllm": {
+          "max_model_len": 131072,
+          "gpu_memory_utilization": 0.9
+        }
+      },
+      "enabled": true
+    },
+    {
+      "name": "qwen-3.5-122b-local",
+      "model_id": "Qwen/Qwen3.5-122B-A10B-FP8",
+      "revision": "a099dee70ccfcd8d5dda56aaa0b60cb8ecadabc9",
+      "backend": "vllm",
+      "dtype": "auto",
+      "tensor_parallel_size": 2,
+      "trust_remote_code": false,
+      "local_files_only": true,
+      "slurm": {
+        "partition": "gpu_h200_8",
+        "gpus": 2,
+        "cpus": 8,
+        "memory": "256G",
+        "time_limit": "0-01:00"
+      },
+      "extra": {
+        "chat_template": {
+          "enable_thinking": true,
+          "preserve_thinking": false,
+          "reasoning_effort": "high"
+        },
+        "reasoning_output": "think_tags",
+        "sampling": {
+          "temperature": 1.0,
+          "top_p": 0.95,
+          "top_k": 20,
+          "min_p": 0.0,
+          "presence_penalty": 1.5,
+          "repetition_penalty": 1.0
+        },
+        "vllm": {
+          "max_model_len": 131072,
+          "gpu_memory_utilization": 0.9,
+          "language_model_only": true
+        }
+      },
+      "enabled": true
+    },
+    {
+      "name": "mistral-medium-3.5-local",
+      "model_id": "mistralai/Mistral-Medium-3.5-128B",
+      "revision": "22b2b868a15677cfa6061277ed2f653d1349a9ab",
+      "backend": "vllm",
+      "dtype": "auto",
+      "tensor_parallel_size": 2,
+      "trust_remote_code": false,
+      "local_files_only": true,
+      "slurm": {
+        "partition": "gpu_h200_8",
+        "gpus": 2,
+        "cpus": 8,
+        "memory": "256G",
+        "time_limit": "0-01:00"
+      },
+      "extra": {
+        "chat_template_file": "chat_template.jinja",
+        "chat_template": {"reasoning_effort": "high"},
+        "reasoning_output": "mistral_think_tags",
+        "sampling": {
+          "temperature": 0.7,
+          "top_p": 0.95
+        },
         "vllm": {
           "max_model_len": 131072,
           "gpu_memory_utilization": 0.9

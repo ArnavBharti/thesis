@@ -220,6 +220,26 @@ run_and_wait python diagnose_very_easy.py nemotron-local
 run_and_wait python diagnose_very_easy.py mistral-small-4-local
 ```
 
+For the stronger-model screen, download and verify each pinned snapshot only from an
+allocated compute node, never from the login node:
+
+```bash
+python 02_download_models.py --config config/stronger-model-diagnostic.json --model gpt-oss-120b-local
+python 02_download_models.py --config config/stronger-model-diagnostic.json --verify-only --model gpt-oss-120b-local
+```
+
+Run one GPU job at a time. Each command uses the same held-out easy, medium, or hard
+puzzle across models and scores only the final answer channel:
+
+```bash
+run_and_wait python diagnose_timing.py gpt-oss-120b-local easy
+run_and_wait python diagnose_timing.py qwen-3.5-122b-local easy
+run_and_wait python diagnose_timing.py mistral-medium-3.5-local easy
+```
+
+Replace `easy` with `medium` or `hard` only after the preceding job finishes. GPT-OSS
+uses one H100; Qwen3.5 122B FP8 and Mistral Medium 3.5 each use two H200s.
+
 To test whether disabling reasoning caused the Mistral failure, run one two-phase
 diagnostic. The first phase receives 8,192 reasoning tokens; the 256-token final
 phase is constrained to the exact grid shape and the original clues.
