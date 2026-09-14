@@ -38,6 +38,9 @@ class TimingDiagnosticTests(unittest.TestCase):
             {model.name for model in config.enabled_models},
             set(expected),
         )
+        qwen_options = config.model("qwen-3.5-122b-local").extra["vllm"]
+        self.assertEqual(qwen_options["linear_backend"], "triton")
+        self.assertEqual(qwen_options["gdn_prefill_backend"], "triton")
 
 
 if __name__ == "__main__":

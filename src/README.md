@@ -22,6 +22,9 @@ The workflow uses exactly two open-weight local models:
 | `gpt-oss-120b-local` | `openai/gpt-oss-120b` | Harmony analysis/final channels | 1 H100, 12 CPUs, 192 GB RAM |
 | `qwen-3.5-122b-local` | `Qwen/Qwen3.5-122B-A10B-FP8` | thinking tags removed before scoring | 2 H200, 8 CPUs, 256 GB RAM |
 
+Qwen uses vLLM's Triton linear and GDN-prefill backends because the automatic
+FlashInfer FP8 kernel fails during initialization on Sharanga's H200 software stack.
+
 The choices are supported by primary documentation:
 
 - [OpenAI GPT-OSS release](https://openai.com/index/introducing-gpt-oss/) documents
