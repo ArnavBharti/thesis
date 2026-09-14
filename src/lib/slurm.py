@@ -55,6 +55,8 @@ def write_python_job(
     lines.extend(
         (
             "spack load gcc@13.2.0",
+            'GCC_LIBRARY_DIR="$(dirname "$(g++ -print-file-name=libstdc++.so.6)")"',
+            'export LD_LIBRARY_PATH="$GCC_LIBRARY_DIR${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"',
             f"cd {shlex.quote(str(ROOT))}",
             f"source {shlex.quote(str(ROOT / '.venv' / 'bin' / 'activate'))}",
             f"export HF_HOME={shlex.quote(str(ROOT.parent / 'huggingface'))}",
@@ -75,7 +77,7 @@ def write_python_job(
             '    ln -sfn "$CUDA_HOME/lib/libcudart.so.13" "$CUDA_LINK_DIR/libcudart.so"',
             '    ln -sfn "$CUDA_HOME/lib/libnvrtc.so.13" "$CUDA_LINK_DIR/libnvrtc.so"',
             '    export LIBRARY_PATH="$CUDA_LINK_DIR${LIBRARY_PATH:+:$LIBRARY_PATH}"',
-            '    export LD_LIBRARY_PATH="$CUDA_HOME/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"',
+            '    export LD_LIBRARY_PATH="$CUDA_HOME/lib:$LD_LIBRARY_PATH"',
             "fi",
             "export VLLM_USE_FLASHINFER_SAMPLER=0",
             "export VLLM_NO_USAGE_STATS=1",
