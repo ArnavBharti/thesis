@@ -146,29 +146,6 @@ PROFILES = {
         verify_before_answer=True,
         time_limit="0-00:30",
     ),
-    "qwen-timed-reasoning": CalibrationProfile(
-        name="qwen-timed-reasoning",
-        model_name="qwen-local",
-        inference=InferenceConfig(
-            max_new_tokens=131072,
-            temperature=1.0,
-            top_p=0.95,
-            seed=20260826,
-        ),
-        extra={
-            "reasoning_output": "think_tags",
-            "sampling": {
-                "top_k": 20,
-                "min_p": 0.0,
-                "presence_penalty": 0.0,
-                "repetition_penalty": 1.0,
-            },
-            "bounded_final": None,
-            "structured_regex": None,
-        },
-        verify_before_answer=True,
-        time_limit="0-01:00",
-    ),
 }
 
 

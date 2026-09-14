@@ -21,7 +21,7 @@ from lib.sudoku.representations import ALPHABETS
 from lib.workflow import model_directory
 
 ROOT = Path(__file__).resolve().parent
-DEFAULT_CONFIG = ROOT / "config" / "stronger-model-diagnostic.json"
+DEFAULT_CONFIG = ROOT / "config" / "local-models.json"
 
 
 def select_timing_puzzle(config, difficulty):
@@ -43,7 +43,7 @@ def select_timing_puzzle(config, difficulty):
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("model", nargs="?", default="qwen-local")
+    parser.add_argument("model")
     parser.add_argument("difficulty", choices=("easy", "medium", "hard"))
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     parser.add_argument("--dry-run", action="store_true")

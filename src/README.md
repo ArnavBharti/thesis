@@ -1,36 +1,74 @@
 # Sudoku representation experiments
 
-This project tests whether a language model can solve the same 9x9 Sudoku when the values are renamed with different symbols.
+This project tests whether a language model can solve the same 9x9 Sudoku when the
+values are renamed with different symbols. Only the final grid is scored. Hidden
+reasoning is stored separately and is never part of the scored answer.
 
-All commands assume the repository is `/scratch/kudhru/arnavbharti/src`. Every numbered script is safe to run again: completed requests are reused and active Slurm jobs are not submitted twice.
+All server commands assume the repository is:
+
+```text
+/scratch/kudhru/arnavbharti/src
+```
+
+The numbered scripts are idempotent: completed requests are reused, active jobs are
+not submitted twice, and interrupted runs resume from saved results.
 
 ## Models and sample sizes
 
-| Script name | Model | Execution |
-|---|---|---|
-| `mistral-small-4-local` | Mistral Small 4 119B A6B | 2 H200 GPUs |
-| `nemotron-local` | Llama-3.3-Nemotron-Super-49B-v1.5 FP8 | 1 H100 GPU |
-| `gpt-5.6-terra-openrouter` | GPT | OpenRouter |
-| `claude-sonnet-5-openrouter` | Claude | OpenRouter |
+The workflow uses exactly three open-weight local models:
 
-- Calibration: 5 easy + 5 medium + 5 hard Arabic puzzles.
-- Pilot: 5 + 5 + 5 puzzles in four representations.
-- Main benchmark: 20 + 20 + 20 puzzles in nine representations.
-- Mechanism experiments: 5 puzzles per difficulty.
-- Exploratory ablations: 3 puzzles per difficulty.
+| Script name | Pinned model | Hidden reasoning | Sharanga request |
+|---|---|---|---|
+| `gpt-oss-120b-local` | `openai/gpt-oss-120b` | Harmony analysis/final channels | 1 H100, 12 CPUs, 192 GB RAM |
+| `qwen-3.5-122b-local` | `Qwen/Qwen3.5-122B-A10B-FP8` | thinking tags removed before scoring | 2 H200, 8 CPUs, 256 GB RAM |
+| `mistral-medium-3.5-local` | `mistralai/Mistral-Medium-3.5-128B` | `[THINK]` content removed before scoring | 2 H200, 8 CPUs, 256 GB RAM |
 
-The main benchmark makes `60 x 9 x 4 = 2,160` calls. The complete workflow makes approximately 4,418 to 4,526 calls before retries.
+The choices are supported by primary documentation:
 
-Run GPU jobs one at a time. Wait for each job before submitting the next. Never run the full benchmark for a model that fails calibration.
+- [OpenAI GPT-OSS release](https://openai.com/index/introducing-gpt-oss/) documents
+  high/medium/low reasoning and single-80-GB-GPU operation.
+- [OpenAI GPT-OSS-120B documentation](https://developers.openai.com/api/docs/models/gpt-oss-120b)
+  identifies it as OpenAI's most capable open-weight model.
+- [Qwen3.5-122B-A10B-FP8](https://huggingface.co/Qwen/Qwen3.5-122B-A10B-FP8)
+  is the official 125B MoE FP8 checkpoint with configurable thinking.
+- [Mistral Medium 3.5](https://huggingface.co/mistralai/Mistral-Medium-3.5-128B)
+  is a dense 128B model with `reasoning_effort="high"`.
+- [vLLM's GPT-OSS recipe](https://docs.vllm.ai/projects/recipes/en/latest/OpenAI/GPT-OSS.html)
+  documents structured reasoning and final output channels.
+
+Sample sizes:
+
+- Model screen: one held-out easy, medium, and hard puzzle per model.
+- Qualification: five held-out puzzles in five representations per model.
+- Pilot: 5 easy + 5 medium + 5 hard puzzles in four representations.
+- Main benchmark: 20 easy + 20 medium + 20 hard puzzles in nine representations.
+- Mechanism experiments: five puzzles per difficulty.
+- Exploratory ablations: three puzzles per difficulty.
+
+The main benchmark makes `60 x 9 x 3 = 1,620` calls.
+
+## Safety rules
+
+- The HPC account is shared. Never change or cancel another user's job.
+- Identify a thesis job by both exact job ID and expected job name before cancelling.
+- Write only under `/scratch/kudhru/arnavbharti`.
+- Synchronize the server only with `git pull origin main --ff-only`.
+- Run GPU inference jobs one at a time.
+- Do not run hosted API models.
+- Do not install packages on the login node.
+- Download model weights manually after login; do not submit download jobs.
+- Before every GPU submission, record the model, partition/GPU type, GPU count,
+  CPUs, RAM, and wall-time.
 
 ## Repeat after every login
 
-Paste this on the login node:
+Copy and paste on the login node:
 
 ```bash
 export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
 export PIP_CACHE_DIR="/scratch/kudhru/arnavbharti/cache/pip"
 export HF_HOME="/scratch/kudhru/arnavbharti/huggingface"
+export HF_HUB_CACHE="/scratch/kudhru/arnavbharti/huggingface/hub"
 cd "/scratch/kudhru/arnavbharti/src"
 git pull origin main --ff-only
 spack unload --all
@@ -39,7 +77,8 @@ source .venv/bin/activate
 python -c "import sqlite3, sys; assert sys.version_info >= (3, 10); print(sys.version); print('SQLite', sqlite3.sqlite_version)"
 ```
 
-Define this helper after each login. It submits one job, waits for that exact job ID, and prints the final Slurm state:
+Define this helper after each login. It submits one inference job, waits for that
+exact job ID, and prints the final Slurm state:
 
 ```bash
 run_and_wait() {
@@ -51,24 +90,31 @@ run_and_wait() {
     return "$command_status"
   fi
   while squeue --noheader --jobs "$job_id" | grep -q .; do
-    squeue --noheader --jobs "$job_id" --format='%i %T %M/%l %R'
+    squeue --noheader --jobs "$job_id" --format='%i|%j|%T|%M|%l|%R'
     sleep 60
   done
-  sacct -j "$job_id" --format=JobID,JobName,State,Elapsed,ExitCode
+  sacct -j "$job_id" -X --format=JobID,JobName,State,Elapsed,ExitCode
 }
 ```
 
-Commands written as `run_and_wait python ...` can safely be pasted as one complete block. The next command starts only after the previous job leaves the queue.
+## Verify Sharanga limits
 
-Before an OpenRouter job, also run:
+These read-only commands show the current GPU partitions and QOS limits:
 
 ```bash
-export OPENROUTER_API_KEY="replace-with-your-key"
+sinfo -o "%P|%G|%D|%C|%l"
+scontrol show partition gpu_h100_4
+scontrol show partition gpu_h200_8
+sacctmgr -n -P show qos format=Name,MaxTRESPerUser,MaxJobsPerUser,MaxWall,GrpTRES   | grep -E '^qos_gpu_h(100|200)\|'
 ```
+
+At the last verified check, `qos_gpu_h200` allowed at most three H200 GPUs, eight
+CPUs, and 300 GB RAM per user. Every configured request stays below those limits.
 
 ## One-time Python setup
 
-On the login node:
+Only use this section if `.venv` is missing or broken. Start an interactive CPU
+compute allocation from the login node:
 
 ```bash
 export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
@@ -77,7 +123,7 @@ git pull origin main --ff-only
 srun --partition=compute --nodes=1 --ntasks=1 --cpus-per-task=8 --mem=32G --time=02:00:00 --pty bash -l
 ```
 
-On the compute node:
+Install only after the prompt changes to the allocated compute node:
 
 ```bash
 export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
@@ -90,49 +136,27 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -e ".[local]"
-python -m unittest discover -s tests -v
+python -m unittest discover -s tests -q
+exit
 ```
 
-If `.venv` already works, do not recreate it. Run only:
+If the environment already works, do not recreate or reinstall it.
+
+## Inspect model storage
+
+These commands are read-only:
 
 ```bash
-source .venv/bin/activate
-python -m pip install -e ".[local]"
-python -m unittest discover -s tests -v
+du -sh   /scratch/kudhru/arnavbharti/huggingface/hub/models--openai--gpt-oss-120b   /scratch/kudhru/arnavbharti/huggingface/hub/models--Qwen--Qwen3.5-122B-A10B-FP8   /scratch/kudhru/arnavbharti/huggingface/hub/models--mistralai--Mistral-Medium-3.5-128B   2>/dev/null
+df -h /scratch/kudhru/arnavbharti
 ```
 
-## Delete old downloaded weights
-
-Old result files are useful development evidence. Do not delete `experiment_outputs/`.
-
-First inspect the exact old cache directories:
-
-```bash
-du -sh \
-  /scratch/kudhru/arnavbharti/huggingface/hub/models--Qwen--Qwen3.8-27B \
-  /scratch/kudhru/arnavbharti/huggingface/hub/models--zai-org--GLM-4.7-Flash \
-  /scratch/kudhru/arnavbharti/huggingface/hub/models--moonshotai--Kimi-Linear-48B-A3B-Instruct
-```
-
-If those paths are correct, delete exactly those recoverable downloads:
-
-```bash
-rm -rf -- \
-  /scratch/kudhru/arnavbharti/huggingface/hub/models--Qwen--Qwen3.8-27B \
-  /scratch/kudhru/arnavbharti/huggingface/hub/models--zai-org--GLM-4.7-Flash \
-  /scratch/kudhru/arnavbharti/huggingface/hub/models--moonshotai--Kimi-Linear-48B-A3B-Instruct
-```
-
-If the obsolete Python backup exists and the current `.venv` passes tests:
-
-```bash
-du -sh /scratch/kudhru/arnavbharti/src/.venv-without-sqlite
-rm -rf -- /scratch/kudhru/arnavbharti/src/.venv-without-sqlite
-```
+Do not delete a snapshot while an inference job may be using it. Result files under
+`experiment_outputs/` are evidence and must not be deleted.
 
 ## Step 1: prepare the dataset
 
-Run on the interactive compute node:
+Run from the activated login environment:
 
 ```bash
 python 01_prepare_data.py
@@ -140,322 +164,223 @@ python 01_prepare_data.py
 
 ## Step 2: download local models
 
-Stay on the interactive compute node. Download one at a time:
+Download manually after login, one at a time. These pinned downloads are idempotent
+and resume interrupted shards:
 
 ```bash
-python 02_download_models.py --model nemotron-local
+python 02_download_models.py   --config config/local-models.json   --model gpt-oss-120b-local
+
+python 02_download_models.py   --config config/local-models.json   --verify-only   --model gpt-oss-120b-local
+
+python 02_download_models.py   --config config/local-models.json   --model qwen-3.5-122b-local
+
+python 02_download_models.py   --config config/local-models.json   --verify-only   --model qwen-3.5-122b-local
+
+python 02_download_models.py   --config config/local-models.json   --model mistral-medium-3.5-local
+
+python 02_download_models.py   --config config/local-models.json   --verify-only   --model mistral-medium-3.5-local
 ```
 
-```bash
-python 02_download_models.py --model mistral-small-4-local
-```
-
-Verify the downloads:
+Verify all three together:
 
 ```bash
-python 02_download_models.py --verify-only --model nemotron-local
-python 02_download_models.py --verify-only --model mistral-small-4-local
+python 02_download_models.py   --config config/local-models.json   --verify-only   --model gpt-oss-120b-local   --model qwen-3.5-122b-local   --model mistral-medium-3.5-local
 ```
 
 ## Step 3: check the setup
 
 ```bash
-python 03_check_setup.py --model nemotron-local
-python 03_check_setup.py --model mistral-small-4-local
-exit
+python 03_check_setup.py --config config/local-models.json --model gpt-oss-120b-local
+python 03_check_setup.py --config config/local-models.json --model qwen-3.5-122b-local
+python 03_check_setup.py --config config/local-models.json --model mistral-medium-3.5-local
 ```
 
-Back on the login node, paste **Repeat after every login** again.
+## Step 4: screen the three models
 
-## Step 4A: calibrate local models
+The screen uses the same reproducibly selected easy, medium, and hard puzzle for
+each model. The 131,072-token ceiling prevents unbounded generation; the one-hour
+Slurm limit is the actual time limit. Only the separated final grid is scored.
 
-Calibration uses 15 held-out Arabic puzzles. Passing requires at least 4/5 easy, 2/5 medium, 1/5 hard, and no operational failure.
-
-Submit Nemotron, then wait:
-
-```bash
-run_and_wait python 04_calibrate_model.py nemotron-answer-only
-```
-
-If the greedy answer-only profile fails, test the fixed sampled profile:
-
-```bash
-run_and_wait python 04_calibrate_model.py nemotron-answer-only-sampled
-```
-
-If the model still adds prose, test grammar-constrained greedy decoding:
-
-```bash
-run_and_wait python 04_calibrate_model.py nemotron-constrained-greedy
-```
-
-To test the explicit solve-and-verify prompt, run the local models one at a time:
-
-```bash
-run_and_wait python 04_calibrate_model.py nemotron-verified-constrained
-run_and_wait python 04_calibrate_model.py mistral-verified-constrained
-```
-
-After it finishes, submit Mistral:
-
-```bash
-run_and_wait python 04_calibrate_model.py mistral-small-4-bounded
-```
-
-For every submitted job, replace `JOB_ID` below with the printed ID:
-
-```bash
-squeue -j JOB_ID
-sacct -j JOB_ID --format=JobID,JobName,State,Elapsed,ExitCode
-```
-
-Code 1 can mean that the accuracy threshold was missed. Read the log before treating it as an operational error.
-
-If both local models score zero on the normal easy tier, run the fixed 57-clue diagnostic
-one model at a time. `VE001` is uniquely solvable and is not part of the calibration,
-pilot, or main benchmark samples.
-
-```bash
-run_and_wait python diagnose_very_easy.py nemotron-local
-run_and_wait python diagnose_very_easy.py mistral-small-4-local
-```
-
-For the stronger-model screen, use exactly these three enabled open-weight models:
-
-| Script name | Model | Hidden-reasoning mechanism | Sharanga resources |
-|---|---|---|---|
-| `gpt-oss-120b-local` | `openai/gpt-oss-120b` | Harmony analysis and final channels | 1 H100, 12 CPUs, 192 GB RAM |
-| `qwen-3.5-122b-local` | `Qwen/Qwen3.5-122B-A10B-FP8` | `<think>` output is separated before scoring | 2 H200, 8 CPUs, 256 GB RAM |
-| `mistral-medium-3.5-local` | `mistralai/Mistral-Medium-3.5-128B` | `[THINK]` output is separated before scoring | 2 H200, 8 CPUs, 256 GB RAM |
-
-The selections and resource claims are documented by the
-[GPT-OSS release](https://openai.com/index/introducing-gpt-oss/),
-[GPT-OSS model page](https://developers.openai.com/api/docs/models/gpt-oss-120b),
-[Qwen3.5 model card](https://huggingface.co/Qwen/Qwen3.5-122B-A10B-FP8),
-[Mistral Medium 3.5 model card](https://huggingface.co/mistralai/Mistral-Medium-3.5-128B),
-and [vLLM's GPT-OSS recipe](https://docs.vllm.ai/projects/recipes/en/latest/OpenAI/GPT-OSS.html).
-Sharanga's live `qos_gpu_h200` limit is 3 GPUs, 8 CPUs, and 300 GB RAM per user,
-so neither H200 model requests more than the account permits.
-
-Manually download and verify each pinned snapshot after logging in. Do not submit
-Slurm download jobs; reserve Slurm jobs for inference. These commands are idempotent
-and interrupted Hugging Face downloads resume:
-
-```bash
-python 02_download_models.py --config config/stronger-model-diagnostic.json --model gpt-oss-120b-local
-python 02_download_models.py --config config/stronger-model-diagnostic.json --verify-only --model gpt-oss-120b-local
-python 02_download_models.py --config config/stronger-model-diagnostic.json --model qwen-3.5-122b-local
-python 02_download_models.py --config config/stronger-model-diagnostic.json --verify-only --model qwen-3.5-122b-local
-python 02_download_models.py --config config/stronger-model-diagnostic.json --model mistral-medium-3.5-local
-python 02_download_models.py --config config/stronger-model-diagnostic.json --verify-only --model mistral-medium-3.5-local
-```
-
-Run one GPU job at a time. Each command uses the same held-out easy, medium, or hard
-puzzle across models and scores only the final answer channel:
+Run the entire block. The helper guarantees sequential GPU use:
 
 ```bash
 run_and_wait python diagnose_timing.py gpt-oss-120b-local easy
 run_and_wait python diagnose_timing.py gpt-oss-120b-local medium
 run_and_wait python diagnose_timing.py gpt-oss-120b-local hard
+
 run_and_wait python diagnose_timing.py qwen-3.5-122b-local easy
 run_and_wait python diagnose_timing.py qwen-3.5-122b-local medium
 run_and_wait python diagnose_timing.py qwen-3.5-122b-local hard
+
 run_and_wait python diagnose_timing.py mistral-medium-3.5-local easy
 run_and_wait python diagnose_timing.py mistral-medium-3.5-local medium
 run_and_wait python diagnose_timing.py mistral-medium-3.5-local hard
 ```
 
-Replace `easy` with `medium` or `hard` only after the preceding job finishes. GPT-OSS
-uses one H100; Qwen3.5 122B FP8 and Mistral Medium 3.5 each use two H200s.
+This is a diagnostic, not a requirement to solve every puzzle. Performance such as
+3/5 or 4/5 easy, 1/5 medium, and 0/5 hard can be acceptable at calibration. Do not
+alter the dataset or frozen benchmark protocol from a single diagnostic result.
 
-To test whether disabling reasoning caused the Mistral failure, run one two-phase
-diagnostic. The first phase receives 8,192 reasoning tokens; the 256-token final
-phase is constrained to the exact grid shape and the original clues.
+## Step 4B: qualify each model
 
-```bash
-run_and_wait python diagnose_very_easy.py mistral-small-4-local --reasoning
-```
-
-## Step 4B: qualify all models
-
-Run one command, wait for it to finish, then run the next:
+Run only after reviewing the three-puzzle screen:
 
 ```bash
-run_and_wait python 04_qualify_model.py nemotron-local
+run_and_wait python 04_qualify_model.py gpt-oss-120b-local --config config/local-models.json
+run_and_wait python 04_qualify_model.py qwen-3.5-122b-local --config config/local-models.json
+run_and_wait python 04_qualify_model.py mistral-medium-3.5-local --config config/local-models.json
 ```
 
-```bash
-run_and_wait python 04_qualify_model.py mistral-small-4-local
-```
-
-```bash
-export OPENROUTER_API_KEY="replace-with-your-key"
-run_and_wait python 04_qualify_model.py gpt-5.6-terra-openrouter
-```
-
-```bash
-run_and_wait python 04_qualify_model.py claude-sonnet-5-openrouter
-```
+An exit code of 1 can represent a missed accuracy threshold rather than a CUDA,
+Python, vLLM, or memory failure. Inspect the exact job log before classifying it.
 
 ## Step 5: run the pilot
 
-Run one at a time and wait after each:
+Run one model at a time:
 
 ```bash
-run_and_wait python 05_run_pilot.py nemotron-local
-run_and_wait python 05_run_pilot.py mistral-small-4-local
-run_and_wait python 05_run_pilot.py gpt-5.6-terra-openrouter
-run_and_wait python 05_run_pilot.py claude-sonnet-5-openrouter
+run_and_wait python 05_run_pilot.py gpt-oss-120b-local --config config/local-models.json
+run_and_wait python 05_run_pilot.py qwen-3.5-122b-local --config config/local-models.json
+run_and_wait python 05_run_pilot.py mistral-medium-3.5-local --config config/local-models.json
 ```
 
 ## Step 6: freeze the protocol
 
-From the login node:
+Only freeze after all required pilots are complete:
 
 ```bash
-srun --partition=compute --nodes=1 --ntasks=1 --cpus-per-task=8 --mem=32G --time=02:00:00 --pty bash -l
+python 06_freeze_protocol.py --config config/local-models.json
 ```
 
-On the compute node:
+This freezes 15 pilot puzzles, 60 different main puzzles, 15 mechanism puzzles, and
+nine ablation puzzles. Do not change the frozen protocol without documenting the
+evidence and decision.
+
+## Step 7: run the main benchmark
+
+Run parts 1 through 6 in order for each model. The helper waits after every line:
 
 ```bash
-export ARNAVSCRATCH="/scratch/kudhru/arnavbharti"
-export HF_HOME="/scratch/kudhru/arnavbharti/huggingface"
-cd "/scratch/kudhru/arnavbharti/src"
-spack unload --all
-spack load anaconda3/lddgbyw
-source .venv/bin/activate
-python 06_freeze_protocol.py
-exit
-```
-
-This freezes 15 pilot puzzles, 60 different main puzzles, 15 mechanism puzzles, and 9 ablation puzzles.
-
-## Step 7: main benchmark
-
-Paste **Repeat after every login** first. For each model, run Parts 1 through 6 in order. Wait after every line.
-
-```bash
-run_and_wait python 07_run_main_benchmark.py nemotron-local --part 1
-run_and_wait python 07_run_main_benchmark.py nemotron-local --part 2
-run_and_wait python 07_run_main_benchmark.py nemotron-local --part 3
-run_and_wait python 07_run_main_benchmark.py nemotron-local --part 4
-run_and_wait python 07_run_main_benchmark.py nemotron-local --part 5
-run_and_wait python 07_run_main_benchmark.py nemotron-local --part 6
-```
-
-```bash
-run_and_wait python 07_run_main_benchmark.py mistral-small-4-local --part 1
-run_and_wait python 07_run_main_benchmark.py mistral-small-4-local --part 2
-run_and_wait python 07_run_main_benchmark.py mistral-small-4-local --part 3
-run_and_wait python 07_run_main_benchmark.py mistral-small-4-local --part 4
-run_and_wait python 07_run_main_benchmark.py mistral-small-4-local --part 5
-run_and_wait python 07_run_main_benchmark.py mistral-small-4-local --part 6
-```
-
-```bash
-run_and_wait python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 1
-run_and_wait python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 2
-run_and_wait python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 3
-run_and_wait python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 4
-run_and_wait python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 5
-run_and_wait python 07_run_main_benchmark.py gpt-5.6-terra-openrouter --part 6
-```
-
-```bash
-run_and_wait python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 1
-run_and_wait python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 2
-run_and_wait python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 3
-run_and_wait python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 4
-run_and_wait python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 5
-run_and_wait python 07_run_main_benchmark.py claude-sonnet-5-openrouter --part 6
+for model in   gpt-oss-120b-local   qwen-3.5-122b-local   mistral-medium-3.5-local
+do
+  for part in 1 2 3 4 5 6
+  do
+    run_and_wait python 07_run_main_benchmark.py "$model"       --part "$part"       --config config/local-models.json
+  done
+done
 ```
 
 ## Steps 8 to 12: mechanism experiments
 
-Run one line at a time and wait after each submitted job.
+Run each complete block sequentially.
 
 Step 8, input/output cross:
 
 ```bash
-run_and_wait python 08_run_input_output_cross.py nemotron-local
-run_and_wait python 08_run_input_output_cross.py mistral-small-4-local
-run_and_wait python 08_run_input_output_cross.py gpt-5.6-terra-openrouter
-run_and_wait python 08_run_input_output_cross.py claude-sonnet-5-openrouter
+for model in gpt-oss-120b-local qwen-3.5-122b-local mistral-medium-3.5-local
+do
+  run_and_wait python 08_run_input_output_cross.py "$model" --config config/local-models.json
+done
 ```
 
-Step 9, token length for local models:
+Step 9, token length:
 
 ```bash
-run_and_wait python 09_run_token_length.py nemotron-local
-run_and_wait python 09_run_token_length.py mistral-small-4-local
+for model in gpt-oss-120b-local qwen-3.5-122b-local mistral-medium-3.5-local
+do
+  run_and_wait python 09_run_token_length.py "$model" --config config/local-models.json
+done
 ```
 
 Step 10, arbitrary binding:
 
 ```bash
-run_and_wait python 10_run_binding.py nemotron-local
-run_and_wait python 10_run_binding.py mistral-small-4-local
-run_and_wait python 10_run_binding.py gpt-5.6-terra-openrouter
-run_and_wait python 10_run_binding.py claude-sonnet-5-openrouter
+for model in gpt-oss-120b-local qwen-3.5-122b-local mistral-medium-3.5-local
+do
+  run_and_wait python 10_run_binding.py "$model" --config config/local-models.json
+done
 ```
 
 Step 11, prompt and output ablations:
 
 ```bash
-run_and_wait python 11_run_ablations.py nemotron-local
-run_and_wait python 11_run_ablations.py mistral-small-4-local
-run_and_wait python 11_run_ablations.py gpt-5.6-terra-openrouter
-run_and_wait python 11_run_ablations.py claude-sonnet-5-openrouter
+for model in gpt-oss-120b-local qwen-3.5-122b-local mistral-medium-3.5-local
+do
+  run_and_wait python 11_run_ablations.py "$model" --config config/local-models.json
+done
 ```
 
 Step 12, revisions:
 
 ```bash
-run_and_wait python 12_run_revisions.py nemotron-local
-run_and_wait python 12_run_revisions.py mistral-small-4-local
-run_and_wait python 12_run_revisions.py gpt-5.6-terra-openrouter
-run_and_wait python 12_run_revisions.py claude-sonnet-5-openrouter
+for model in gpt-oss-120b-local qwen-3.5-122b-local mistral-medium-3.5-local
+do
+  run_and_wait python 12_run_revisions.py "$model" --config config/local-models.json
+done
 ```
 
 ## Step 13: analyze results
 
 ```bash
-run_and_wait python 13_analyze_results.py nemotron-local
-run_and_wait python 13_analyze_results.py mistral-small-4-local
-run_and_wait python 13_analyze_results.py gpt-5.6-terra-openrouter
-run_and_wait python 13_analyze_results.py claude-sonnet-5-openrouter
+for model in gpt-oss-120b-local qwen-3.5-122b-local mistral-medium-3.5-local
+do
+  run_and_wait python 13_analyze_results.py "$model" --config config/local-models.json
+done
 ```
 
 ## Check status and logs
 
+Show workflow status:
+
 ```bash
-squeue -u "$USER"
-python status.py
-python status.py --model nemotron-local
+python status.py --config config/local-models.json
+python status.py --config config/local-models.json --model gpt-oss-120b-local
+python status.py --config config/local-models.json --model qwen-3.5-122b-local
+python status.py --config config/local-models.json --model mistral-medium-3.5-local
 ```
 
-For one job:
+Inspect one exact job:
 
 ```bash
-sacct -j JOB_ID --format=JobID,JobName,State,Elapsed,ExitCode
+squeue -j JOB_ID -o "%i|%j|%T|%M|%l|%R"
+sacct -j JOB_ID -X --format=JobID,JobName,State,Elapsed,ExitCode
 ```
 
 Follow its logs:
 
 ```bash
-tail -f slurm/generated/thesis-confirmatory-compact-v1/MODEL_NAME/logs/*-JOB_ID.out
-tail -f slurm/generated/thesis-confirmatory-compact-v1/MODEL_NAME/logs/*-JOB_ID.err
+tail -f slurm/generated/RUN_ID/MODEL_NAME/logs/*-JOB_ID.out
+tail -f slurm/generated/RUN_ID/MODEL_NAME/logs/*-JOB_ID.err
 ```
 
-Press `Ctrl+C` to stop following a log. It does not cancel the job.
+Press `Ctrl+C` to stop following a log. This does not cancel the job.
 
 ## Safe reruns
 
 - Completed request IDs are skipped.
-- An active job is not submitted twice.
+- An active thesis job is not submitted twice.
 - An interrupted job continues from saved results.
 - Results are append-only.
 - Frozen manifests reject changed settings.
+- Never manually edit files under `experiment_outputs/`.
 
-Do not manually edit anything under `experiment_outputs/`.
+## Local verification before committing
+
+```bash
+cd "/Users/arnavbharti/Developer/arnavbharti/thesis/src"
+python3 -m unittest discover -s tests -q
+cd "/Users/arnavbharti/Developer/arnavbharti/thesis"
+git status --short
+git diff --check
+git add <only-relevant-files>
+git commit -m "<clear-message>"
+git push origin main
+```
+
+Update Sharanga only after the push:
+
+```bash
+ssh thesis
+cd "/scratch/kudhru/arnavbharti/src"
+git pull origin main --ff-only
+```

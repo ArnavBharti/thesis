@@ -1,5 +1,5 @@
 {
-  "run_id": "stronger-model-diagnostic-v1",
+  "run_id": "local-models-v1",
   "dataset_path": "../data/puzzles.jsonl",
   "output_directory": "../experiment_outputs",
   "master_seed": 20260826,
@@ -10,44 +10,6 @@
     "seed": 20260826
   },
   "models": [
-    {
-      "name": "qwen-local",
-      "model_id": "Qwen/Qwen3.8-27B",
-      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
-      "backend": "vllm",
-      "dtype": "auto",
-      "tensor_parallel_size": 1,
-      "trust_remote_code": false,
-      "local_files_only": true,
-      "slurm": {
-        "partition": "gpu_h200_8",
-        "gpus": 1,
-        "cpus": 4,
-        "memory": "192G",
-        "time_limit": "0-00:30"
-      },
-      "extra": {
-        "chat_template": {
-          "enable_thinking": true,
-          "preserve_thinking": false,
-          "reasoning_effort": "medium"
-        },
-        "reasoning_output": "think_tags",
-        "sampling": {
-          "temperature": 1.0,
-          "top_p": 0.95,
-          "top_k": 20,
-          "min_p": 0.0,
-          "presence_penalty": 0.0,
-          "repetition_penalty": 1.0
-        },
-        "vllm": {
-          "max_model_len": 131072,
-          "gpu_memory_utilization": 0.9
-        }
-      },
-      "enabled": false
-    },
     {
       "name": "gpt-oss-120b-local",
       "model_id": "openai/gpt-oss-120b",
@@ -65,11 +27,13 @@
         "time_limit": "0-01:00"
       },
       "extra": {
-        "chat_template": {"reasoning_effort": "high"},
+        "chat_template": {
+          "reasoning_effort": "high"
+        },
         "reasoning_output": "harmony_channels",
         "sampling": {
-          "temperature": 1.0,
-          "top_p": 1.0,
+          "temperature": 1,
+          "top_p": 1,
           "skip_special_tokens": false
         },
         "vllm": {
@@ -103,12 +67,12 @@
         },
         "reasoning_output": "think_tags",
         "sampling": {
-          "temperature": 1.0,
+          "temperature": 1,
           "top_p": 0.95,
           "top_k": 20,
-          "min_p": 0.0,
+          "min_p": 0,
           "presence_penalty": 1.5,
-          "repetition_penalty": 1.0
+          "repetition_penalty": 1
         },
         "vllm": {
           "max_model_len": 131072,
@@ -136,7 +100,9 @@
       },
       "extra": {
         "chat_template_file": "chat_template.jinja",
-        "chat_template": {"reasoning_effort": "high"},
+        "chat_template": {
+          "reasoning_effort": "high"
+        },
         "reasoning_output": "mistral_think_tags",
         "sampling": {
           "temperature": 0.7,
@@ -151,3 +117,4 @@
     }
   ]
 }
+

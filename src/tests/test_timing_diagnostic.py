@@ -8,7 +8,7 @@ from lib.config import load_config
 class TimingDiagnosticTests(unittest.TestCase):
     def test_selects_one_reproducible_puzzle_per_difficulty(self) -> None:
         root = Path(__file__).resolve().parents[1]
-        config = load_config(root / "config" / "stronger-model-diagnostic.json")
+        config = load_config(root / "config" / "local-models.json")
 
         selected = [
             select_timing_puzzle(config, tier)
@@ -21,9 +21,9 @@ class TimingDiagnosticTests(unittest.TestCase):
         )
         self.assertEqual(len({record.puzzle_id for record in selected}), 3)
 
-    def test_stronger_models_fit_sharanga_qos(self) -> None:
+    def test_selected_models_fit_sharanga_qos(self) -> None:
         root = Path(__file__).resolve().parents[1]
-        config = load_config(root / "config" / "stronger-model-diagnostic.json")
+        config = load_config(root / "config" / "local-models.json")
 
         expected = {
             "gpt-oss-120b-local": ("gpu_h100_4", 1),

@@ -6,29 +6,13 @@ from lib.config import load_config
 
 
 class CalibrationTests(unittest.TestCase):
-    def test_qwen_timed_profile_has_no_reasoning_token_budget(self) -> None:
-        config, model = apply_calibration_profile(self.qwen_config, "qwen-timed-reasoning")
-
-        self.assertEqual(model.tensor_parallel_size, 1)
-        self.assertEqual(model.slurm.cpus, 4)
-        self.assertEqual(config.inference.max_new_tokens, 131072)
-        self.assertIsNone(model.extra["bounded_final"])
-
     def setUp(self) -> None:
         config_directory = Path(__file__).resolve().parents[1] / "config"
         self.config = load_config(config_directory / "experiments.example.json")
-        self.qwen_config = load_config(
-            config_directory / "stronger-model-diagnostic.json"
-        )
 
     def test_profiles_are_one_model_and_have_separate_run_ids(self) -> None:
         for name, profile in PROFILES.items():
-            source = (
-                self.qwen_config
-                if profile.model_name == "qwen-local"
-                else self.config
-            )
-            config, model = apply_calibration_profile(source, name)
+            config, model = apply_calibration_profile(self.config, name)
             self.assertEqual(model.name, profile.model_name)
             self.assertEqual(config.models, (model,))
             self.assertEqual(
@@ -38,12 +22,7 @@ class CalibrationTests(unittest.TestCase):
 
     def test_profiles_bound_output_length(self) -> None:
         for name, profile in PROFILES.items():
-            source = (
-                self.qwen_config
-                if profile.model_name == "qwen-local"
-                else self.config
-            )
-            config, _ = apply_calibration_profile(source, name)
+            config, _ = apply_calibration_profile(self.config, name)
             self.assertLessEqual(config.inference.max_new_tokens, 131072)
 
     def test_mistral_reasoning_diagnostic_has_two_phase_budget(self) -> None:
