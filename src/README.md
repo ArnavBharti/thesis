@@ -15,13 +15,12 @@ not submitted twice, and interrupted runs resume from saved results.
 
 ## Models and sample sizes
 
-The workflow uses exactly three open-weight local models:
+The workflow uses exactly two open-weight local models:
 
 | Script name | Pinned model | Hidden reasoning | Sharanga request |
 |---|---|---|---|
 | `gpt-oss-120b-local` | `openai/gpt-oss-120b` | Harmony analysis/final channels | 1 H100, 12 CPUs, 192 GB RAM |
 | `qwen-3.5-122b-local` | `Qwen/Qwen3.5-122B-A10B-FP8` | thinking tags removed before scoring | 2 H200, 8 CPUs, 256 GB RAM |
-| `mistral-medium-3.5-local` | `mistralai/Mistral-Medium-3.5-128B` | `[THINK]` content removed before scoring | 2 H200, 8 CPUs, 256 GB RAM |
 
 The choices are supported by primary documentation:
 
@@ -31,8 +30,6 @@ The choices are supported by primary documentation:
   identifies it as OpenAI's most capable open-weight model.
 - [Qwen3.5-122B-A10B-FP8](https://huggingface.co/Qwen/Qwen3.5-122B-A10B-FP8)
   is the official 125B MoE FP8 checkpoint with configurable thinking.
-- [Mistral Medium 3.5](https://huggingface.co/mistralai/Mistral-Medium-3.5-128B)
-  is a dense 128B model with `reasoning_effort="high"`.
 - [vLLM's GPT-OSS recipe](https://docs.vllm.ai/projects/recipes/en/latest/OpenAI/GPT-OSS.html)
   documents structured reasoning and final output channels.
 
@@ -45,7 +42,7 @@ Sample sizes:
 - Mechanism experiments: five puzzles per difficulty.
 - Exploratory ablations: three puzzles per difficulty.
 
-The main benchmark makes `60 x 9 x 3 = 1,620` calls.
+The main benchmark makes `60 x 9 x 2 = 1,080` calls.
 
 ## Safety rules
 
@@ -147,7 +144,7 @@ If the environment already works, do not recreate or reinstall it.
 These commands are read-only:
 
 ```bash
-du -sh   /scratch/kudhru/arnavbharti/huggingface/hub/models--openai--gpt-oss-120b   /scratch/kudhru/arnavbharti/huggingface/hub/models--Qwen--Qwen3.5-122B-A10B-FP8   /scratch/kudhru/arnavbharti/huggingface/hub/models--mistralai--Mistral-Medium-3.5-128B   2>/dev/null
+du -sh   /scratch/kudhru/arnavbharti/huggingface/hub/models--openai--gpt-oss-120b   /scratch/kudhru/arnavbharti/huggingface/hub/models--Qwen--Qwen3.5-122B-A10B-FP8   2>/dev/null
 df -h /scratch/kudhru/arnavbharti
 ```
 
@@ -175,16 +172,12 @@ python 02_download_models.py   --config config/local-models.json   --verify-only
 python 02_download_models.py   --config config/local-models.json   --model qwen-3.5-122b-local
 
 python 02_download_models.py   --config config/local-models.json   --verify-only   --model qwen-3.5-122b-local
-
-python 02_download_models.py   --config config/local-models.json   --model mistral-medium-3.5-local
-
-python 02_download_models.py   --config config/local-models.json   --verify-only   --model mistral-medium-3.5-local
 ```
 
-Verify all three together:
+Verify both together:
 
 ```bash
-python 02_download_models.py   --config config/local-models.json   --verify-only   --model gpt-oss-120b-local   --model qwen-3.5-122b-local   --model mistral-medium-3.5-local
+python 02_download_models.py   --config config/local-models.json   --verify-only   --model gpt-oss-120b-local   --model qwen-3.5-122b-local
 ```
 
 ## Step 3: check the setup
@@ -192,10 +185,9 @@ python 02_download_models.py   --config config/local-models.json   --verify-only
 ```bash
 python 03_check_setup.py --config config/local-models.json --model gpt-oss-120b-local
 python 03_check_setup.py --config config/local-models.json --model qwen-3.5-122b-local
-python 03_check_setup.py --config config/local-models.json --model mistral-medium-3.5-local
 ```
 
-## Step 4: screen the three models
+## Step 4: screen the two models
 
 The screen uses the same reproducibly selected easy, medium, and hard puzzle for
 each model. The 131,072-token ceiling prevents unbounded generation; the one-hour
@@ -211,10 +203,6 @@ run_and_wait python diagnose_timing.py gpt-oss-120b-local hard
 run_and_wait python diagnose_timing.py qwen-3.5-122b-local easy
 run_and_wait python diagnose_timing.py qwen-3.5-122b-local medium
 run_and_wait python diagnose_timing.py qwen-3.5-122b-local hard
-
-run_and_wait python diagnose_timing.py mistral-medium-3.5-local easy
-run_and_wait python diagnose_timing.py mistral-medium-3.5-local medium
-run_and_wait python diagnose_timing.py mistral-medium-3.5-local hard
 ```
 
 This is a diagnostic, not a requirement to solve every puzzle. Performance such as
@@ -228,7 +216,6 @@ Run only after reviewing the three-puzzle screen:
 ```bash
 run_and_wait python 04_qualify_model.py gpt-oss-120b-local --config config/local-models.json
 run_and_wait python 04_qualify_model.py qwen-3.5-122b-local --config config/local-models.json
-run_and_wait python 04_qualify_model.py mistral-medium-3.5-local --config config/local-models.json
 ```
 
 An exit code of 1 can represent a missed accuracy threshold rather than a CUDA,
@@ -241,7 +228,6 @@ Run one model at a time:
 ```bash
 run_and_wait python 05_run_pilot.py gpt-oss-120b-local --config config/local-models.json
 run_and_wait python 05_run_pilot.py qwen-3.5-122b-local --config config/local-models.json
-run_and_wait python 05_run_pilot.py mistral-medium-3.5-local --config config/local-models.json
 ```
 
 ## Step 6: freeze the protocol
@@ -261,7 +247,7 @@ evidence and decision.
 Run parts 1 through 6 in order for each model. The helper waits after every line:
 
 ```bash
-for model in   gpt-oss-120b-local   qwen-3.5-122b-local   mistral-medium-3.5-local
+for model in   gpt-oss-120b-local   qwen-3.5-122b-local
 do
   for part in 1 2 3 4 5 6
   do
@@ -277,7 +263,7 @@ Run each complete block sequentially.
 Step 8, input/output cross:
 
 ```bash
-for model in gpt-oss-120b-local qwen-3.5-122b-local mistral-medium-3.5-local
+for model in gpt-oss-120b-local qwen-3.5-122b-local
 do
   run_and_wait python 08_run_input_output_cross.py "$model" --config config/local-models.json
 done
@@ -286,7 +272,7 @@ done
 Step 9, token length:
 
 ```bash
-for model in gpt-oss-120b-local qwen-3.5-122b-local mistral-medium-3.5-local
+for model in gpt-oss-120b-local qwen-3.5-122b-local
 do
   run_and_wait python 09_run_token_length.py "$model" --config config/local-models.json
 done
@@ -295,7 +281,7 @@ done
 Step 10, arbitrary binding:
 
 ```bash
-for model in gpt-oss-120b-local qwen-3.5-122b-local mistral-medium-3.5-local
+for model in gpt-oss-120b-local qwen-3.5-122b-local
 do
   run_and_wait python 10_run_binding.py "$model" --config config/local-models.json
 done
@@ -304,7 +290,7 @@ done
 Step 11, prompt and output ablations:
 
 ```bash
-for model in gpt-oss-120b-local qwen-3.5-122b-local mistral-medium-3.5-local
+for model in gpt-oss-120b-local qwen-3.5-122b-local
 do
   run_and_wait python 11_run_ablations.py "$model" --config config/local-models.json
 done
@@ -313,7 +299,7 @@ done
 Step 12, revisions:
 
 ```bash
-for model in gpt-oss-120b-local qwen-3.5-122b-local mistral-medium-3.5-local
+for model in gpt-oss-120b-local qwen-3.5-122b-local
 do
   run_and_wait python 12_run_revisions.py "$model" --config config/local-models.json
 done
@@ -322,7 +308,7 @@ done
 ## Step 13: analyze results
 
 ```bash
-for model in gpt-oss-120b-local qwen-3.5-122b-local mistral-medium-3.5-local
+for model in gpt-oss-120b-local qwen-3.5-122b-local
 do
   run_and_wait python 13_analyze_results.py "$model" --config config/local-models.json
 done
@@ -336,7 +322,6 @@ Show workflow status:
 python status.py --config config/local-models.json
 python status.py --config config/local-models.json --model gpt-oss-120b-local
 python status.py --config config/local-models.json --model qwen-3.5-122b-local
-python status.py --config config/local-models.json --model mistral-medium-3.5-local
 ```
 
 Inspect one exact job:

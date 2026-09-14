@@ -28,7 +28,6 @@ class TimingDiagnosticTests(unittest.TestCase):
         expected = {
             "gpt-oss-120b-local": ("gpu_h100_4", 1),
             "qwen-3.5-122b-local": ("gpu_h200_8", 2),
-            "mistral-medium-3.5-local": ("gpu_h200_8", 2),
         }
         for name, (partition, gpus) in expected.items():
             model = config.model(name)
