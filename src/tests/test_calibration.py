@@ -10,6 +10,7 @@ class CalibrationTests(unittest.TestCase):
         config, model = apply_calibration_profile(self.qwen_config, "qwen-timed-reasoning")
 
         self.assertEqual(model.tensor_parallel_size, 1)
+        self.assertEqual(model.slurm.cpus, 4)
         self.assertEqual(config.inference.max_new_tokens, 131072)
         self.assertIsNone(model.extra["bounded_final"])
 
