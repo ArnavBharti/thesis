@@ -52,10 +52,12 @@ class NumberedWorkflowTests(unittest.TestCase):
             self.assertIn("export TRITON_CACHE_DIR=", text)
             self.assertIn("export FLASHINFER_WORKSPACE_BASE=", text)
             self.assertIn("site-packages/nvidia/cu*/bin/nvcc", text)
+            self.assertIn("spack load gcc@13.2.0", text)
             self.assertNotIn("site-packages/flashinfer/comm/fd_exchange.py", text)
             self.assertNotIn("sed -i", text)
             self.assertIn('export CUDACXX="$NVCC_PATH"', text)
             self.assertIn("export VLLM_USE_FLASHINFER_SAMPLER=0", text)
+            self.assertIn("export VLLM_NO_USAGE_STATS=1", text)
             syntax = subprocess.run(["bash", "-n", str(path)], capture_output=True, text=True)
             self.assertEqual(syntax.returncode, 0, syntax.stderr)
 

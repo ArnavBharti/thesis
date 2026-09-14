@@ -107,6 +107,8 @@ sacctmgr -n -P show qos format=Name,MaxTRESPerUser,MaxJobsPerUser,MaxWall,GrpTRE
 
 At the last verified check, `qos_gpu_h200` allowed at most three H200 GPUs, eight
 CPUs, and 300 GB RAM per user. Every configured request stays below those limits.
+Generated jobs load GCC 13.2 for CUDA JIT compilation and disable optional vLLM
+usage telemetry; all model and compiler caches remain under thesis scratch.
 
 ## One-time Python setup
 

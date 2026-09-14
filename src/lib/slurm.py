@@ -54,6 +54,7 @@ def write_python_job(
         lines.append(f"module load {shlex.quote(module)}")
     lines.extend(
         (
+            "spack load gcc@13.2.0",
             f"cd {shlex.quote(str(ROOT))}",
             f"source {shlex.quote(str(ROOT / '.venv' / 'bin' / 'activate'))}",
             f"export HF_HOME={shlex.quote(str(ROOT.parent / 'huggingface'))}",
@@ -71,6 +72,7 @@ def write_python_job(
             '    export CUDACXX="$NVCC_PATH"',
             "fi",
             "export VLLM_USE_FLASHINFER_SAMPLER=0",
+            "export VLLM_NO_USAGE_STATS=1",
             "export TOKENIZERS_PARALLELISM=false",
             "srun " + _shell_join(command),
         )
