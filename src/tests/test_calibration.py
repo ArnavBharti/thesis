@@ -10,7 +10,7 @@ class CalibrationTests(unittest.TestCase):
         config, model = apply_calibration_profile(self.qwen_config, "qwen-timed-reasoning")
 
         self.assertEqual(model.tensor_parallel_size, 1)
-        self.assertEqual(config.inference.max_new_tokens, 32768)
+        self.assertEqual(config.inference.max_new_tokens, 131072)
         self.assertIsNone(model.extra["bounded_final"])
 
     def setUp(self) -> None:
@@ -43,7 +43,7 @@ class CalibrationTests(unittest.TestCase):
                 else self.config
             )
             config, _ = apply_calibration_profile(source, name)
-            self.assertLessEqual(config.inference.max_new_tokens, 32768)
+            self.assertLessEqual(config.inference.max_new_tokens, 131072)
 
     def test_mistral_reasoning_diagnostic_has_two_phase_budget(self) -> None:
         config, model = apply_calibration_profile(

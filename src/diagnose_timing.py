@@ -53,7 +53,7 @@ def main() -> int:
 
     base_config = load_config(arguments.config)
     config, model = apply_calibration_profile(base_config, "qwen-timed-reasoning")
-    config = replace(config, run_id=f"qwen-natural-timing-v1-{arguments.difficulty}")
+    config = replace(config, run_id=f"qwen-natural-timing-v2-{arguments.difficulty}")
     puzzle = select_timing_puzzle(base_config, arguments.difficulty)
     request = sudoku_request(
         "timing-diagnostic",

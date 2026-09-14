@@ -4,7 +4,7 @@
   "output_directory": "../experiment_outputs",
   "master_seed": 20260826,
   "inference": {
-    "max_new_tokens": 8448,
+    "max_new_tokens": 131072,
     "temperature": 0.6,
     "top_p": 0.95,
     "seed": 20260826
@@ -20,7 +20,7 @@
       "trust_remote_code": false,
       "local_files_only": true,
       "slurm": {
-        "partition": "gpu_h100_4",
+        "partition": "gpu_h200_8",
         "gpus": 1,
         "cpus": 12,
         "memory": "192G",
@@ -34,7 +34,7 @@
         },
         "reasoning_output": "think_tags",
         "vllm": {
-          "max_model_len": 32768,
+          "max_model_len": 131072,
           "gpu_memory_utilization": 0.9
         }
       },
