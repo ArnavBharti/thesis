@@ -198,6 +198,8 @@ python 03_check_setup.py --config config/local-models.json --model qwen-3.5-122b
 The screen uses the same reproducibly selected easy, medium, and hard puzzle for
 each model. The 131,072-token ceiling prevents unbounded generation; the one-hour
 Slurm limit is the actual time limit. Only the separated final grid is scored.
+Timing run IDs use `natural-timing-v2`; the puzzle-selection namespace remains
+frozen so these runs use the same three diagnostic puzzles as earlier attempts.
 
 Run the entire block. The helper guarantees sequential GPU use:
 

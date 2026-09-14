@@ -55,7 +55,7 @@ def main() -> int:
     model = base_config.model(arguments.model)
     config = replace(
         base_config,
-        run_id=f"{model.name}-natural-timing-v1-{arguments.difficulty}",
+        run_id=f"{model.name}-natural-timing-v2-{arguments.difficulty}",
         models=(model,),
     )
     puzzle = select_timing_puzzle(base_config, arguments.difficulty)
