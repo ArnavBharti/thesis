@@ -46,7 +46,7 @@
           "gpu_memory_utilization": 0.9
         }
       },
-      "enabled": true
+      "enabled": false
     },
     {
       "name": "gpt-oss-120b-local",

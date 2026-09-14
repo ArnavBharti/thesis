@@ -35,6 +35,11 @@ class TimingDiagnosticTests(unittest.TestCase):
             self.assertEqual((model.slurm.partition, model.slurm.gpus), (partition, gpus))
             self.assertLessEqual(model.slurm.cpus, 8 if gpus == 2 else 12)
 
+        self.assertEqual(
+            {model.name for model in config.enabled_models},
+            set(expected),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
