@@ -22,15 +22,28 @@ DEFAULT_CONFIG = ROOT / "config" / "experiments.json"
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
+    parser.add_argument(
+        "--model",
+        action="append",
+        dest="models",
+        help="require completed pilot evidence only for this enabled model; repeat as needed",
+    )
     arguments = parser.parse_args()
 
     config = load_config(arguments.config)
+    selected_models = config.enabled_models
+    if arguments.models:
+        requested = set(arguments.models)
+        selected_models = tuple(model for model in config.enabled_models if model.name in requested)
+        missing = requested - {model.name for model in selected_models}
+        if missing:
+            raise SystemExit("unknown or disabled model(s): " + ", ".join(sorted(missing)))
     records = read_records(config.dataset_path)
     audit = audit_records(records)
     if not audit["valid"]:
         raise SystemExit("dataset audit failed: " + "; ".join(audit["errors"]))
 
-    for model in config.enabled_models:
+    for model in selected_models:
         if not qualification_complete(config, model):
             raise SystemExit(f"{model.name} has not passed qualification")
         if not experiment_part_complete(config, model, "exp2", 1):

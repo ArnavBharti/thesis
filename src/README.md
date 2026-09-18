@@ -246,7 +246,7 @@ run_and_wait python 05_run_pilot.py qwen-3.5-122b-local --config config/local-mo
 Only freeze after all required pilots are complete:
 
 ```bash
-python 06_freeze_protocol.py --config config/local-models.json
+python 06_freeze_protocol.py --config config/local-models.json --model gpt-oss-120b-local
 ```
 
 This freezes 15 pilot puzzles, 60 different main puzzles, 15 mechanism puzzles, and
@@ -262,7 +262,7 @@ for model in   gpt-oss-120b-local   qwen-3.5-122b-local
 do
   for part in 1 2 3 4 5 6
   do
-    run_and_wait python 07_run_main_benchmark.py "$model"       --part "$part"       --config config/local-models.json
+    run_and_wait python 07_run_main_benchmark.py "$model"       --part "$part"       --config config/local-models.json       --wall-time 0-06:00
   done
 done
 ```
