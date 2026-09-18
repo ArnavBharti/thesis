@@ -196,8 +196,10 @@ python 03_check_setup.py --config config/local-models.json --model qwen-3.5-122b
 ## Step 4: screen the two models
 
 The screen uses the same reproducibly selected easy, medium, and hard puzzle for
-each model. The 131,072-token ceiling prevents unbounded generation; the one-hour
-Slurm limit is the actual time limit. Only the separated final grid is scored.
+each model. The 131,072-token ceiling prevents unbounded generation; the Slurm
+wall-time is the actual time limit. GPT-OSS uses 12 hours because observed medium
+puzzles can take 9--13 minutes each; Qwen retains a one-hour diagnostic limit.
+Only the separated final grid is scored.
 Timing run IDs use `natural-timing-v2`; the puzzle-selection namespace remains
 frozen so these runs use the same three diagnostic puzzles as earlier attempts.
 
