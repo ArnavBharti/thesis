@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 
 from lib.requests import sudoku_request
@@ -26,6 +26,10 @@ def main() -> int:
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--test-only", action="store_true")
+    parser.add_argument(
+        "--wall-time",
+        help="submission-only Slurm wall-time override, for example 0-12:00",
+    )
     parser.add_argument("--execute", action="store_true", help=argparse.SUPPRESS)
     arguments = parser.parse_args()
 
@@ -37,12 +41,18 @@ def main() -> int:
         return 0
 
     if not arguments.execute:
+        resources = (
+            replace(model.slurm, time_limit=arguments.wall_time)
+            if arguments.wall_time
+            else model.slurm
+        )
         path = write_python_job(
             config,
             model,
             Path(__file__),
             "exp2-pilot",
             (model.name, "--config", str(arguments.config.resolve())),
+            resources=resources,
         )
         return finish_submission(path, dry_run=arguments.dry_run, test_only=arguments.test_only)
 

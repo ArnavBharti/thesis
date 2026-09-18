@@ -24,7 +24,7 @@
         "gpus": 1,
         "cpus": 12,
         "memory": "192G",
-        "time_limit": "0-12:00"
+        "time_limit": "0-01:00"
       },
       "extra": {
         "chat_template": {
