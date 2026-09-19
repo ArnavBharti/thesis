@@ -1,0 +1,5 @@
+label accuracy low high
+arabic-digits 93.3333 70.1835 98.8133
+emoji 86.6667 62.1180 96.2639
+greek-letters 66.6667 41.7135 84.8237
+uppercase-latin 66.6667 41.7135 84.8237

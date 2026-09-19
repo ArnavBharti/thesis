@@ -1,0 +1,194 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=25mm]{geometry}
+\usepackage{fontspec}
+\usepackage{libertinus}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[hidelinks]{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{float}
+
+\pgfplotsset{compat=1.18}
+\sisetup{detect-all}
+\definecolor{accent}{HTML}{315E8A}
+\definecolor{accentlight}{HTML}{8BB8D8}
+\captionsetup{font=small,labelfont=bf}
+\setlist{nosep,leftmargin=*}
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{0pt}
+
+\input{generated/results.tex}
+
+\title{Beyond Arabic Digits: Evaluating Sudoku Solving Under Symbol-Set Variation}
+\author{Arnav Bharti}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This study evaluates whether a large language model preserves Sudoku-solving ability when the nine values are renamed by bijective symbol systems. Sudoku provides exact, deterministic scoring: a returned grid must preserve every clue and satisfy every row, column, and $3\times3$ box. A certified dataset contains 300 unique-solution puzzles divided equally among easy, medium, and hard tiers. The selected model, GPT-OSS-120B, uses hidden Harmony analysis while only its final channel is scored. It solved all five qualification puzzles. On a balanced 60-request pilot spanning Arabic digits, uppercase Latin, Greek, and emoji representations, it solved \PilotCorrect{} puzzles (\PilotAccuracy{}) with no operational failures. Accuracy was 100.0\% on easy, 65.0\% on medium, and 70.0\% on hard puzzles. Representation accuracy ranged from 66.7\% for Greek and uppercase Latin to 93.3\% for Arabic digits. In the completed first shard of the main benchmark, the model solved \MainPartOneCorrect{} requests (\MainPartOneAccuracy{}) with no operational failures. The completed results show that exact-grid performance can change under value renaming even when puzzle constraints and solutions remain unchanged.
+\end{abstract}
+
+\section{Introduction}
+Large language models are increasingly evaluated on tasks described as reasoning benchmarks, yet observed performance may depend on the surface representation used to express an otherwise unchanged problem. This dependence matters because logical validity should not change when the values of a constraint-satisfaction problem are consistently renamed. A system that has learned the underlying constraints should, in principle, transfer across bijective symbol systems; a system dependent on familiar tokens, learned semantic associations, or fragile output routines may not.
+
+Sudoku is useful for studying this issue because correctness is exact rather than subjective. A candidate solution can be checked cell by cell against the original clues and against the row, column, and box constraints. The same abstract puzzle can also be encoded under multiple alphabets without changing its solution structure. This produces a controlled test of representation invariance in which the logical problem is fixed and only its visible labels change.
+
+The research question is: when an LLM can solve a Sudoku puzzle, does it preserve that ability when Arabic numerals are replaced by another bijective symbol system? The broader experimental programme separates possible failures in input decoding, symbol-to-value binding, constraint reasoning, output encoding, tokenization, Unicode handling, and formatting. The work reported here establishes the dataset, evaluator, model qualification, balanced pilot, and the completed first shard of the main representation benchmark for GPT-OSS-120B.
+
+\section{Background}
+\subsection{Sudoku as an exactly verifiable constraint problem}
+Let $G=\{g_{r,c}\mid r,c\in\{1,\ldots,9\}\}$ denote the 81 grid cells and let $D=\{1,\ldots,9\}$ be the value domain. A completed grid is correct only if it preserves every clue and, for every row $r$, column $c$, and box $b$,
+\begin{align}
+\{g_{r,1},\ldots,g_{r,9}\}&=D,\\
+\{g_{1,c},\ldots,g_{9,c}\}&=D,\\
+\{g_{r,c}:(r,c)\in b\}&=D.
+\end{align}
+This definition permits deterministic evaluation of all cells and constraints. Puzzle difficulty is not determined by clue count alone; technique complexity and dependencies among deductions also contribute \citep{pelanek2014sudoku}. Existing Sudoku evaluations similarly report lower full-grid solve rates as task complexity increases \citep{seely2025sudokubench}, while solver-trace training demonstrates that language models can learn search and constraint propagation on logic puzzles \citep{shah2024causal}.
+
+\subsection{Representation invariance}
+Define abstract values $V=\{V_1,\ldots,V_9\}$ and a visible alphabet $S=\{s_1,\ldots,s_9\}$. A representation is a bijection $\sigma:V\leftrightarrow S$. If $p$ is a Sudoku puzzle and $f$ is the model-and-parser pipeline, exact invariance requires
+\begin{equation}
+\sigma^{-1}\!\left(f(\sigma(p))\right)=f(p)
+\end{equation}
+whenever both sides return completed grids. Consistency alone is insufficient because a model can reproduce the same invalid answer under multiple encodings; Sudoku adds an independent validity test. Related controlled transformations have revealed sensitivity in mathematical reasoning benchmarks \citep{mirzadeh2025gsmsymbolic}.
+
+\subsection{Binding, tokenization, and verification}
+Arbitrary mappings are learnable: symbol tuning can improve adherence to label remappings \citep{wei2023symbol}. Nevertheless, consistently producing an 81-cell grid requires sustained binding across many positions. Digit-renaming experiments in elementary arithmetic likewise show failures under bijective changes \citep{yan2025addition}, but such failures can mix tokenization, memorized associations, mapping, and generation effects.
+
+Tokenization provides another possible source of variation. Vocabulary construction affects model performance \citep{bostrom2020bpe,rust2021tokenizer}, and visible symbols can differ in token count, byte length, and Unicode structure. Finally, verbal self-assessment is not exact verification: a model's assertion that its grid is valid does not supersede deterministic checking \citep{stechly2023wrong}.
+
+\section{Methodology}
+\subsection{Dataset}
+The dataset contains 300 generated $9\times9$ Sudoku puzzles, with 100 puzzles in each difficulty tier. Every item has a unique solution certified by an exact counter that stops after finding two solutions. The easy tier contains 40--46 clues (median 43) and is solvable with singles. The medium tier contains 24--28 clues (median 26) and requires intermediate logical techniques. The hard tier contains 23--27 clues (median 25) and requires backtracking. Stored records include the puzzle, solution, clue mask, generator version, seed, difficulty certificate, and solver certificate.
+
+The pilot and main samples are deterministic and disjoint. The pilot contains five puzzles from each difficulty tier. Each pilot puzzle is presented in four representations, producing $15\times4=60$ requests. The main sample contains 20 puzzles per tier and nine representations, producing $60\times9=540$ requests. Main requests are distributed deterministically across six execution shards.
+
+\subsection{Representations and prompting}
+The pilot uses Arabic digits, uppercase Latin letters, Greek letters, and emoji labels. The main benchmark additionally includes Devanagari numerals, Bengali numerals, lowercase Latin letters, abstract symbols, and nonce labels. Each alphabet is an ordered bijection over the same nine abstract values. Puzzle clues, rules, solution, sampling settings, and requested row format are held constant.
+
+The prompt identifies the nine valid symbols, states the row, column, box, and clue-preservation constraints, and requests only nine lines of nine space-separated symbols. Hidden reasoning is neither parsed nor scored. Only the separated final answer is passed to the Sudoku evaluator.
+
+\subsection{Model and inference}
+Experiments use the open-weight GPT-OSS-120B checkpoint \citep{openai2026gptoss}. The exact repository identifier is \texttt{openai/\allowbreak gpt-oss-120b}; the pinned revision is \texttt{b5c939de\allowbreak8f754692\allowbreak c1647ca7\allowbreak9fbf85e8\allowbreak c1e70f8a}. Inference runs through vLLM on one NVIDIA H100 80GB GPU with 12 CPU cores and 192GB host memory. The model uses high reasoning effort with Harmony analysis and final channels. Sampling uses temperature 1 and top-$p$ 1. The context and generation ceiling is 131,072 tokens. The final answer is stored separately from hidden analysis.
+
+\subsection{Evaluation}
+A response is correct only when it contains a parseable $9\times9$ grid using the permitted output alphabet, preserves every clue, and satisfies all row, column, and box constraints. Incorrect responses receive one or more diagnostic labels, including modified clues, row/column/box violations, invalid symbols, local or global binding errors, malformed grids, missing final answers, refusals, and truncation. Operational failures such as runtime errors are reported separately and are not treated as logical errors.
+
+Qualification uses five held-out puzzles across Arabic, Greek, emoji, nonce, and Devanagari representations. The subsequent pilot measures accuracy by difficulty and representation. Proportions are reported with Wilson 95\% confidence intervals. Latency is generation time per request and excludes queue waiting.
+
+\section{Results}
+\subsection{Qualification and timing}
+GPT-OSS-120B solved all five qualification requests and produced no operational failures. Mean qualification latency was \SI{44.6}{\second} per request. In the one-puzzle timing screen, the easy, medium, and hard puzzles were all solved correctly in \SI{36.1}{\second}, \SI{254.6}{\second}, and \SI{227.4}{\second}, respectively. These measurements motivated wall-time-based execution rather than a small reasoning-token budget.
+
+\subsection{Balanced pilot}
+The model solved \PilotCorrect{} pilot requests (\PilotAccuracy{}). All 60 requests completed at the inference layer and none had an operational error. Mean generation latency was \PilotMeanLatency{} seconds, the median was \PilotMedianLatency{} seconds, and mean completion length was \PilotMeanTokens{} tokens. Two responses reached the generation ceiling and did not contain a complete final grid.
+
+\begin{table}[H]
+\centering
+\caption{Pilot accuracy by difficulty. Intervals are Wilson 95\% confidence intervals.}
+\label{tab:pilot-difficulty}
+\begin{tabular}{lrrr}
+\toprule
+Difficulty & Correct & Accuracy (\%) & 95\% CI (\%) \\
+\midrule
+\input{generated/pilot_difficulty_rows.tex}%
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  xbar, xmin=0, xmax=105, width=0.82\linewidth, height=5.6cm,
+  xlabel={Accuracy (\%)}, symbolic y coords={medium,hard,easy},
+  ytick=data, bar width=16pt, nodes near coords,
+  nodes near coords style={font=\small,/pgf/number format/fixed,/pgf/number format/precision=1},
+  axis line style={draw=black!55}, tick style={draw=black!55},
+  ymajorgrids=true, grid style={black!10},
+]
+\addplot+[fill=accent,draw=accent] table[x=accuracy,y=label] {generated/pilot_difficulty.dat};
+\end{axis}
+\end{tikzpicture}
+\caption{Pilot accuracy by difficulty ($n=20$ per tier).}
+\label{fig:pilot-difficulty}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Pilot accuracy by representation.}
+\label{tab:pilot-representation}
+\begin{tabular}{lrrr}
+\toprule
+Representation & Correct & Accuracy (\%) & 95\% CI (\%) \\
+\midrule
+\input{generated/pilot_representation_rows.tex}%
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  xbar, xmin=0, xmax=105, width=0.88\linewidth, height=6.2cm,
+  xlabel={Accuracy (\%)}, symbolic y coords={uppercase-latin,greek-letters,emoji,arabic-digits},
+  ytick=data, bar width=13pt, nodes near coords,
+  nodes near coords style={font=\small,/pgf/number format/fixed,/pgf/number format/precision=1},
+  axis line style={draw=black!55}, tick style={draw=black!55},
+  xmajorgrids=true, grid style={black!10},
+]
+\addplot+[fill=accentlight,draw=accent] table[x=accuracy,y=label] {generated/pilot_representation.dat};
+\end{axis}
+\end{tikzpicture}
+\caption{Pilot accuracy by representation ($n=15$ per representation).}
+\label{fig:pilot-representation}
+\end{figure}
+
+Arabic digits had the highest pilot accuracy at 14/15, followed by emoji at 13/15. Greek and uppercase Latin each yielded 10/15. Because every representation used the same balanced set of five puzzles per tier, these differences are not caused by a different difficulty composition. Difficulty accuracy was 20/20 for easy, 13/20 for medium, and 14/20 for hard. The medium-hard ordering in this 20-item-per-tier sample was not monotonic.
+
+\subsection{Completed main-benchmark shard}
+The completed first main shard contains 101 deterministically assigned requests from the frozen 540-request benchmark. GPT-OSS-120B solved \MainPartOneCorrect{} requests (\MainPartOneAccuracy{}) with no operational failures. Mean and median generation latency were \MainPartOneMeanLatency{} and \MainPartOneMedianLatency{} seconds. Six responses reached the generation ceiling.
+
+\begin{table}[H]
+\centering
+\caption{Accuracy in completed main-benchmark shard 1. Shard allocation is deterministic and group sizes are unequal.}
+\label{tab:main-one-difficulty}
+\begin{tabular}{lrrr}
+\toprule
+Difficulty & Correct & Accuracy (\%) & 95\% CI (\%) \\
+\midrule
+\input{generated/main_part1_difficulty_rows.tex}%
+\end{tabular}
+\end{table}
+
+The shard contained 34 easy, 27 medium, and 40 hard requests. Accuracy was 31/34, 20/27, and 18/40, respectively. Representation-specific shard counts ranged from 9 to 16, so family comparisons are reserved for the complete benchmark.
+
+\section{Discussion}
+The completed pilot demonstrates that GPT-OSS-120B can solve Sudoku reliably under several symbol systems while still exhibiting representation-dependent failures. The model solved every easy pilot item, showing that the generation and evaluation pipeline can produce exact grids rather than merely plausible completions. The lower accuracy for Greek and uppercase Latin than for Arabic digits is consistent with sensitivity to value labels under a controlled, balanced puzzle set.
+
+The emoji result was closer to Arabic than to the two letter alphabets. Consequently, the observed ordering cannot be summarized as a simple Unicode penalty. Greek letters are Unicode symbols, but emoji also require non-ASCII handling and achieved higher pilot accuracy. Likewise, the equal Greek and uppercase-Latin results show that non-ASCII encoding alone is not necessary for reduced accuracy. Later token-length, binding, and input/output-cross experiments are designed to distinguish these mechanisms.
+
+Difficulty effects were clear for easy puzzles but not monotonic between medium and hard in the pilot. The pilot contains only 20 observations per tier, and individual puzzle demands can dominate such group comparisons. The completed first main shard showed the expected separation more clearly: easy accuracy exceeded medium accuracy, which exceeded hard accuracy. Full benchmark aggregation is required before estimating representation effects across all 60 main puzzles.
+
+Long hidden analyses imposed substantial computational cost. Pilot responses averaged more than four minutes and approximately 46,944 completion tokens, while some medium requests took over ten minutes. Two pilot responses and six first-shard responses exhausted the 131,072-token ceiling. These were model-output failures rather than infrastructure failures: the backend completed every recorded request, and no saved qualification, pilot, or first-shard request had an operational error. The distinction matters because increasing scheduler wall-time permits long requests to finish, whereas increasing an already exhausted generation ceiling would change the inference protocol.
+
+The present evidence is specific to one model, one prompt family, and $9\times9$ Sudoku. It establishes sensitivity to logically irrelevant renaming in the balanced pilot, but it does not by itself identify whether the cause is input decoding, binding, constraint reasoning, or output encoding. Those causal distinctions require the preregistered mechanism experiments.
+
+\section{Conclusion}
+This work implements an exactly scored test of representation invariance in LLM Sudoku solving. GPT-OSS-120B passed all qualification requests and solved 47 of 60 balanced pilot requests without operational failures. Accuracy differed across bijective representations of the same puzzle set: 14/15 for Arabic digits, 13/15 for emoji, and 10/15 for both Greek and uppercase Latin. The completed first main shard added 101 evaluated requests and showed decreasing accuracy from easy to medium to hard puzzles. These findings demonstrate that successful Sudoku solving by GPT-OSS-120B is not fully invariant to value renaming. The remaining main shards and mechanism experiments will determine the size and source of that dependence across the complete frozen benchmark.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
