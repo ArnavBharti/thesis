@@ -1,5 +1,5 @@
 {
-  "run_id": "qwen-27b-v1",
+  "run_id": "qwen-3.8-27b-v1",
   "dataset_path": "../data/puzzles.jsonl",
   "output_directory": "../experiment_outputs",
   "master_seed": 20260826,
@@ -11,11 +11,11 @@
   },
   "models": [
     {
-      "name": "qwen-27b-local",
-      "model_id": "Qwen/Qwen3.8-27B",
-      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "name": "qwen-3.8-27b-local",
+      "model_id": "Qwen/Qwen3.8-27B-FP8",
+      "revision": "017b9c7af6b5689d5dd426a76e0bc077eb5ca20a",
       "backend": "vllm",
-      "dtype": "bfloat16",
+      "dtype": "auto",
       "tensor_parallel_size": 1,
       "trust_remote_code": false,
       "local_files_only": true,
@@ -23,12 +23,14 @@
         "partition": "gpu_h100_4",
         "gpus": 1,
         "cpus": 12,
-        "memory": "192G",
+        "memory": "96G",
         "time_limit": "0-01:00"
       },
       "extra": {
         "chat_template": {
-          "reasoning_effort": "medium"
+          "enable_thinking": true,
+          "preserve_thinking": false,
+          "reasoning_effort": "xhigh"
         },
         "reasoning_output": "think_tags",
         "vllm": {
