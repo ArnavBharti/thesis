@@ -1,4 +1,6 @@
 tmp/
+.env
+**/.env
 paper/*.aux
 paper/*.bbl
 paper/*.blg

@@ -39,8 +39,8 @@ The `kudhru` HPC account is shared by multiple people.
 - Inspecting files, logs, and scheduler state is allowed.
 - Run inference only through numbered Python scripts submitted to Slurm.
 - Never run inference, model loading, package installation, compilation, or other heavy work on the login node.
-- The user performs model downloads manually. Do not download models unless the user explicitly authorizes that specific download.
-- Run thesis GPU jobs one at a time. `afterok` dependency chains are the preferred way to queue sequential work.
+- Do not download models unless the user explicitly authorizes that specific download. Downloads must use `02_download_models.py` inside an interactive CPU compute allocation, never on the login node.
+- Independent thesis GPU jobs may run concurrently. Use Slurm dependencies only when an actual data or protocol dependency exists; do not serialize unrelated experiments.
 - Before every GPU submission, tell the user the model, partition/GPU type, GPU count, CPU count, memory, and wall-time.
 - Never run OpenRouter models unless the user explicitly requests it.
 - Do not touch unrelated jobs, even if they block this workflow through shared-account QOS or fair-share limits.
@@ -53,7 +53,7 @@ ssh thesis 'squeue --noheader -j JOB_ID -o "%i|%j|%T|%M|%l|%E|%R"; sacct -j JOB_
 
 Use `squeue --start -j JOB_ID` only as an estimate; it may change. Ordinary users cannot legitimately raise priority. Accurate, shorter wall-times may improve backfill. Higher-priority QOS or reservations require HPC administrator approval. Do not use unauthorized QOS, partition, nice, or priority changes.
 
-## Current model and resources
+## Current models and resources
 
 The paper is currently being completed with GPT-OSS 120B:
 
@@ -70,6 +70,23 @@ The paper is currently being completed with GPT-OSS 120B:
 Do not describe 192 GB as the GPT-OSS allocation; the committed profile requests 96 GB.
 
 Reasoning must not appear in the final response, but hidden reasoning tokens may be used internally. The earlier error was treating reasoning as a small output-token budget rather than bounding execution by time.
+
+Qwen3.8-27B-FP8 is the candidate replication model and is isolated from the frozen GPT-OSS configuration:
+
+- Config: `config/qwen-27b.json`
+- Profile: `qwen-3.8-27b-local`
+- Model: `Qwen/Qwen3.8-27B-FP8`
+- Revision: `017b9c7af6b5689d5dd426a76e0bc077eb5ca20a`
+- Reasoning: thinking enabled at `xhigh`; thinking tags removed before scoring
+- Partition: `gpu_h100_4`
+- GPUs: 1 H100
+- CPUs: 12
+- Memory: 96 GB
+- Diagnostic wall-time: 1 hour
+
+The Qwen profile has its own run ID, `qwen-3.8-27b-v1`. Do not add it to or otherwise change `config/local-models.json`, because that configuration is part of the frozen GPT-OSS protocol. Screen Qwen with one easy, medium, and hard timing puzzle, then qualification and the 60-request pilot. Do not run a Qwen main benchmark unless those results justify the additional inference.
+
+The authorized token file is local at `src/.env`. It is ignored by Git and must remain mode `0600`. When explicitly authorized, copy it only to `/scratch/kudhru/arnavbharti/src/.env`, set the server copy to mode `0600`, source it without printing it, and never include its contents in logs or tool output.
 
 ## Completed experimental evidence
 
@@ -108,18 +125,23 @@ Completed main parts:
 - Part 1: 101/101, completion marker present. Initial job `351374` timed out after 82 results; resume job `352226` completed.
 - Part 2: 89/89, completion marker present. Job `352227` completed in 6:37:44 with exit `0:0`.
 - Part 3: 77/77, completion marker present. Job `353501` completed in 6:31:39 with exit `0:0`.
+- Part 4: 108/108, completion marker present. Initial job `353504` timed out after 97 results; resume job `356757` completed the remaining requests.
+- Part 5: 86/86, completion marker present. The successful replacement run completed with exit `0:0`.
+- Part 6: 79/79, completion marker present. Job `359393` completed in 7:16:03 with exit `0:0`.
 
-Part 4 job `353504` timed out after 8:00:08 with 97/108 results saved. This was a wall-time exhaustion, not a model, CUDA, Python, vLLM, or memory failure. Results are idempotently checkpointed in the JSONL file.
+The complete main benchmark contains 540/540 saved requests and valid completion markers for all six parts. Part 4 job `353504` timed out after 8:00:08 with 97/108 results saved; this was wall-time exhaustion, not a model, CUDA, Python, vLLM, or memory failure. The resume reused those checkpointed results.
 
-## Active queue state (recorded 2026-09-21)
+## Active queue state (recorded 2026-09-23 23:28 IST)
 
-The current replacement chain is:
+The remaining GPT-OSS mechanism experiments are independently queued with no dependencies. Each requests one H100, 12 CPUs, and 96 GB RAM:
 
-- Part 4 resume: job `356757`, expected name `sdk-gpt-oss-120b-local-exp4-part-004-of-006`, 2-hour wall-time, 11 requests remaining at submission.
-- Part 5: job `356758`, expected name `sdk-gpt-oss-120b-local-exp4-part-005-of-006`, 8-hour wall-time, dependency `afterok:356757`.
-- Part 6: job `356759`, expected name `sdk-gpt-oss-120b-local-exp4-part-006-of-006`, 8-hour wall-time, dependency `afterok:356758`.
+- Input/output cross: job `361279`, expected name `sdk-gpt-oss-120b-local-exp6-input-output`, 5-hour wall-time, pending for resources.
+- Token length: job `361280`, expected name `sdk-gpt-oss-120b-local-exp7-token-length`, 6-hour wall-time, pending for priority.
+- Binding: job `361281`, expected name `sdk-gpt-oss-120b-local-exp8-binding`, 11-hour wall-time, pending for priority.
+- Prompt/output ablations: job `361282`, expected name `sdk-gpt-oss-120b-local-exp9-ablations`, 15-hour wall-time, pending for priority.
+- Revisions: job `361283`, expected name `sdk-gpt-oss-120b-local-exp10-revisions`, 10-hour wall-time, pending for priority.
 
-At the last check, job `356757` was pending for priority with an estimated start of `2026-09-22T16:11:24`. Never assume this remains current; query Slurm first.
+The dependency fields were deliberately cleared after the user authorized concurrent independent jobs. Never assume the recorded states remain current; query Slurm first.
 
 Superseded pending jobs `356607`, `356608`, and `356609` were safely cancelled after exact name verification. Earlier blocked jobs `353505` and `353506` were also safely cancelled. Do not operate on these completed/cancelled IDs.
 
@@ -146,7 +168,7 @@ python 07_run_main_benchmark.py gpt-oss-120b-local \
 
 Execution is idempotent: existing request IDs in the shard JSONL are skipped. If a part times out, determine the exact eligible count and saved count before choosing a resume wall-time. Do not delete partial results.
 
-When manually chaining jobs, generate the `.sbatch` file with `--dry-run`, submit with `sbatch --parsable --dependency=afterok:JOB_ID`, record every returned ID, and verify names, resources, and dependencies with `squeue`. Avoid a race in which two GPU jobs can start simultaneously.
+When jobs truly depend on one another, generate the `.sbatch` file with `--dry-run`, submit with `sbatch --parsable --dependency=afterok:JOB_ID`, record every returned ID, and verify names, resources, and dependencies with `squeue`. Independent experiments should be submitted without dependencies and may run concurrently.
 
 ## Local development requirements
 
@@ -179,7 +201,7 @@ The paper sources are local under `paper/`:
 
 Commit `0ff0d34` introduced the initial paper draft and generated tables. It contains only evidence available at that time (pilot and completed main part 1). Update results only from completed, verified experiment evidence. Do not label results as “preliminary”; write final-draft technical English while leaving unavailable results unwritten. Do not invent findings.
 
-After the remaining main parts complete, copy or synchronize the relevant result evidence locally, regenerate tables/plots, compile the PDF, and visually inspect every page. Keep raw copied server evidence under the ignored `tmp/` tree unless the repository explicitly requires otherwise.
+The main benchmark is complete. Copy or synchronize its verified result evidence locally, regenerate tables and plots for all six parts, compile the PDF, and visually inspect every page. Keep raw copied server evidence under the ignored `tmp/` tree unless the repository explicitly requires otherwise.
 
 ## Historical model evidence
 
@@ -190,7 +212,7 @@ Nemotron diagnostics established that formatting constraints alone did not creat
 - Reasoning-off sampled: 0/15.
 - Reasoning-off constrained greedy: 0/15; correct format but invalid grids and changed clues.
 
-These results are useful methodological context, but the current main benchmark is GPT-OSS. Do not restart Nemotron, Mistral, Qwen, or OpenRouter work without explicit user direction. Qwen job `347025` was previously cancelled safely while pending.
+These results are useful methodological context, but the completed main benchmark and active mechanism experiments use GPT-OSS. Do not restart Nemotron, Mistral, or OpenRouter work without explicit user direction. Qwen3.8-27B-FP8 screening is now explicitly authorized under its isolated configuration. Older Qwen job `347025` was previously cancelled safely while pending.
 
 ## Interpretation rules
 
