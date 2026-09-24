@@ -131,15 +131,41 @@ Completed main parts:
 
 The complete main benchmark contains 540/540 saved requests and valid completion markers for all six parts. Part 4 job `353504` timed out after 8:00:08 with 97/108 results saved; this was wall-time exhaustion, not a model, CUDA, Python, vLLM, or memory failure. The resume reused those checkpointed results.
 
-## Active queue state (recorded 2026-09-23 23:28 IST)
+## Completed mechanism evidence
+
+The input/output-cross experiment (Step 8, job `361279`) completed 135/135
+conditions with zero operational failures. Overall accuracy was 120/135. The
+four 15-puzzle Sudoku conditions scored 12/15 for Arabic-to-Arabic, 12/15 for
+Greek-to-Greek, 10/15 for Greek-to-Arabic, and 11/15 for Arabic-to-Greek. All
+75 no-Sudoku controls were correct. Across the four Sudoku conditions, easy,
+medium, and hard accuracy was 19/20, 18/20, and 8/20. Two hard requests
+truncated. These findings do not support a simple Greek-output penalty; the
+cross-mapping conditions were weaker, but the small sample does not isolate a
+single causal mechanism.
+
+The token-length experiment (Step 9, job `361280`) completed 45/45 conditions
+with zero operational failures. One-, two-, and three-token labels scored 9/15,
+13/15, and 10/15. Difficulty accuracy was 15/15 easy, 13/15 medium, and 4/15
+hard, with five truncations. The preregistered multivariable fit had a singular
+information matrix because token, byte, code-point, and prompt-length measures
+co-varied in the construction. Report the descriptive non-monotonic result; do
+not claim an independently identified token-length effect.
+
+The complete main benchmark, qualification, pilot, Step 8, and Step 9 evidence
+is backed up under `evidence/`. Raw JSONL evidence is stored losslessly as
+gzip-compressed `.jsonl.gz` files.
+
+## Active queue state (recorded 2026-09-24 09:18 IST)
 
 The remaining GPT-OSS mechanism experiments are independently queued with no dependencies. Each requests one H100, 12 CPUs, and 96 GB RAM:
 
-- Input/output cross: job `361279`, expected name `sdk-gpt-oss-120b-local-exp6-input-output`, 5-hour wall-time, pending for resources.
-- Token length: job `361280`, expected name `sdk-gpt-oss-120b-local-exp7-token-length`, 6-hour wall-time, pending for priority.
-- Binding: job `361281`, expected name `sdk-gpt-oss-120b-local-exp8-binding`, 11-hour wall-time, pending for priority.
+- Binding: job `361281`, expected name `sdk-gpt-oss-120b-local-exp8-binding`, 11-hour wall-time, running on `gpunode5`.
 - Prompt/output ablations: job `361282`, expected name `sdk-gpt-oss-120b-local-exp9-ablations`, 15-hour wall-time, pending for priority.
 - Revisions: job `361283`, expected name `sdk-gpt-oss-120b-local-exp10-revisions`, 10-hour wall-time, pending for priority.
+
+The Qwen timing jobs `361306`, `361307`, and `361308` are independently queued
+for easy, medium, and hard puzzles. At the recorded check they were pending due
+to the per-user CPU QOS limit.
 
 The dependency fields were deliberately cleared after the user authorized concurrent independent jobs. Never assume the recorded states remain current; query Slurm first.
 
