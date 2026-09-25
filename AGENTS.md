@@ -71,20 +71,22 @@ Do not describe 192 GB as the GPT-OSS allocation; the committed profile requests
 
 Reasoning must not appear in the final response, but hidden reasoning tokens may be used internally. The earlier error was treating reasoning as a small output-token budget rather than bounding execution by time.
 
-Qwen3.8-27B-FP8 is the candidate replication model and is isolated from the frozen GPT-OSS configuration:
+Qwen3.8-27B-FP8 is the candidate replication model and is isolated from the frozen GPT-OSS configuration. The first screen used `config/qwen-27b.json`; the current larger-context screen and pilot use `config/qwen-27b-v2.json`:
 
-- Config: `config/qwen-27b.json`
+- Config: `config/qwen-27b-v2.json`
 - Profile: `qwen-3.8-27b-local`
 - Model: `Qwen/Qwen3.8-27B-FP8`
 - Revision: `017b9c7af6b5689d5dd426a76e0bc077eb5ca20a`
 - Reasoning: thinking enabled at `xhigh`; thinking tags removed before scoring
+- Context and output ceilings: 131,072 tokens each, matching GPT-OSS
+- Effective sampling: temperature 1, top-p 1, matching GPT-OSS
 - Partition: `gpu_h100_4`
 - GPUs: 1 H100
 - CPUs: 12
 - Memory: 96 GB
-- Diagnostic wall-time: 1 hour
+- Diagnostic and qualification wall-time: 2 hours
 
-The Qwen profile has its own run ID, `qwen-3.8-27b-v1`. Do not add it to or otherwise change `config/local-models.json`, because that configuration is part of the frozen GPT-OSS protocol. Screen Qwen with one easy, medium, and hard timing puzzle, then qualification and the 60-request pilot. Do not run a Qwen main benchmark unless those results justify the additional inference.
+The current Qwen profile has run ID `qwen-3.8-27b-v2`. Do not add it to or otherwise change `config/local-models.json`, because that configuration is part of the frozen GPT-OSS protocol. The qualification threshold for this Qwen screen is 3/5 easy puzzles with zero operational failures; the default 5/5 rule remains unchanged for other runs. Do not run a Qwen main benchmark unless screening and pilot results justify the additional inference.
 
 The authorized token file is local at `src/.env`. It is ignored by Git and must remain mode `0600`. When explicitly authorized, copy it only to `/scratch/kudhru/arnavbharti/src/.env`, set the server copy to mode `0600`, source it without printing it, and never include its contents in logs or tool output.
 
@@ -169,19 +171,32 @@ conditions that generated identical default prompts independently scored 5/9,
 6/9, 5/9, and 7/9, demonstrating sampling variability at this scale. Do not
 treat small ablation differences as grounds to change the frozen protocol.
 
+The self-revision experiment (Step 12, job `361283`) completed 108/108 records
+with a valid completion marker and zero request-level operational failures.
+Correct counts were 18/27 for one pass, 19/27 for one self-revision, 23/27 for
+two self-revisions, and 22/27 for checker-guided revision. These 27-request
+condition results are exploratory and do not establish a universal revision
+benefit. The Step 12 evidence has not yet been added to the local backup.
+
+Qwen's first 32,768-token timing screen completed: easy was correct in 80.48
+inference seconds; medium and hard were incorrect after 32,425 and 32,426
+generated tokens respectively. In both failures, prompt plus generation filled
+the entire 32,768-token context, so they are not clean Sudoku-accuracy tests.
+
 The complete main benchmark, qualification, pilot, and Steps 8--11 evidence is
 backed up under `evidence/`. Raw JSONL evidence is stored losslessly as
 gzip-compressed `.jsonl.gz` files.
 
-## Active queue state (recorded 2026-09-25 10:07 IST)
+## Active queue state (recorded 2026-09-25 17:42 IST)
 
-The remaining GPT-OSS mechanism experiment requests one H100, 12 CPUs, and 96 GB RAM:
+The isolated Qwen v2 jobs are queued with actual dependencies:
 
-- Revisions: job `361283`, expected name `sdk-gpt-oss-120b-local-exp10-revisions`, 10-hour wall-time, running on `gpunode6`; 46/108 records and no completion marker at the recorded check.
+- Medium timing rerun: `363803`, expected name `sdk-qwen-3-8-27b-local-timing-medium`, 2-hour wall-time, pending under the shared-account CPU QOS limit. The scheduler estimated 19:40 IST; this is not a guarantee.
+- Qualification: `363811`, expected name `sdk-qwen-3-8-27b-local-qualification`, 2-hour wall-time, `afterok:363803`. It uses `--min-correct 3`.
+- 60-request pilot: `363814`, expected name `sdk-qwen-3-8-27b-local-exp2-pilot`, 12-hour wall-time, `afterok:363811`. The numbered pilot script checks qualification status again at execution.
 
-The Qwen timing jobs `361306`, `361307`, and `361308` are independently queued
-for easy, medium, and hard puzzles. At the recorded check they were pending due
-to the per-user CPU QOS limit.
+Each requests one H100 in `gpu_h100_4`, 12 CPUs, and 96 GB RAM. The older Qwen
+jobs `361306`, `361307`, and `361308` have completed; do not cancel them.
 
 The dependency fields were deliberately cleared after the user authorized concurrent independent jobs. Never assume the recorded states remain current; query Slurm first.
 
