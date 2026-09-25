@@ -222,13 +222,14 @@ python 03_check_setup.py --config config/qwen-27b.json --model qwen-3.8-27b-loca
 ## Step 4: screen the models
 
 The screen uses the same reproducibly selected easy, medium, and hard puzzle for
-each model. The 131,072-token ceiling prevents unbounded generation; the Slurm
-wall-time is the actual time limit. GPT-OSS pilot resumptions use a 12-hour
-submission override because observed medium puzzles can take 9--13 minutes each;
-the frozen model configuration and Qwen diagnostic limit remain one hour.
-Only the separated final grid is scored.
-Timing run IDs use `natural-timing-v2`; the puzzle-selection namespace remains
-frozen so these runs use the same three diagnostic puzzles as earlier attempts.
+each model. GPT-OSS has a 131,072-token context. Qwen's first screen had a
+32,768-token context; its medium and hard requests filled that context before
+producing a final grid. The isolated Qwen v2 configuration tests a 65,536-token
+context and uses GPT-OSS's effective temperature 1 and top-p 1. Its reasoning
+template remains model-specific. The Slurm wall-time is a safety ceiling, not
+a substitute for the context limit. Only the separated final grid is scored.
+The v3 timing entry point preserves the same puzzle-selection namespace while
+writing to new result paths.
 
 Run the entire block. The helper guarantees sequential GPU use:
 
@@ -237,9 +238,7 @@ run_and_wait python diagnose_timing.py gpt-oss-120b-local easy
 run_and_wait python diagnose_timing.py gpt-oss-120b-local medium
 run_and_wait python diagnose_timing.py gpt-oss-120b-local hard
 
-run_and_wait python diagnose_timing.py qwen-3.8-27b-local easy --config config/qwen-27b.json
-run_and_wait python diagnose_timing.py qwen-3.8-27b-local medium --config config/qwen-27b.json
-run_and_wait python diagnose_timing.py qwen-3.8-27b-local hard --config config/qwen-27b.json
+run_and_wait python 03_run_timing_diagnostic.py qwen-3.8-27b-local medium --config config/qwen-27b-v2.json
 ```
 
 This is a diagnostic, not a requirement to solve every puzzle. Performance such as
@@ -252,7 +251,7 @@ Run only after reviewing the three-puzzle screen:
 
 ```bash
 run_and_wait python 04_qualify_model.py gpt-oss-120b-local --config config/local-models.json
-run_and_wait python 04_qualify_model.py qwen-3.8-27b-local --config config/qwen-27b.json
+run_and_wait python 04_qualify_model.py qwen-3.8-27b-local --config config/qwen-27b-v2.json
 ```
 
 An exit code of 1 can represent a missed accuracy threshold rather than a CUDA,
@@ -264,7 +263,7 @@ Run one model at a time:
 
 ```bash
 run_and_wait python 05_run_pilot.py gpt-oss-120b-local --config config/local-models.json --wall-time 0-12:00
-run_and_wait python 05_run_pilot.py qwen-3.8-27b-local --config config/qwen-27b.json
+run_and_wait python 05_run_pilot.py qwen-3.8-27b-local --config config/qwen-27b-v2.json --wall-time 0-12:00
 ```
 
 ## Step 6: freeze the protocol

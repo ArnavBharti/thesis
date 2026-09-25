@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 class NumberedWorkflowTests(unittest.TestCase):
     def test_every_numbered_script_has_working_help(self) -> None:
         scripts = sorted(ROOT.glob("[0-9][0-9]_*.py"))
-        self.assertEqual(len(scripts), 14)
+        self.assertEqual(len(scripts), 15)
         for script in scripts:
             result = subprocess.run(
                 [sys.executable, str(script), "--help"],
