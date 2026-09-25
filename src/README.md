@@ -224,8 +224,9 @@ python 03_check_setup.py --config config/qwen-27b.json --model qwen-3.8-27b-loca
 The screen uses the same reproducibly selected easy, medium, and hard puzzle for
 each model. GPT-OSS has a 131,072-token context. Qwen's first screen had a
 32,768-token context; its medium and hard requests filled that context before
-producing a final grid. The isolated Qwen v2 configuration tests a 65,536-token
-context and uses GPT-OSS's effective temperature 1 and top-p 1. Its reasoning
+producing a final grid. The isolated Qwen v2 configuration first tests the
+same 131,072-token context as GPT-OSS and uses its effective temperature 1 and
+top-p 1. This larger context must fit on Sharanga's single H100. Its reasoning
 template remains model-specific. The Slurm wall-time is a safety ceiling, not
 a substitute for the context limit. Only the separated final grid is scored.
 The v3 timing entry point preserves the same puzzle-selection namespace while

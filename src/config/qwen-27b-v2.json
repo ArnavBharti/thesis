@@ -4,7 +4,7 @@
   "output_directory": "../experiment_outputs",
   "master_seed": 20260826,
   "inference": {
-    "max_new_tokens": 65536,
+    "max_new_tokens": 131072,
     "temperature": 1,
     "top_p": 1,
     "seed": 20260826
@@ -34,7 +34,7 @@
         },
         "reasoning_output": "think_tags",
         "vllm": {
-          "max_model_len": 65536,
+          "max_model_len": 131072,
           "gpu_memory_utilization": 0.9
         }
       },
