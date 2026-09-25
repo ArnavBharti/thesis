@@ -24,6 +24,19 @@ class AnalysisTests(unittest.TestCase):
         ]
         self.assertTrue(qualification_summary(values)["passed"])
 
+    def test_qualification_threshold_can_be_three_for_qwen_screen(self) -> None:
+        values = [
+            {
+                "request": {"experiment": "qualification"},
+                "evaluation": {"outcome": "CORRECT" if index < 3 else "INCORRECT"},
+            }
+            for index in range(5)
+        ]
+        self.assertFalse(qualification_summary(values)["passed"])
+        self.assertTrue(qualification_summary(values, min_correct=3)["passed"])
+        values[4]["evaluation"]["outcome"] = "NOT_EVALUATED"
+        self.assertFalse(qualification_summary(values, min_correct=3)["passed"])
+
     def test_revision_totals_exclude_a_reused_initial_call(self) -> None:
         values = [
             {

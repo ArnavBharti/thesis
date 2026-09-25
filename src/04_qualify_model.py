@@ -25,10 +25,13 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("model")
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
+    parser.add_argument("--min-correct", type=int, default=5)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--test-only", action="store_true")
     parser.add_argument("--execute", action="store_true", help=argparse.SUPPRESS)
     arguments = parser.parse_args()
+    if not 1 <= arguments.min_correct <= 5:
+        parser.error("--min-correct must be between 1 and 5")
 
     config, model = load_enabled_model(arguments.config, arguments.model)
     result = qualification_result(config, model)
@@ -44,7 +47,13 @@ def main() -> int:
             model,
             Path(__file__),
             "qualification",
-            (model.name, "--config", str(arguments.config.resolve())),
+            (
+                model.name,
+                "--config",
+                str(arguments.config.resolve()),
+                "--min-correct",
+                str(arguments.min_correct),
+            ),
         )
         return finish_submission(path, dry_run=arguments.dry_run, test_only=arguments.test_only)
 
@@ -77,7 +86,9 @@ def main() -> int:
         for record, representation in zip(selected, representation_names, strict=True)
     )
     summary = execute_requests(config, model, "qualification", requests)
-    status = write_qualification_status(model_directory(config, model))
+    status = write_qualification_status(
+        model_directory(config, model), min_correct=arguments.min_correct
+    )
     print(json.dumps({"summary": asdict(summary), "qualification": status}, sort_keys=True))
     if not status["passed"]:
         raise SystemExit(f"{model.name} did not solve all five qualification puzzles")

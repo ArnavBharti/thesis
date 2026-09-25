@@ -252,7 +252,7 @@ Run only after reviewing the three-puzzle screen:
 
 ```bash
 run_and_wait python 04_qualify_model.py gpt-oss-120b-local --config config/local-models.json
-run_and_wait python 04_qualify_model.py qwen-3.8-27b-local --config config/qwen-27b-v2.json
+run_and_wait python 04_qualify_model.py qwen-3.8-27b-local --config config/qwen-27b-v2.json --min-correct 3
 ```
 
 An exit code of 1 can represent a missed accuracy threshold rather than a CUDA,

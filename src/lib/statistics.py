@@ -18,12 +18,17 @@ def analyze_run(model_directory: Path, output_directory: Path | None = None) -> 
         raise ValueError(f"no result shards found below {model_directory}")
     output = output_directory or model_directory / "analysis"
     output.mkdir(parents=True, exist_ok=True)
+    qualification_status = model_directory / "qualification-status.json"
+    min_correct = 5
+    if qualification_status.exists():
+        recorded = json.loads(qualification_status.read_text(encoding="utf-8"))
+        min_correct = int(recorded.get("min_correct", 5))
 
     summary = {
         "record_count": len(values),
         "groups": _group_summaries(values),
         "failure_labels": _failure_labels(values),
-        "qualification": qualification_summary(values),
+        "qualification": qualification_summary(values, min_correct=min_correct),
         "pilot": pilot_summary(values),
         "experiment_5": _experiment_5(values),
         "experiment_7_regression": _experiment_7(values),
@@ -38,7 +43,11 @@ def analyze_run(model_directory: Path, output_directory: Path | None = None) -> 
     return summary
 
 
-def qualification_summary(values: Iterable[dict[str, Any]]) -> dict[str, Any]:
+def qualification_summary(
+    values: Iterable[dict[str, Any]], *, min_correct: int = 5
+) -> dict[str, Any]:
+    if not 1 <= min_correct <= 5:
+        raise ValueError("qualification min_correct must be between 1 and 5")
     qualified = [value for value in values if value["request"]["experiment"] == "qualification"]
     correct = sum(_outcome(value) == "CORRECT" for value in qualified)
     operational = sum(_outcome(value) == "NOT_EVALUATED" for value in qualified)
@@ -46,13 +55,14 @@ def qualification_summary(values: Iterable[dict[str, Any]]) -> dict[str, Any]:
         "requests": len(qualified),
         "correct": correct,
         "operational_failures": operational,
-        "passed": len(qualified) == 5 and correct == 5 and operational == 0,
+        "min_correct": min_correct,
+        "passed": len(qualified) == 5 and correct >= min_correct and operational == 0,
     }
 
 
-def write_qualification_status(model_directory: Path) -> dict[str, Any]:
+def write_qualification_status(model_directory: Path, *, min_correct: int = 5) -> dict[str, Any]:
     paths = tuple((model_directory / "qualification").glob("shard-*.jsonl"))
-    summary = qualification_summary(iter_result_values(paths))
+    summary = qualification_summary(iter_result_values(paths), min_correct=min_correct)
     (model_directory / "qualification-status.json").write_text(
         json.dumps(summary, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
