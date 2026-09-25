@@ -1,0 +1,123 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=22mm]{geometry}
+\usepackage{libertinus}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{needspace}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!45!black}
+
+\definecolor{done}{HTML}{176246}
+\definecolor{pending}{HTML}{915400}
+\definecolor{open}{HTML}{8B3030}
+\newcommand{\Done}{\textcolor{done}{\textsf{[ADDRESSED]}}}
+\newcommand{\Partial}{\textcolor{pending}{\textsf{[PARTLY ADDRESSED]}}}
+\newcommand{\Planned}{\textcolor{pending}{\textsf{[PLACEHOLDER: PLANNED]}}}
+\newcommand{\Open}{\textcolor{open}{\textsf{[PLACEHOLDER: NOT PLANNED]}}}
+\newcommand{\itemresponse}[4]{%
+  \Needspace{5\baselineskip}%
+  \par\vspace{0.65\baselineskip}%
+  \noindent\textbf{#1}\quad #2\par
+  \noindent\emph{Review point.} #3\par
+  \noindent\emph{Response.} #4\par
+}
+
+\title{Point-by-point response to the original Sudoku paper reviews}
+\author{Arnav Bharti}
+\date{25 September 2026}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Scope of this response.} The seven-page review PDF dated 8 July 2026 concerns the supplied 11-page original manuscript, \emph{Beyond Arabic Digits}, with several models and 6$\times$6, 9$\times$9, and 12$\times$12 Sudoku. The current first-degree thesis is a redesigned, frozen 9$\times$9 study centred on GPT-OSS-120B. Each substantive reviewer point below is mapped to the current thesis. The statuses distinguish completed work from recorded plans and requests outside the present protocol. They do not claim that the earlier submission was retroactively changed.
+
+\medskip
+\noindent\textbf{Status key.} \Done{} means the current design, experiment, or draft addresses the point. \Partial{} means only part is supported by completed evidence. \Planned{} marks work in the recorded workflow that is unfinished. \Open{} marks a requested extension with no approved experiment in the current protocol; the text identifies the decision needed. Scores, identity declarations, certification, and ethics-form answers are listed at the end because they contain no experimental action request.
+
+\section*{Reviewer 1}
+
+\itemresponse{R1-Summary (source p.~1)}{\Partial}{The earlier paper compared four models and multiple Sudoku sizes, then attributed lower transformed-symbol accuracy to symbol familiarity.}{The current thesis tests one pinned GPT-OSS checkpoint on 9$\times$9 puzzles and nine bijective alphabets. The main result is representation sensitivity (372/540 correct); the mechanism experiments do not establish a single familiarity cause. The old four-model and multi-size claims are not retained.}
+
+\itemresponse{R1-Strength 1 (pp.~1--2)}{\Done}{The question of abstract reasoning versus surface representation is interesting.}{The current research question asks whether a puzzle solved in Arabic remains solvable when its value labels change. The paired Arabic-retention analysis measures exactly that narrower question.}
+
+\itemresponse{R1-Strength 2 (p.~2)}{\Done}{Changing only symbols while fixing the underlying puzzle is a clean design.}{Each of the 60 frozen main puzzles appears under all nine alphabets. Clues, solution, prompt template, model revision, sampling settings, and evaluator are fixed across those requests.}
+
+\itemresponse{R1-Strength 3 (p.~2)}{\Partial}{The prior paper covered multiple models, sizes, symbol systems, and failure modes.}{The current main experiment covers nine symbol systems and records separate parse, clue, constraint, mapping, truncation, and operational outcomes. It intentionally uses one grid size and one selected model. \Open{} A crossed multi-model or multi-size extension has not been approved; it would require a separate protocol and compute decision.}
+
+\itemresponse{R1-Strength 4 (p.~2)}{\Partial}{The earlier methods and experiments were easy to follow.}{The current draft provides the dataset certificate, sample plan, fixed prompt and response contract, evaluator, protocol freeze, and numbered experiment methods. \Planned{} A final human readability pass has not been recorded as complete.}
+
+\itemresponse{R1-Weakness 1 (p.~2)}{\Done}{An observed symbol effect does not by itself prove reliance on token-level familiarity; Unicode, segmentation, decoding, and output could contribute.}{The causal claim in the original abstract (lines 24--26) is withdrawn. The current conclusion is limited to representation sensitivity in Sudoku. Completed controls include input/output crossing, 75 no-Sudoku symbol tasks, one-/two-/three-token neutral alphabets, arbitrary bindings, and format ablations. Their results rule out some simple explanations without identifying one exclusive mechanism. The token-length experiment was non-monotonic (9/15, 13/15, 10/15); its multivariable regression was singular and is not interpreted causally.}
+
+\itemresponse{R1-Weakness 2 (p.~2)}{\Done}{Model, grid size, prompt style, and sample count were changed together in the earlier study.}{The frozen main comparison holds model, 9$\times$9 size, prompt, settings, and the same 60 puzzles fixed while changing the alphabet. Later prompt and output variants are explicitly exploratory. The old DeepSeek-R1 12$\times$12 comparison is absent from the current claims.}
+
+\itemresponse{R1-Weakness 3 (p.~2)}{\Done}{Small 6$\times$6 Indic and 12$\times$12 DeepSeek samples did not warrant broad claims.}{Neither old result is used in the current thesis. The main result has 60 distinct puzzles per alphabet, stratified 20/20/20 by difficulty, with counts and Wilson intervals. Mechanism groups of 9 or 15 are described as exploratory or limited.}
+
+\itemresponse{R1-Weakness 4 (p.~2)}{\Done}{Sudoku findings should not be generalized to all LLM reasoning or promoted as a universal benchmark.}{The current conclusion concerns GPT-OSS Sudoku under bijective value renaming. \Open{} Replication on another formal reasoning task is outside the frozen protocol; a broad reasoning claim would require that evidence.}
+
+\itemresponse{R1-Comment 1 (p.~2)}{\Done}{Separate observations from hypotheses about why the effect occurs.}{The results report exact counts; the discussion labels input/output remapping, semantic conflict, and token effects as possible explanations with sample and identifiability limits.}
+
+\itemresponse{R1-Comment 2 (p.~2)}{\Planned}{Proofread awkward grammar, punctuation, and inconsistent terms throughout.}{The current draft is a new manuscript, so the quoted sentence from the older paper is not part of it. A complete author-led sentence-by-sentence proofreading pass and terminology check remains to be recorded before submission.}
+
+\section*{Reviewer 2}
+
+\itemresponse{R2-Summary and strength (p.~4)}{\Done}{The paper asks whether symbolic representation changes Sudoku performance, an important question.}{The revised study retains this core question and supplies a paired, balanced 540-request main experiment.}
+
+\itemresponse{R2-Weakness 1 (p.~4)}{\Planned}{The old related-work passage and other prose were hard to read and appeared unreviewed.}{The quoted passage is present at lines 107--113 of the supplied original paper. The current background was rewritten as connected technical prose; that passage is absent. A complete human proofreading pass is still pending, so this response does not claim that every writing issue has been eliminated.}
+
+\itemresponse{R2-Weakness 2 (p.~4)}{\Done}{Some old experiments failed with API errors and were submitted without retry.}{The current pipeline retries backend failures up to five times with exponential delays, labels unresolved ones \texttt{NOT\_EVALUATED}, and reports them separately. The frozen GPT-OSS main benchmark completed 540/540 with zero request-level operational failures. Scheduler timeouts in two main shards were resumed from saved results. The later ablation job wrote all 171 results and its completion marker before Slurm terminated backend teardown at its wall-time.}
+
+\itemresponse{R2-Weakness 3 (p.~4)}{\Done}{The old paper did not analyze the mechanism behind different solve rates.}{The current mechanism series measures Greek/Arabic input-output crossing (four Sudoku conditions and 75 basic symbol controls), neutral token-length alphabets, five uppercase binding permutations plus semantic conflicts, and 19 prompt/output variants. The evidence narrows explanations but does not identify a unique mechanism.}
+
+\itemresponse{R2-Weakness 4 (p.~4)}{\Partial}{Token membership and segmentation for studied symbols were not reported; the reviewer worried that multi-token symbols would corrupt input or output.}{The current code defines a pinned tokenizer registry for token IDs, token counts in isolation and after a space, UTF-8 bytes, code points, graphemes, and prompt costs. Unicode NFC and a reversible encode/decode test protect the abstract grid. A symbol split into several tokens is not automatically corrupted; its cost is measured. The one-/two-/three-token experiment completed. \Planned{} The final registry output and per-alphabet token/parse table await Step 13 after revision completion.}
+
+\itemresponse{R2-Weakness 5 (p.~4)}{\Done}{The earlier evaluation included dated models such as Gemini 1.5.}{The current selected checkpoint is pinned GPT-OSS-120B, screened on timing and qualification puzzles before the frozen benchmark. The earlier Gemini results are not part of this thesis's scored comparison. \Planned{} Qwen3.8-27B-FP8 timing jobs are queued as isolated replication screening; qualification and pilot runs depend on those results. No Qwen result is claimed here.}
+
+\itemresponse{R2-Comment (p.~4)}{\Planned}{Reread the entire manuscript for persistent readability problems.}{A final author-led reading and correction pass is still required. The PDF layout has been visually checked, but that does not establish sentence-level editorial quality.}
+
+\section*{Reviewer 3}
+
+\itemresponse{R3-Summary (p.~5)}{\Partial}{The older work used 6$\times$6, 9$\times$9, and 12$\times$12 grids, seven alphabets, four model families, and inferred reliance on token priors.}{The current work uses 9$\times$9, nine alphabets, and one selected model in the frozen main comparison. Its conclusion is limited to observed representation sensitivity and does not assert that token priors are the sole cause.}
+
+\itemresponse{R3-Strength 1 (pp.~5--6)}{\Done}{Bijective symbol changes are a natural robustness probe.}{The dataset, encoder, and evaluator keep the Sudoku solution structure fixed under each one-to-one mapping.}
+
+\itemresponse{R3-Strength 2 (pp.~5--6)}{\Done}{Separate correctness, rule violations, and parse failures.}{The evaluator reports clue, row, column, box, invalid-symbol, format, mapping, truncation, and operational labels separately; the paper reports main format and clue-preservation counts. \Planned{} The complete per-symbol failure table is reserved for final analysis.}
+
+\itemresponse{R3-Strength 3 (p.~6)}{\Open}{The prior study included several model families and an explicit CoT model.}{The current main study is deliberately single-model, using hidden Harmony reasoning and scoring only the final channel. No fully crossed direct-versus-CoT experiment is in the frozen protocol; one would require a separately approved extension.}
+
+\itemresponse{R3-Strength 4 (pp.~6--7)}{\Partial}{The old limitations discussed small samples and cloud-API drift.}{The current local, pinned checkpoint removes cloud-model drift from the main comparison, and the paper discusses small mechanism samples, token-feature collinearity, sampling variation, and termination. \Planned{} A dedicated final limitations pass should consolidate these points and the remaining scope limits.}
+
+\itemresponse{R3-Weakness 1 (p.~6)}{\Done}{Near-zero Arabic accuracy in hard and medium cases made old symbol comparisons hard to interpret.}{The current Arabic baseline is 20/20 easy, 14/20 medium, and 11/20 hard. The overall main tiers are 171/180, 121/180, and 80/180. Paired retention conditions on the 45 puzzles solved in Arabic, with exact paired tests, so transformed failures are interpreted against demonstrated baseline ability.}
+
+\itemresponse{R3-Weakness 2 (p.~6)}{\Partial}{Token counts, Unicode segmentation, prompt/output length, copying, and parser difficulty were not disentangled.}{The token registry, neutral token-length experiment, no-Sudoku symbol controls, input/output crossing, and output-format ablations address several components. The token result is non-monotonic and the planned multivariable fit was unidentifiable because constructed predictors co-varied. \Planned{} Publish the final per-alphabet token, output-length, and parser-failure table from Step 13.}
+
+\itemresponse{R3-Weakness 3 (p.~6)}{\Partial}{Add translation or non-Arabic-input/Arabic-output controls.}{Greek-to-Arabic Sudoku scored 10/15; Greek-to-Greek scored 12/15; Arabic-to-Greek scored 11/15; and Arabic-to-Arabic scored 12/15. Five no-Sudoku symbol controls each scored 15/15, including Greek-grid to Arabic conversion. \Open{} Equivalent crosses for Devanagari, Bengali, emoji, and abstract symbols are not in the frozen protocol and need a separate scope decision.}
+
+\itemresponse{R3-Weakness 4 (p.~6)}{\Done}{The old CoT claim was confounded by model, size, and prompt differences.}{The original model description (lines 241--249) and limitations (lines 612--617) confirm the uncrossed design. The current paper does not claim that CoT removes or fails to remove a symbol gap. Its main inference mode, grid size, prompt template, and model are fixed. \Open{} A direct-versus-hidden-reasoning crossover is not scheduled and would be required for a mode-specific claim.}
+
+\itemresponse{R3-Weakness 5 (p.~6)}{\Done}{Limit conclusions to Sudoku-style constraint satisfaction unless other formal tasks are tested.}{The current research question and conclusion name GPT-OSS Sudoku. \Open{} Generalization to other formal reasoning tasks is not part of this protocol.}
+
+\itemresponse{R3-Comment 1 (p.~6)}{\Planned}{Report token counts, prompt lengths, output lengths, and parser failures by symbol set.}{The frozen records contain generation token counts and parser labels; the planned tokenizer registry also measures per-symbol and prompt costs. A consolidated nine-alphabet table has not yet been generated or inserted into the manuscript.}
+
+\itemresponse{R3-Comment 2 (p.~6)}{\Partial}{Provide translation and non-Arabic-input/Arabic-output baselines.}{The Greek-to-Arabic Sudoku condition and completed-grid translation control are in the current evidence. \Open{} Additional requested alphabets are not scheduled.}
+
+\itemresponse{R3-Comment 3 (p.~6)}{\Open}{Run a smaller fully crossed direct-versus-CoT experiment.}{No such comparison is included in the frozen GPT-OSS design. The thesis must avoid a CoT-effect claim unless a new, separately specified crossover is authorized and completed.}
+
+\itemresponse{R3-Comment 4 (p.~6)}{\Done}{Retry API errors or exclude and report them separately rather than scoring them as wrong.}{Backend failures have a fixed five-attempt retry policy. Unresolved failures are \texttt{NOT\_EVALUATED}, excluded from evaluated accuracy, and reported separately. Main, input/output, token-length, binding, and ablation request records each show zero operational failures. Truncated final answers are evaluated model failures and remain in the accuracy denominator.}
+
+\itemresponse{R3-Limitations (p.~7)}{\Partial}{Discuss tokenization and formatting confounds more fully.}{The discussion now notes non-monotonic token-length accuracy, unidentifiable regression, perfect short symbol controls, and sampling variation among identical ablation prompts. \Planned{} The final limitations section should add the per-alphabet token/parser table and state that the 15-puzzle crosses and bindings do not identify a unique causal stage.}
+
+\section*{Administrative fields}
+\noindent The source reviews report soundness/confidence/overall scores of R1: 3/3/2.5, R2: 1.5/5/1.5, and R3: 2.5/3/2. They report no major ethical concern and no requested ethics review. Excitement, reproducibility, dataset, and software ratings, author-identity knowledge, reviewer certification, and publication-ethics declarations are acknowledgments rather than actionable scientific comments. The responses above address all substantive summaries, strengths, weaknesses, suggestions, and limitation text from source pages 1--7.
+
+\section*{Evidence and remaining decisions}
+\noindent\textbf{Completed evidence:} frozen 540-request GPT-OSS main benchmark; 135 input/output and control records; 45 token-length records; 165 binding records; and 171 prompt/output-ablation records. The current draft is in the repository's \texttt{paper} directory; backed-up manifests, completion markers, and compressed result shards are in \texttt{evidence}.
+
+\medskip
+\noindent\textbf{Recorded work in progress:} the 108-record self-revision experiment (job 361283) was running with 73 saved records at the 25 September 2026 10:39 IST check; its result is deliberately absent here. The three Qwen3.8-27B-FP8 timing jobs were still pending. Final token registry and aggregate analysis require the revision experiment to finish.
+
+\medskip
+\noindent\textbf{Scope decisions with no current plan:} other reasoning tasks; 6$\times$6 or 12$\times$12 replication; a fully crossed direct-versus-CoT study; and additional non-Arabic-to-Arabic Sudoku crosses beyond Greek. These are explicit placeholders, not promises or completed rebuttals.
+
+\end{document}
