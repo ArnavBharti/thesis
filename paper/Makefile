@@ -12,7 +12,9 @@ draft.pdf: draft.tex references.bib generated/results.tex \
 	generated/pilot_difficulty_rows.tex generated/pilot_representation_rows.tex \
 	generated/main_difficulty_rows.tex generated/main_representation_rows.tex \
 	generated/main_representation.dat generated/main_retention_rows.tex \
-	generated/input_output_rows.tex generated/token_length_rows.tex
+	generated/input_output_rows.tex generated/token_length_rows.tex \
+	generated/binding_rows.tex generated/binding_pair_rows.tex \
+	generated/ablation_rows.tex
 	latexmk -xelatex -interaction=nonstopmode -halt-on-error draft.tex
 
 clean:

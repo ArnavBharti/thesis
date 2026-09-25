@@ -151,17 +151,33 @@ information matrix because token, byte, code-point, and prompt-length measures
 co-varied in the construction. Report the descriptive non-monotonic result; do
 not claim an independently identified token-length effect.
 
-The complete main benchmark, qualification, pilot, Step 8, and Step 9 evidence
-is backed up under `evidence/`. Raw JSONL evidence is stored losslessly as
+The binding experiment (Step 10, job `361281`) completed 165/165 records with
+zero request-level operational failures. Overall accuracy was 124/165, with
+seven truncations. Easy, medium, and hard accuracy was 55/55, 50/55, and 19/55.
+Ordinary digits, ordinary number words, and neutral nonce labels each scored
+12/15; permuted digits and conflicting number words each scored 10/15. Six
+mappings over the same uppercase tokens ranged from 10/15 to 13/15. The paired
+differences point toward binding and semantic interference but are not
+conclusive with 15 puzzles per condition.
+
+The prompt/output ablation experiment (Step 11, job `361282`) wrote all 171/171
+records and a valid completion marker before Slurm killed backend teardown at
+the 15-hour wall-time. The records contain zero request-level operational
+failures, 103/171 correct outcomes, and 12 truncations. A digit mapping scored
+8/9, while no rule or output-format variant was uniformly better. Four
+conditions that generated identical default prompts independently scored 5/9,
+6/9, 5/9, and 7/9, demonstrating sampling variability at this scale. Do not
+treat small ablation differences as grounds to change the frozen protocol.
+
+The complete main benchmark, qualification, pilot, and Steps 8--11 evidence is
+backed up under `evidence/`. Raw JSONL evidence is stored losslessly as
 gzip-compressed `.jsonl.gz` files.
 
-## Active queue state (recorded 2026-09-24 09:18 IST)
+## Active queue state (recorded 2026-09-25 10:07 IST)
 
-The remaining GPT-OSS mechanism experiments are independently queued with no dependencies. Each requests one H100, 12 CPUs, and 96 GB RAM:
+The remaining GPT-OSS mechanism experiment requests one H100, 12 CPUs, and 96 GB RAM:
 
-- Binding: job `361281`, expected name `sdk-gpt-oss-120b-local-exp8-binding`, 11-hour wall-time, running on `gpunode5`.
-- Prompt/output ablations: job `361282`, expected name `sdk-gpt-oss-120b-local-exp9-ablations`, 15-hour wall-time, pending for priority.
-- Revisions: job `361283`, expected name `sdk-gpt-oss-120b-local-exp10-revisions`, 10-hour wall-time, pending for priority.
+- Revisions: job `361283`, expected name `sdk-gpt-oss-120b-local-exp10-revisions`, 10-hour wall-time, running on `gpunode6`; 46/108 records and no completion marker at the recorded check.
 
 The Qwen timing jobs `361306`, `361307`, and `361308` are independently queued
 for easy, medium, and hard puzzles. At the recorded check they were pending due

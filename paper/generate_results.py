@@ -65,6 +65,17 @@ def latex_name(value: str) -> str:
         "neutral_1_tokens": "One-token labels",
         "neutral_2_tokens": "Two-token labels",
         "neutral_3_tokens": "Three-token labels",
+        "digits_ordinary": "Ordinary digits",
+        "digits_permuted": "Permuted digits",
+        "nonce_neutral": "Neutral nonce labels",
+        "number_words_conflicting": "Conflicting number words",
+        "number_words_ordinary": "Ordinary number words",
+        "uppercase_random_1": "Uppercase permutation 1",
+        "uppercase_random_2": "Uppercase permutation 2",
+        "uppercase_random_3": "Uppercase permutation 3",
+        "uppercase_random_4": "Uppercase permutation 4",
+        "uppercase_random_5": "Uppercase permutation 5",
+        "uppercase_standard": "Standard uppercase",
     }
     return names.get(value, value.capitalize())
 
@@ -133,6 +144,96 @@ def write_retention_table(path: Path, rows: list[dict]) -> None:
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def write_binding_table(path: Path, rows: list[dict]) -> None:
+    order = (
+        "uppercase_standard",
+        "uppercase_random_1",
+        "uppercase_random_2",
+        "uppercase_random_3",
+        "uppercase_random_4",
+        "uppercase_random_5",
+        "digits_ordinary",
+        "digits_permuted",
+        "number_words_ordinary",
+        "number_words_conflicting",
+        "nonce_neutral",
+    )
+    lines = []
+    for condition in order:
+        selected = [row for row in rows if row["request"]["condition"] == condition]
+        correct = sum(row["evaluation"]["outcome"] == "CORRECT" for row in selected)
+        truncated = sum(row["generation"]["finish_reason"] == "length" for row in selected)
+        lines.append(
+            f"{latex_name(condition)} & {correct}/{len(selected)} & "
+            f"{100 * correct / len(selected):.1f} & {truncated} \\\\"
+        )
+    lines.append(r"\bottomrule")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def write_binding_pairs(path: Path, rows: list[dict]) -> None:
+    by_puzzle: dict[str, dict[str, bool]] = {}
+    for row in rows:
+        by_puzzle.setdefault(row["request"]["puzzle_id"], {})[row["request"]["condition"]] = (
+            row["evaluation"]["outcome"] == "CORRECT"
+        )
+    pairs = (
+        ("Digits", "digits_ordinary", "digits_permuted"),
+        ("Number words", "number_words_ordinary", "number_words_conflicting"),
+        ("Nonce/conflicting words", "nonce_neutral", "number_words_conflicting"),
+    )
+    lines = []
+    for label, first, second in pairs:
+        first_total = sum(values[first] for values in by_puzzle.values())
+        second_total = sum(values[second] for values in by_puzzle.values())
+        first_only = sum(values[first] and not values[second] for values in by_puzzle.values())
+        second_only = sum(not values[first] and values[second] for values in by_puzzle.values())
+        lines.append(
+            f"{label} & {first_total}/15 & {second_total}/15 & "
+            f"{first_only}/{second_only} \\\\"
+        )
+    lines.append(r"\bottomrule")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def write_ablation_table(path: Path, rows: list[dict]) -> None:
+    variants = (
+        ("Rules", "Minimal", "rules_minimal"),
+        ("Rules", "Explicit constraints", "rules_explicit_constraints"),
+        ("Rules", "Constraints and alphabet", "rules_constraints_alphabet"),
+        ("Rules", "Fully explicit", "rules_fully_explicit"),
+        ("Mapping", "Alphabet only", "mapping_alphabet_only"),
+        ("Mapping", "To digits", "mapping_to_digits"),
+        ("Mapping", "To abstract values", "mapping_to_abstract"),
+        ("Output", "Spaced rows", "output_spaced"),
+        ("Output", "Compact rows", "output_compact"),
+        ("Output", "81-symbol string", "output_string81"),
+        ("Output", "JSON", "output_json"),
+        ("Empty marker", "Dot", "empty_dot"),
+        ("Empty marker", "Zero", "empty_zero"),
+        ("Empty marker", "Underscore", "empty_underscore"),
+        ("Empty marker", r"\texttt{EMPTY}", "empty_word"),
+        ("Latin case", "Uppercase", "latin_uppercase"),
+        ("Latin case", "Lowercase", "latin_lowercase"),
+        ("Nonce case", "Uppercase", "nonce_uppercase"),
+        ("Nonce case", "Lowercase", "nonce_lowercase"),
+    )
+    lines = []
+    previous = None
+    for factor, label, condition in variants:
+        if previous is not None and factor != previous:
+            lines.append(r"\addlinespace")
+        selected = [row for row in rows if row["request"]["condition"] == condition]
+        correct = sum(row["evaluation"]["outcome"] == "CORRECT" for row in selected)
+        lines.append(
+            f"{factor} & {label} & {correct}/{len(selected)} & "
+            f"{100 * correct / len(selected):.1f} \\\\"
+        )
+        previous = factor
+    lines.append(r"\bottomrule")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--evidence", type=Path, required=True)
@@ -146,16 +247,20 @@ def main() -> int:
     main = read_shards(model / "exp4")
     input_output = read_shards(model / "exp6")
     token_length = read_shards(model / "exp7")
+    binding = read_shards(model / "exp8")
+    ablations = read_shards(model / "exp9")
     if (
         len(qualification) != 5
         or len(pilot) != 60
         or len(main) != 540
         or len(input_output) != 135
         or len(token_length) != 45
+        or len(binding) != 165
+        or len(ablations) != 171
     ):
         raise SystemExit(
             "expected 5 qualification, 60 pilot, 540 main, 135 input/output, "
-            "and 45 token-length rows"
+            "45 token-length, 165 binding, and 171 ablation rows"
         )
 
     pilot_difficulty = group_counts(pilot, lambda row: row["request"]["metadata"]["difficulty"])
@@ -170,6 +275,9 @@ def main() -> int:
     write_group_table(args.output / "main_representation_rows.tex", main_representation)
     write_group_table(args.output / "input_output_rows.tex", input_output_condition)
     write_group_table(args.output / "token_length_rows.tex", token_length_condition)
+    write_binding_table(args.output / "binding_rows.tex", binding)
+    write_binding_pairs(args.output / "binding_pair_rows.tex", binding)
+    write_ablation_table(args.output / "ablation_rows.tex", ablations)
     write_retention_table(args.output / "main_retention_rows.tex", main)
     write_plot_data(args.output / "pilot_difficulty.dat", pilot_difficulty)
     write_plot_data(args.output / "pilot_representation.dat", pilot_representation)
@@ -219,6 +327,14 @@ def main() -> int:
         command("TokenLengthCorrect", "32/45"),
         command("TokenLengthOperationalFailures", str(sum(bool(row.get("error")) for row in token_length))),
         command("TokenLengthTruncations", str(sum(row["generation"]["finish_reason"] == "length" for row in token_length))),
+        command("BindingCorrect", f"{sum(row['evaluation']['outcome'] == 'CORRECT' for row in binding)}/165"),
+        command("BindingAccuracy", f"{100 * sum(row['evaluation']['outcome'] == 'CORRECT' for row in binding) / 165:.1f}\\%"),
+        command("BindingOperationalFailures", str(sum(bool(row.get("error")) for row in binding))),
+        command("BindingTruncations", str(sum(row["generation"]["finish_reason"] == "length" for row in binding))),
+        command("AblationCorrect", f"{sum(row['evaluation']['outcome'] == 'CORRECT' for row in ablations)}/171"),
+        command("AblationAccuracy", f"{100 * sum(row['evaluation']['outcome'] == 'CORRECT' for row in ablations) / 171:.1f}\\%"),
+        command("AblationOperationalFailures", str(sum(bool(row.get("error")) for row in ablations))),
+        command("AblationTruncations", str(sum(row["generation"]["finish_reason"] == "length" for row in ablations))),
     ]
     (args.output / "results.tex").write_text("\n".join(values) + "\n", encoding="utf-8")
     return 0
