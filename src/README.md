@@ -15,9 +15,9 @@ not submitted twice, and interrupted runs resume from saved results.
 
 ## Models and sample sizes
 
-The frozen main study uses GPT-OSS-120B. Qwen3.8-27B-FP8 is kept in a separate
-configuration as a candidate replication model, so preparing it cannot change the
-frozen GPT-OSS protocol.
+The study uses GPT-OSS-120B and Qwen3.8-27B-FP8 as its two local models. The
+GPT-OSS benchmark is complete. Qwen uses a separate configuration and run ID,
+so its protocol can be frozen without changing the completed GPT-OSS protocol.
 
 | Script name | Pinned model | Hidden reasoning | Sharanga request |
 |---|---|---|---|
@@ -44,8 +44,10 @@ Sample sizes:
 - Mechanism experiments: five puzzles per difficulty.
 - Exploratory ablations: three puzzles per difficulty.
 
-The frozen GPT-OSS main benchmark makes `60 x 9 = 540` calls. Do not run a Qwen
-main benchmark unless its screen, qualification, and pilot justify that extension.
+Each model's main benchmark presents the same 60 puzzles under nine alphabets,
+giving `60 x 9 = 540` requests per model. Review Qwen's completed pilot before
+freezing and submitting its main benchmark. Select Qwen shard count and wall-time
+from the observed pilot latency, especially on hard puzzles.
 
 ## Safety rules
 
@@ -53,10 +55,12 @@ main benchmark unless its screen, qualification, and pilot justify that extensio
 - Identify a thesis job by both exact job ID and expected job name before cancelling.
 - Write only under `/scratch/kudhru/arnavbharti`.
 - Synchronize the server only with `git pull origin main --ff-only`.
-- Run GPU inference jobs one at a time.
+- Independent GPU experiments may run concurrently when resources permit. Use
+  dependencies only when one experiment needs another's outputs.
 - Do not run hosted API models.
 - Do not install packages on the login node.
-- Download model weights manually after login; do not submit download jobs.
+- Download a model only with explicit authorization, using `02_download_models.py`
+  inside an interactive CPU compute allocation. Never download on the login node.
 - Before every GPU submission, record the model, partition/GPU type, GPU count,
   CPUs, RAM, and wall-time.
 
@@ -260,7 +264,7 @@ Python, vLLM, or memory failure. Inspect the exact job log before classifying it
 
 ## Step 5: run the pilot
 
-Run one model at a time:
+Run each qualified model's pilot:
 
 ```bash
 run_and_wait python 05_run_pilot.py gpt-oss-120b-local --config config/local-models.json --wall-time 0-12:00
@@ -269,10 +273,11 @@ run_and_wait python 05_run_pilot.py qwen-3.8-27b-local --config config/qwen-27b-
 
 ## Step 6: freeze the protocol
 
-Only freeze after all required pilots are complete:
+Freeze each model's separate protocol only after its pilot is complete:
 
 ```bash
 python 06_freeze_protocol.py --config config/local-models.json --model gpt-oss-120b-local
+python 06_freeze_protocol.py --config config/qwen-27b-v2.json --model qwen-3.8-27b-local
 ```
 
 This freezes 15 pilot puzzles, 60 different main puzzles, 15 mechanism puzzles, and
@@ -281,7 +286,7 @@ evidence and decision.
 
 ## Step 7: run the main benchmark
 
-Run parts 1 through 6 for the frozen GPT-OSS model. The helper waits after every line:
+The GPT-OSS benchmark ran in six parts. The helper waits after every line:
 
 ```bash
 for part in 1 2 3 4 5 6
@@ -290,6 +295,12 @@ do
     --part "$part" --config config/local-models.json --wall-time 0-08:00
 done
 ```
+
+For Qwen, first use its completed pilot to choose a shard count in
+`config/qwen-27b-v2.json` and a realistic wall-time. Commit and push any local
+configuration change before pulling it on Sharanga. Freeze the Qwen protocol
+afterward, then run `07_run_main_benchmark.py` with
+`--config config/qwen-27b-v2.json`. Do not alter `config/local-models.json`.
 
 ## Steps 8 to 12: mechanism experiments
 
@@ -338,7 +349,7 @@ Show workflow status:
 ```bash
 python status.py --config config/local-models.json
 python status.py --config config/local-models.json --model gpt-oss-120b-local
-python status.py --config config/qwen-27b.json --model qwen-3.8-27b-local
+python status.py --config config/qwen-27b-v2.json --model qwen-3.8-27b-local
 ```
 
 Inspect one exact job:

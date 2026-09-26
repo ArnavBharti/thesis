@@ -55,7 +55,8 @@ Use `squeue --start -j JOB_ID` only as an estimate; it may change. Ordinary user
 
 ## Current models and resources
 
-The paper is currently being completed with GPT-OSS 120B:
+The study now has two selected local models. GPT-OSS 120B has completed its
+benchmark and mechanism experiments:
 
 - Profile: `gpt-oss-120b-local`
 - Model: `openai/gpt-oss-120b`
@@ -71,7 +72,9 @@ Do not describe 192 GB as the GPT-OSS allocation; the committed profile requests
 
 Reasoning must not appear in the final response, but hidden reasoning tokens may be used internally. The earlier error was treating reasoning as a small output-token budget rather than bounding execution by time.
 
-Qwen3.8-27B-FP8 is the candidate replication model and is isolated from the frozen GPT-OSS configuration. The first screen used `config/qwen-27b.json`; the current larger-context screen and pilot use `config/qwen-27b-v2.json`:
+Qwen3.8-27B-FP8 is the second study model and is isolated from the frozen
+GPT-OSS configuration. The first screen used `config/qwen-27b.json`; the
+larger-context screen and pilot use `config/qwen-27b-v2.json`:
 
 - Config: `config/qwen-27b-v2.json`
 - Profile: `qwen-3.8-27b-local`
@@ -86,7 +89,15 @@ Qwen3.8-27B-FP8 is the candidate replication model and is isolated from the froz
 - Memory: 96 GB
 - Diagnostic and qualification wall-time: 2 hours
 
-The current Qwen profile has run ID `qwen-3.8-27b-v2`. Do not add it to or otherwise change `config/local-models.json`, because that configuration is part of the frozen GPT-OSS protocol. The qualification threshold for this Qwen screen is 3/5 easy puzzles with zero operational failures; the default 5/5 rule remains unchanged for other runs. Do not run a Qwen main benchmark unless screening and pilot results justify the additional inference.
+The current Qwen profile has run ID `qwen-3.8-27b-v2`. Do not add it to or
+otherwise change `config/local-models.json`, because that configuration is part
+of the frozen GPT-OSS protocol. The qualification threshold for this Qwen
+screen is 3/5 easy puzzles with zero operational failures; the default 5/5 rule
+remains unchanged for other runs. The user has chosen Qwen as the second model.
+Review the completed pilot before freezing its separate protocol or submitting
+its main benchmark. Use the same frozen 60 main puzzles and nine alphabets as
+GPT-OSS. Choose Qwen's shard count and wall-time from its pilot runtime,
+especially the hard tier. No Qwen main job has been submitted yet.
 
 The authorized token file is local at `src/.env`. It is ignored by Git and must remain mode `0600`. When explicitly authorized, copy it only to `/scratch/kudhru/arnavbharti/src/.env`, set the server copy to mode `0600`, source it without printing it, and never include its contents in logs or tool output.
 
@@ -183,22 +194,29 @@ inference seconds; medium and hard were incorrect after 32,425 and 32,426
 generated tokens respectively. In both failures, prompt plus generation filled
 the entire 32,768-token context, so they are not clean Sudoku-accuracy tests.
 
+Qwen's 131,072-token medium timing rerun, job `363803`, completed correctly in
+387.20 inference seconds with exit `0:0`. Qualification job `363811` completed
+5/5 correct with zero operational failures and exit `0:0`.
+
 The complete main benchmark, qualification, pilot, and Steps 8--11 evidence is
 backed up under `evidence/`. Raw JSONL evidence is stored losslessly as
 gzip-compressed `.jsonl.gz` files.
 
-## Active queue state (recorded 2026-09-25 17:42 IST)
+## Active queue state (recorded 2026-09-26 19:01 IST)
 
-The isolated Qwen v2 jobs are queued with actual dependencies:
+The Qwen v2 pilot is running after its successful timing and qualification jobs:
 
-- Medium timing rerun: `363803`, expected name `sdk-qwen-3-8-27b-local-timing-medium`, 2-hour wall-time, pending under the shared-account CPU QOS limit. The scheduler estimated 19:40 IST; this is not a guarantee.
-- Qualification: `363811`, expected name `sdk-qwen-3-8-27b-local-qualification`, 2-hour wall-time, `afterok:363803`. It uses `--min-correct 3`.
-- 60-request pilot: `363814`, expected name `sdk-qwen-3-8-27b-local-exp2-pilot`, 12-hour wall-time, `afterok:363811`. The numbered pilot script checks qualification status again at execution.
+- Medium timing rerun: `363803`, expected name `sdk-qwen-3-8-27b-local-timing-medium`, completed in 17:41 with exit `0:0`.
+- Qualification: `363811`, expected name `sdk-qwen-3-8-27b-local-qualification`, completed in 10:15 with exit `0:0`.
+- 60-request pilot: `363814`, expected name `sdk-qwen-3-8-27b-local-exp2-pilot`, running on `gpunode6`. At the recorded check, it had saved 29/60 responses with 28 correct, zero operational failures, and zero truncations. Easy was 20/20 and medium was 8/9. No hard request had been saved yet. There was no completion marker.
 
 Each requests one H100 in `gpu_h100_4`, 12 CPUs, and 96 GB RAM. The older Qwen
 jobs `361306`, `361307`, and `361308` have completed; do not cancel them.
 
-The dependency fields were deliberately cleared after the user authorized concurrent independent jobs. Never assume the recorded states remain current; query Slurm first.
+The dependency fields for independent jobs were deliberately cleared after the
+user authorized concurrent work. Qwen timing, qualification, and pilot had
+actual data dependencies. Never assume the recorded states remain current;
+query Slurm first.
 
 Superseded pending jobs `356607`, `356608`, and `356609` were safely cancelled after exact name verification. Earlier blocked jobs `353505` and `353506` were also safely cancelled. Do not operate on these completed/cancelled IDs.
 
@@ -258,7 +276,12 @@ The paper sources are local under `paper/`:
 
 Commit `0ff0d34` introduced the initial paper draft and generated tables. It contains only evidence available at that time (pilot and completed main part 1). Update results only from completed, verified experiment evidence. Do not label results as “preliminary”; write final-draft technical English while leaving unavailable results unwritten. Do not invent findings.
 
-The main benchmark is complete. Copy or synchronize its verified result evidence locally, regenerate tables and plots for all six parts, compile the PDF, and visually inspect every page. Keep raw copied server evidence under the ignored `tmp/` tree unless the repository explicitly requires otherwise.
+The GPT-OSS main benchmark and Steps 8--12 are complete. The paper includes
+their results, but Step 12 raw evidence is not yet in the local backup or table
+generator. Qwen results should enter the paper only after their corresponding
+experiments complete. Do not present partial pilot counts as final model
+accuracy. Keep raw copied server evidence under the ignored `tmp/` tree unless
+the repository explicitly requires otherwise.
 
 ## Historical model evidence
 
