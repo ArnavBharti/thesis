@@ -39,17 +39,21 @@
 \maketitle
 
 \begin{abstract}
-This study evaluates whether a large language model preserves Sudoku-solving ability when the nine values are renamed by bijective symbol systems. Sudoku provides exact, deterministic scoring: a returned grid must preserve every clue and satisfy every row, column, and $3\times3$ box. A certified dataset contains 300 unique-solution puzzles divided equally among easy, medium, and hard tiers. The selected model, GPT-OSS-120B, uses hidden Harmony analysis while only its final channel is scored. It solved all five qualification puzzles. On the frozen 540-request main benchmark, it solved \MainCorrect{} requests (\MainAccuracy{}) with no operational failures. Accuracy ranged from 61.7\% for Greek letters to 75.0\% for Arabic digits and uppercase Latin, while difficulty accuracy declined from 95.0\% on easy puzzles to 67.2\% on medium and 44.4\% on hard puzzles. All 75 basic symbol controls in the input/output-cross experiment were correct, but its four Sudoku conditions scored between 10/15 and 12/15. Token-length accuracy was non-monotonic at 9/15, 13/15, and 10/15. In the binding experiment, ordinary digits, ordinary number words, and neutral nonce labels each scored 12/15, while permuted digits and conflicting number words each scored 10/15; six mappings over the same uppercase alphabet ranged from 10/15 to 13/15. Exploratory prompt and format ablations produced no uniformly beneficial prompt or output format. These results demonstrate representation sensitivity but do not reduce it to Unicode handling, transformed-output generation, token length, or one prompt-format choice.
+Sudoku has the same solution when its nine values are consistently renamed. This makes it a useful test of whether a language model follows the puzzle's constraints across different written forms. We test this question by holding each Sudoku puzzle fixed while changing only its value symbols. We generated 300 unique-solution puzzles and evaluated GPT-OSS-120B on a fixed sample of 60 puzzles, each written with nine different symbol sets. A completed answer was correct only when it preserved every clue and satisfied every Sudoku constraint. The model solved \MainCorrect{} requests (\MainAccuracy{}) without operational failures. Accuracy was 75.0\% with Arabic digits and uppercase Latin letters, compared with 61.7\% with Greek letters. Follow-up tests found perfect performance on 75 elementary symbol tasks, but no single tested factor explained the Sudoku differences. The results show that a model's success on a logical puzzle can depend on how its values are written.
 \end{abstract}
 
 \section{Introduction}
-Large language models are increasingly evaluated on tasks described as reasoning benchmarks, yet observed performance may depend on the surface representation used to express an otherwise unchanged problem. This dependence matters because logical validity should not change when the values of a constraint-satisfaction problem are consistently renamed. A system that has learned the underlying constraints should, in principle, transfer across bijective symbol systems; a system dependent on familiar tokens, learned semantic associations, or fragile output routines may not.
+Large language models can produce fluent answers to problems that require several steps of reasoning. Their accuracy can also change when a problem is reworded without changing its answer. This raises a basic question for reasoning benchmarks. Does a model solve the underlying problem, or does its success depend on familiar ways of writing that problem?
 
-Sudoku is useful for studying this issue because correctness is exact rather than subjective. A candidate solution can be checked cell by cell against the original clues and against the row, column, and box constraints. The same abstract puzzle can also be encoded under multiple alphabets without changing its solution structure. This produces a controlled test of representation invariance in which the logical problem is fixed and only its visible labels change.
+Sudoku makes the question testable. Every valid solution must preserve the given cells and contain each value exactly once in every row, column, and $3\times3$ box. We can replace the values 1 through 9 with nine other distinct symbols while leaving every logical constraint unchanged. The resulting puzzles have the same clues, solution, and difficulty. An accuracy difference between these versions therefore measures sensitivity to the representation, although it does not by itself identify the cause.
 
-The research question is: when an LLM can solve a Sudoku puzzle, does it preserve that ability when Arabic numerals are replaced by another bijective symbol system? The broader experimental programme separates possible failures in input decoding, symbol-to-value binding, constraint reasoning, output encoding, tokenization, Unicode handling, and formatting. The work reported here establishes the dataset, evaluator, model qualification, balanced pilot, complete main representation benchmark, paired retention analysis, and the input/output, token-length, binding, and prompt-format mechanism experiments for GPT-OSS-120B.
+Prior work has evaluated language models on Sudoku and other reasoning tasks \citep{seely2025sudokubench,shah2024causal}. Other studies have shown that controlled changes to mathematical questions or symbol assignments can affect model behaviour \citep{mirzadeh2025gsmsymbolic,wei2023symbol}. These findings motivate a paired test in which every representation uses the same Sudoku puzzles and an exact checker scores only the final grid.
 
-\section{Background}
+We ask whether GPT-OSS-120B retains Sudoku accuracy when the values are renamed. We first construct and audit a dataset of 300 puzzles. We then evaluate 60 held-out puzzles in nine representations, giving 540 model requests. Follow-up experiments test input and output mapping, label length, familiar but conflicting meanings, prompt wording, output format, and answer revision. The model solved 75.0\% of requests with Arabic digits and 61.7\% with Greek letters. The difference motivates the mechanism tests, but their small samples do not support a single causal explanation.
+
+This paper contributes an exactly scored, paired representation benchmark, a frozen model and request protocol, and controlled follow-up experiments that separate several possible sources of representation sensitivity. The study measures complete-grid accuracy. It does not score the model's internal reasoning text.
+
+\section{Related work and background}
 \subsection{Sudoku as an exactly verifiable constraint problem}
 Let $G=\{g_{r,c}\mid r,c\in\{1,\ldots,9\}\}$ denote the 81 grid cells and let $D=\{1,\ldots,9\}$ be the value domain. A completed grid is correct only if it preserves every clue and, for every row $r$, column $c$, and box $b$,
 \begin{align}
@@ -57,19 +61,21 @@ Let $G=\{g_{r,c}\mid r,c\in\{1,\ldots,9\}\}$ denote the 81 grid cells and let $D
 \{g_{1,c},\ldots,g_{9,c}\}&=D,\\
 \{g_{r,c}:(r,c)\in b\}&=D.
 \end{align}
-This definition permits deterministic evaluation of all cells and constraints. Puzzle difficulty is not determined by clue count alone; technique complexity and dependencies among deductions also contribute \citep{pelanek2014sudoku}. Existing Sudoku evaluations similarly report lower full-grid solve rates as task complexity increases \citep{seely2025sudokubench}, while solver-trace training demonstrates that language models can learn search and constraint propagation on logic puzzles \citep{shah2024causal}.
+This definition permits deterministic evaluation of all cells and constraints. Sudoku difficulty depends on the deductions needed to solve a puzzle, not just its clue count \citep{pelanek2014sudoku}. Existing Sudoku evaluations test model performance on puzzles and variants \citep{seely2025sudokubench}. Solver-trace training has also been used to elicit search on logic puzzles \citep{shah2024causal}.
+
+Our study uses the same Sudoku instance under several value alphabets. This paired design isolates the change in visible labels from changes in puzzle content. We score only the completed grid, so the evaluation does not require judging the quality of a reasoning trace.
 
 \subsection{Representation invariance}
 Define abstract values $V=\{V_1,\ldots,V_9\}$ and a visible alphabet $S=\{s_1,\ldots,s_9\}$. A representation is a bijection $\sigma:V\leftrightarrow S$. If $p$ is a Sudoku puzzle and $f$ is the model-and-parser pipeline, exact invariance requires
 \begin{equation}
 \sigma^{-1}\!\left(f(\sigma(p))\right)=f(p)
 \end{equation}
-whenever both sides return completed grids. Consistency alone is insufficient because a model can reproduce the same invalid answer under multiple encodings; Sudoku adds an independent validity test. Related controlled transformations have revealed sensitivity in mathematical reasoning benchmarks \citep{mirzadeh2025gsmsymbolic}.
+whenever both sides return completed grids. The output must also pass the Sudoku checker. A model could consistently produce the same invalid grid under several encodings. Controlled changes to mathematical questions have exposed related sensitivities in language-model reasoning \citep{mirzadeh2025gsmsymbolic}. Our transformation keeps the full Sudoku puzzle fixed and changes its value labels.
 
 \subsection{Binding, tokenization, and verification}
-Arbitrary mappings are learnable: symbol tuning can improve adherence to label remappings \citep{wei2023symbol}. Nevertheless, consistently producing an 81-cell grid requires sustained binding across many positions. Digit-renaming experiments in elementary arithmetic likewise show failures under bijective changes \citep{yan2025addition}, but such failures can mix tokenization, memorized associations, mapping, and generation effects.
+Symbol tuning can improve a model's use of arbitrary labels \citep{wei2023symbol}. Yet an 81-cell Sudoku answer requires the chosen mapping to remain consistent across the whole grid. Digit-renaming tests in arithmetic have reported related failures \citep{yan2025addition}. Those tests do not show which stage fails in a Sudoku answer.
 
-Tokenization provides another possible source of variation. Vocabulary construction affects model performance \citep{bostrom2020bpe,rust2021tokenizer}, and visible symbols can differ in token count, byte length, and Unicode structure. Finally, verbal self-assessment is not exact verification: a model's assertion that its grid is valid does not supersede deterministic checking \citep{stechly2023wrong}.
+Tokenization divides text into model input units called tokens. Different labels can require different numbers of tokens, and tokenizer choices can affect language-model performance \citep{bostrom2020bpe,rust2021tokenizer}. We therefore measure label cost and test neutral labels with controlled token lengths. We also use an exact checker to assess answer revision, since a model's own statement that an answer is correct is not a validity test \citep{stechly2023wrong}.
 
 \section{Methodology}
 \subsection{Study logic}
@@ -81,35 +87,37 @@ The experiments are ordered around a possible failure chain:
 \end{equation}
 The main benchmark first measures the total representation effect.  Later experiments then change one part of the pipeline at a time.  They test input and output separately, token length, arbitrary mappings, semantic conflict, prompt and format choices, and answer revision.  This order is important: the main benchmark can show that a representation effect exists, while the mechanism experiments are needed to explain where it comes from.
 
+Three research questions organize the results. RQ1 asks how complete-grid accuracy changes across value alphabets and difficulty tiers. RQ2 asks which tested features of a representation account for those changes. RQ3 asks whether prompt changes or answer revision improve correctness on the selected diagnostic puzzles. These questions concern observed model behaviour under the specified prompts and samples. They do not assume that any one feature has an isolated causal effect.
+
 \subsection{Shared experimental controls}
 \subsubsection{Model and inference}
-The reported experiments use the open-weight GPT-OSS-120B checkpoint \citep{openai2026gptoss}.  Its repository identifier is \texttt{openai/\allowbreak gpt-oss-120b}, and the pinned revision is \texttt{b5c939de\allowbreak8f754692\allowbreak c1647ca7\allowbreak9fbf85e8\allowbreak c1e70f8a}.  Inference runs through vLLM on one NVIDIA H100 GPU with 12 CPU cores and 96~GB of host memory.  The chat template requests high reasoning effort.  Sampling uses temperature 1 and top-$p$ 1, with master seed 20260826.  The model context and maximum generation length are 131,072 tokens.
+The reported experiments use the open-weight GPT-OSS-120B checkpoint \citep{openai2025gptoss}.  Its repository identifier is \texttt{openai/\allowbreak gpt-oss-120b}, and the pinned revision is \texttt{b5c939de\allowbreak8f754692\allowbreak c1647ca7\allowbreak9fbf85e8\allowbreak c1e70f8a}.  Inference runs through vLLM on one NVIDIA H100 GPU with 12 CPU cores and 96~GB of host memory.  The chat template requests high reasoning effort.  Sampling uses temperature 1 and top-$p$ 1, with master seed 20260826.  The model context and maximum generation length are 131,072 tokens.
 
-GPT-OSS returns Harmony analysis and final channels.  The backend stores them separately, and only the final channel is evaluated.  The visible reasoning trace is not an outcome of this thesis.  Scheduler waiting time is also excluded from latency; latency measures model generation for one request.
+GPT-OSS returns Harmony analysis and final channels.  The backend stores them separately, and only the final channel is evaluated.  The visible reasoning trace is not an outcome of this thesis.  Scheduler waiting time is also excluded from latency. Latency measures model generation for one request.
 
 \subsubsection{Open-weight model screening and selection}
 The final benchmark model was selected through staged local screening rather than assumed in advance.  Table~\ref{tab:model-screening} separates completed inference evidence from models that were only prepared for execution.  This distinction is necessary because installation, configuration, or a pending scheduler job does not constitute a model result.
 
 \begin{table}[H]
 \centering
-\small
-\caption{Open-weight models evaluated or prepared during model selection. ``Prepared'' means that a reproducible local profile or model installation existed, but no completed scored screen supports an accuracy claim.}
+\footnotesize
+\caption{Open-weight model selection. Prepared candidates have no scored Sudoku screen.}
 \label{tab:model-screening}
-\begin{tabularx}{\linewidth}{@{}p{0.23\linewidth}p{0.20\linewidth}X@{}}
+\begin{tabularx}{\linewidth}{@{}p{0.34\linewidth}X@{}}
 \toprule
-Model & Execution status & Basis for continuing or stopping \\
+Model & Completed evidence and decision \\
 \midrule
-NVIDIA Llama-3.3 Nemotron Super 49B v1.5 FP8 & Evaluated in four diagnostic settings & Reasoning-enabled generation produced long, contradictory output rather than a clean final grid.  Three answer-only variants---greedy, sampled, and regex-constrained---scored 0/5, 0/15, and 0/15, respectively.  The constraint fixed formatting but not clue preservation or Sudoku validity, so the model was not advanced. \\
-Qwen3.8-27B (earlier non-FP8 screen) & Evaluated on one puzzle per difficulty & It solved the selected easy and hard puzzles, but the medium run did not return a final grid.  The mixed three-item diagnostic did not justify committing the full study to this checkpoint once a stronger hidden-reasoning candidate was available. \\
-GPT-OSS-120B & Evaluated and selected & It solved all three timing puzzles and all five qualification puzzles while keeping Harmony analysis separate from the scored final channel.  It then completed the balanced pilot with 47/60 correct and no operational failures, satisfying both capability and output-separation requirements. \\
-Qwen3.8-27B-FP8 & Prepared for replication; timing jobs queued & The official FP8 checkpoint was pinned and verified locally on Sharanga.  One-puzzle timing jobs for easy, medium, and hard tiers were submitted, but no completed scored result was available for this draft revision. \\
-Qwen3.5-122B-A10B FP8 & Prepared; no completed scored screen & The checkpoint was installed and a diagnostic job was queued, but that job was cancelled while pending when the study was narrowed to completing GPT-OSS first.  No Sudoku-accuracy conclusion is drawn for Qwen3.5. \\
-Mistral Small 4 119B and Mistral Medium 3.5 128B & Prepared or configured; no completed scored screen & These dense two-H200 candidates were investigated as alternatives, but neither supplied completed screening evidence before the experiment was narrowed to one fully qualified model.  They were omitted for scope and compute control, not because of a measured Sudoku failure. \\
+NVIDIA Llama-3.3 Nemotron Super 49B v1.5 FP8 & Three answer-only settings scored 0/5, 0/15, and 0/15. Constrained output fixed formatting but not correctness, so we did not advance it. \\
+Qwen3.8-27B (earlier non-FP8 screen) & One easy and one hard puzzle were correct. The medium request had no final grid. We did not advance this three-item screen. \\
+GPT-OSS-120B & All three timing puzzles and all five qualification puzzles were correct. The pilot scored 47/60 with no operational failures, so this model entered the frozen benchmark. \\
+Qwen3.8-27B-FP8 & A 32,768-token screen solved easy but exhausted context on medium and hard. A larger-context medium rerun was correct. This screen is separate from the frozen benchmark. \\
+Qwen3.5-122B-A10B FP8 & The model was prepared, but its diagnostic job was cancelled before it started. We draw no accuracy conclusion. \\
+Mistral Small 4 119B and Mistral Medium 3.5 128B & These models were prepared or configured but had no completed scored screen. We omitted them for scope and compute control. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Other open-weight families, including GLM and Kimi, were discussed during candidate search but were not run as scored experiments and therefore are not reported as evaluated models.  The resulting thesis is a controlled single-model representation study, not a comparative model leaderboard.  The discarded screens informed model selection only; they did not alter the frozen puzzle samples or the confirmatory request set.
+Other open-weight families, including GLM and Kimi, were discussed during candidate search but were not run as scored experiments. The resulting thesis is a controlled single-model representation study. The candidate screens informed model selection only. They did not alter the frozen puzzle samples or the main request set.
 
 \subsubsection{Representations}
 The main benchmark uses nine ordered alphabets.  Each item in an alphabet represents the abstract value in the same position:
@@ -197,9 +205,9 @@ They are reported overall and by difficulty.  This conditional analysis directly
 If transformed performance is lower, is the main problem reading the transformed puzzle, solving while maintaining the mapping, or producing a long transformed answer?
 
 \paragraph{Method.}
-The 15 mechanism puzzles are tested in four conditions: Arabic input to Arabic output (A), Greek input to Greek output (B), Greek input to Arabic output (C), and Arabic input to Greek output (D).  Cross-alphabet prompts give the complete symbol mapping.  Conditions A and B reuse the matching main-benchmark results; C and D are new calls.  If C is close to A while B is lower, Greek output generation is implicated.  If C also remains below A, input decoding or symbol binding is still a likely source.  Comparing D with A gives a more direct test of Greek output cost when input decoding is unchanged.
+The 15 mechanism puzzles are tested in four conditions. They use Arabic input and output (A), Greek input and output (B), Greek input with Arabic output (C), and Arabic input with Greek output (D). Cross-alphabet prompts give the complete symbol mapping. Conditions A and B reuse matching main-benchmark results. Conditions C and D require new calls. The comparisons help distinguish a transformed-input cost from a transformed-output cost, although they cannot isolate every stage of a long Sudoku solution.
 
-Five no-Sudoku controls are added for every mechanism puzzle: copy a Greek row exactly, translate a short Greek sequence to digits, retrieve one coordinate from a completed Greek grid, count one symbol in a completed grid, and convert a supplied completed Greek grid to Arabic.  They use exact-text scoring.  These controls show whether a failure can already be produced by copying, lookup, counting, or conversion without Sudoku search.  In total the experiment contains 135 recorded conditions; 30 Sudoku baselines are reused and 105 requests require new inference.
+Five no-Sudoku controls are added for every mechanism puzzle. They require copying a Greek row, translating a short sequence, retrieving one coordinate, counting one symbol, or converting a supplied complete grid. They use exact-text scoring. These controls test whether elementary symbol operations fail without Sudoku search. The experiment contains 135 recorded conditions. Thirty Sudoku baselines are reused, and 105 requests require new inference.
 
 \subsection{Experiment 7: token-length mechanism}
 \paragraph{Question.}
@@ -217,7 +225,7 @@ Is performance sensitive to an arbitrary mapping itself, and do familiar labels 
 \paragraph{Method.}
 The 15 mechanism puzzles use the standard uppercase mapping and five deterministic random permutations of the same letters.  Variation across these five mappings measures sensitivity to the particular binding rather than to the alphabet alone.  The same puzzles also use ordinary digits, a fixed permutation of digits, ordinary English number words, a fixed conflicting permutation of number words, and neutral nonce labels.  A larger penalty for conflicting familiar labels than for neutral labels supports semantic interference.
 
-There are 11 conditions per puzzle, or 165 recorded conditions.  Standard uppercase, ordinary digits, and nonce labels reuse matching main-benchmark results.  The remaining eight conditions per puzzle require 120 new calls.  Seed-fixed permutations ensure that the comparison can be reproduced exactly.
+There are 11 conditions per puzzle, or 165 recorded conditions.  Standard uppercase, ordinary digits, and nonce labels reuse matching main-benchmark results.  The remaining eight conditions per puzzle require 120 new calls.  Seed-fixed permutations make the comparison reproducible.
 
 \subsection{Experiment 9: prompt and format ablations}
 \paragraph{Question.}
@@ -238,9 +246,10 @@ The nine ablation puzzles are used in Arabic, Greek, and emoji form.  For each p
 The self-revision prompt asks the model to check cell count, clues, rows, columns, and boxes.  In the checker-guided branch, the deterministic evaluator returns error descriptions, such as a changed clue or a duplicate and missing symbol, but never supplies the correct cell value.  A correct initial answer receives no unnecessary checker-guided call.  Every intermediate and final grid is saved and scored.  The analysis reports initial and final accuracy, wrong answers fixed, correct answers made wrong, model calls, token use, and total generation time.  The 108 branch records require between 81 and 108 new calls, depending on how many checker-guided baselines are already correct.
 
 \subsection{Analysis and reporting}
-The unit of correctness is the complete final grid; partial credit and visible reasoning quality are not used.  Accuracy summaries exclude only \texttt{NOT\_EVALUATED} operational cases from their denominator and always report those cases separately.  Counts accompany percentages so that small groups remain visible.  Wilson 95\% intervals are used for accuracy proportions, exact McNemar tests are used for paired main outcomes, and the token mechanism uses the regression described above.  Results are reported by representation and difficulty together with format compliance, clue preservation, row/column/box validity, local and global mapping errors, truncation, latency, token counts, and operational status.  This reporting scheme prevents a correctly formatted but invalid grid, or a transport failure, from being described as successful reasoning.
+The unit of correctness is the complete final grid. We do not use partial credit or visible reasoning quality. Accuracy summaries exclude only \texttt{NOT\_EVALUATED} operational cases from their denominator and report those cases separately. Counts accompany percentages so that small groups remain visible. Wilson 95\% intervals summarize accuracy proportions. Exact McNemar tests compare paired main outcomes, and the token mechanism uses the regression described above. We also report format compliance, clue preservation, constraint validity, mapping errors, truncation, latency, token counts, and operational status. This keeps invalid grids and transport failures separate from successful solutions.
 
 \section{Results}
+The main benchmark addresses RQ1. The cross-mapping, token-length, and binding experiments address RQ2. The prompt ablations and self-revision experiment address RQ3. Qualification and pilot results establish that the chosen model and prompts could produce exact grids before the main protocol was frozen.
 \subsection{Qualification and timing}
 GPT-OSS-120B solved all five qualification requests and produced no operational failures. Mean qualification latency was \SI{44.6}{\second} per request. In the one-puzzle timing screen, the easy, medium, and hard puzzles were all solved correctly in \SI{36.1}{\second}, \SI{254.6}{\second}, and \SI{227.4}{\second}, respectively. These measurements motivated wall-time-based execution rather than a small reasoning-token budget.
 
@@ -307,7 +316,7 @@ Representation & Correct & Accuracy (\%) & 95\% CI (\%) \\
 \label{fig:pilot-representation}
 \end{figure}
 
-Arabic digits had the highest pilot accuracy at 14/15, followed by emoji at 13/15. Greek and uppercase Latin each yielded 10/15. Because every representation used the same balanced set of five puzzles per tier, these differences are not caused by a different difficulty composition. Difficulty accuracy was 20/20 for easy, 13/20 for medium, and 14/20 for hard. The medium-hard ordering in this 20-item-per-tier sample was not monotonic.
+Table~\ref{tab:pilot-difficulty} and Figure~\ref{fig:pilot-difficulty} show that all 20 easy pilot requests were correct. Medium and hard accuracy was 13/20 and 14/20. Table~\ref{tab:pilot-representation} and Figure~\ref{fig:pilot-representation} show 14/15 for Arabic digits, 13/15 for emoji, and 10/15 each for Greek and uppercase Latin. Every representation used the same 15 puzzles, so difficulty composition did not cause these differences. The medium-hard ordering was not monotonic in this small pilot.
 
 \subsection{Main representation benchmark}
 All six deterministic shards completed, giving 540/540 recorded requests and valid completion markers. GPT-OSS-120B solved \MainCorrect{} requests (\MainAccuracy{}) with \MainOperationalFailures{} operational failures. Mean and median generation latency were \MainMeanLatency{} and \MainMedianLatency{} seconds, and mean completion length was \MainMeanTokens{} tokens. Twenty-four responses reached the generation ceiling. Exact row formatting was preserved in \MainFormatCompliant{}/540 responses. Of the \MainParseable{} responses that could be decoded as grids over the requested alphabet, \MainCluesPreserved{} preserved every given cell.
@@ -355,7 +364,7 @@ Representation & Correct & Accuracy (\%) & 95\% CI (\%) \\
 \label{fig:main-representation}
 \end{figure}
 
-Accuracy declined monotonically with measured difficulty: 171/180 (95.0\%) on easy, 121/180 (67.2\%) on medium, and 80/180 (44.4\%) on hard requests. Representation accuracy ranged from 37/60 (61.7\%) for Greek letters to 45/60 (75.0\%) for both Arabic digits and uppercase Latin. The equal Arabic and uppercase-Latin marginal accuracy does not imply identical item-level behaviour.
+RQ1 concerns representation and difficulty on the fixed main sample. Table~\ref{tab:main-difficulty} shows 171/180 correct on easy, 121/180 on medium, and 80/180 on hard requests. Table~\ref{tab:main-representation} and Figure~\ref{fig:main-representation} show a range from 37/60 for Greek letters to 45/60 for Arabic digits and uppercase Latin. Equal total accuracy for two alphabets does not imply that they succeeded on the same puzzles.
 
 \subsection{Paired Arabic retention}
 Arabic digits were correct for 45 of the 60 main puzzles. Table~\ref{tab:retention} conditions each transformed representation on those 45 demonstrated Arabic successes. Retention ranged from 31/45 (68.9\%) for abstract symbols to 37/45 (82.2\%) for lowercase Latin. The discordant columns report Arabic-only/transformed-only successes across all 60 paired puzzles.
@@ -424,7 +433,7 @@ Condition & Correct & Accuracy (\%) & Truncated \\
 \end{tabular}
 \end{table}
 
-All 55 easy conditions were correct; medium and hard accuracy was 50/55 and 19/55. The six mappings over the identical uppercase symbol set ranged from 10/15 to 13/15, with the standard mapping at 11/15. Ordinary digits, ordinary number words, and neutral nonce labels each scored 12/15. Permuted digits and conflicting number words each scored 10/15.
+All 55 easy conditions were correct. Medium and hard accuracy was 50/55 and 19/55. The six mappings over the identical uppercase symbol set ranged from 10/15 to 13/15, with the standard mapping at 11/15. Ordinary digits, ordinary number words, and neutral nonce labels each scored 12/15. Permuted digits and conflicting number words each scored 10/15.
 
 \begin{table}[H]
 \centering
@@ -439,7 +448,7 @@ Comparison & First & Second & Discordant \\
 \end{tabular}
 \end{table}
 
-For ordinary versus permuted digits, two puzzles were solved only under the ordinary mapping and none only under the permutation. Ordinary versus conflicting number words had three ordinary-only and one conflict-only success; neutral nonce labels versus conflicting words had two neutral-only and no conflict-only success. These directional differences are small relative to the 15-puzzle sample and therefore provide descriptive, not conclusive, evidence of semantic interference. Equal truncation counts in the digit and nonce/conflicting comparisons show that their two-answer gaps were not produced by differential truncation.
+For ordinary versus permuted digits, two puzzles were solved only under the ordinary mapping and none only under the permutation. Ordinary versus conflicting number words had three ordinary-only and one conflict-only success. Neutral nonce labels versus conflicting words had two neutral-only and no conflict-only success. These directional differences are small relative to the 15-puzzle sample. They provide descriptive evidence of semantic interference, not a conclusive effect. Equal truncation counts in the digit and nonce/conflicting comparisons show that differential truncation did not produce their two-answer gaps.
 
 \subsection{Prompt and output ablations}
 The exploratory ablation experiment recorded all 171 planned conditions and its completion marker before Slurm terminated backend teardown at the 15-hour wall-time. The request records contain \AblationOperationalFailures{} operational failures. Overall accuracy was \AblationCorrect{} (\AblationAccuracy{}), with \AblationTruncations{} truncated responses. Table~\ref{tab:ablations} reports every variant.
@@ -459,29 +468,53 @@ Factor & Variant & Correct & Accuracy (\%) \\
 
 Rule wording ranged only from 5/9 to 6/9 and showed no advantage for the fully explicit prompt. Declaring a digit mapping scored 8/9, compared with 6/9 for alphabet-only and 5/9 for abstract-value mapping. Neither compact rows nor an 81-symbol string improved on spaced rows or JSON. Empty-marker results ranged from 4/9 for underscore to 7/9 for dot. Case effects reversed across families: lowercase Latin exceeded uppercase Latin (7/9 versus 5/9), whereas uppercase nonce labels exceeded lowercase nonce labels (8/9 versus 4/9).
 
-Four named variants---fully explicit rules, alphabet-only mapping, spaced output, and dot empty marker---produce identical prompts for each puzzle under the one-factor construction. Their independent sampled runs nevertheless scored 5/9, 6/9, 5/9, and 7/9. This two-answer spread among exact prompt replicates demonstrates substantial sampling variability at this scale. The larger ablation contrasts are useful diagnostics, but none warrants changing the frozen main protocol on nine puzzles alone.
+Four named variants produce identical prompts for each puzzle under the one-factor construction. They are fully explicit rules, alphabet-only mapping, spaced output, and dot empty marker. Their independent sampled runs scored 5/9, 6/9, 5/9, and 7/9. This two-answer spread among exact prompt replicates shows sampling variability at this scale. The larger ablation contrasts are useful diagnostics, but none warrants changing the frozen main protocol on nine puzzles alone.
+
+\subsection{Self-revision and checker-guided revision}
+The answer-revision experiment addresses RQ3 on 27 puzzle-representation pairs. It saved all 108 branch records with no request-level operational failures. Table~\ref{tab:revision} compares the final answer in each branch. A correct initial answer required no checker-guided call.
+
+\begin{table}[H]
+\centering
+\caption{Complete-grid accuracy after answer revision ($n=27$ per branch).}
+\label{tab:revision}
+\begin{tabular}{lrr}
+\toprule
+Branch & Correct & Accuracy (\%) \\
+\midrule
+One pass & 18/27 & 66.7 \\
+One self-revision & 19/27 & 70.4 \\
+Two self-revisions & 23/27 & 85.2 \\
+Checker-guided revision & 22/27 & 81.5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Two self-revisions produced five more correct final grids than one pass. Checker-guided revision produced four more. These are outcomes for four branches from the same saved initial answers, but each branch makes different model calls. The 27-item sample supports an exploratory improvement on these puzzles. It does not establish that two revisions are generally best or that model self-checking is equivalent to deterministic verification.
 
 \section{Discussion}
-The complete main benchmark demonstrates that GPT-OSS-120B can solve Sudoku reliably under several symbol systems while still exhibiting representation-dependent failures. The model solved 95.0\% of easy requests, showing that the generation and evaluation pipeline can produce exact grids rather than merely plausible completions. Across the same 60 puzzles, representation accuracy varied by 13.3 percentage points, from 61.7\% for Greek letters to 75.0\% for Arabic digits and uppercase Latin.
+The answer to RQ1 is that GPT-OSS-120B's complete-grid accuracy changed across representations of the same Sudoku puzzles. The gap between Greek letters and Arabic digits was 13.3 percentage points across 60 paired puzzles. Difficulty had a larger association with accuracy. The model solved 95.0\% of easy requests, 67.2\% of medium requests, and 44.4\% of hard requests.
 
-The full ordering cannot be summarized as a simple Unicode penalty. Bengali numerals reached 71.7\%, equal to ASCII nonce labels and above emoji and abstract symbols at 63.3\%. Uppercase Latin matched Arabic at 75.0\%, whereas lowercase Latin reached 73.3\%. These contrasts show that neither ASCII status, familiarity, nor visual complexity alone orders performance.
+Marginal accuracy hides item-level changes. Arabic digits and uppercase Latin letters both scored 45/60. Yet uppercase Latin retained only 36 of the 45 Arabic successes, while nine other puzzles changed from Arabic failure to uppercase-Latin success. Thus, equal totals did not mean that the two representations supported the same solutions. Bengali numerals also matched ASCII nonce labels at 71.7\%. These outcomes do not follow a simple ASCII-versus-Unicode ordering.
 
-Difficulty effects were monotonic in the complete benchmark: easy accuracy exceeded medium accuracy, which exceeded hard accuracy. The 95.0\%, 67.2\%, and 44.4\% tier results also show why exact counts by difficulty are necessary when interpreting representation averages. The paired retention analysis further shows that equal marginal accuracy need not mean invariant behaviour: uppercase Latin and Arabic both scored 45/60, yet only 36 of the 45 Arabic successes were retained under uppercase Latin, with nine successes changing in each direction.
+RQ2 remains only partly answered. The model completed all 75 basic symbol controls, including copying and conversion of a supplied complete grid. It therefore handled those isolated tasks under the tested prompts. Cross-mapping Sudoku accuracy was lower than both same-alphabet conditions on the 15-puzzle mechanism sample. The sample does not separate input decoding, mapping maintenance, and output generation into independent effects.
 
-Long hidden analyses imposed substantial computational cost. Main-benchmark responses averaged \MainMeanLatency{} seconds and \MainMeanTokens{} completion tokens. Twenty-four responses exhausted the 131,072-token ceiling. These were model-output failures rather than infrastructure failures: the backend completed every recorded main and input/output-cross request, and neither experiment had an operational error. The distinction matters because increasing scheduler wall-time permits long requests to finish, whereas increasing an exhausted generation ceiling would change the inference protocol.
+Token length was not monotonically associated with accuracy in the controlled nonce-label test. Two-token labels performed best, and the planned regression could not identify separate coefficients because the predictors co-varied. Familiar-label conflicts scored two fewer correct answers than their ordinary counterparts in the 15-puzzle binding sample. Several mappings of the same uppercase tokens also gave different outcomes. Together, these tests suggest that binding and familiar meanings may matter, but they do not establish their individual contributions.
 
-The completed input/output cross narrows but does not fully identify the mechanism. Perfect performance on all 75 no-Sudoku controls shows that short copying, lookup, counting, mapping translation, and full-grid conversion were not independently difficult under these prompts. Equal 12/15 accuracy for the Arabic-to-Arabic and Greek-to-Greek Sudoku baselines gives no evidence of a Greek-output penalty in this 15-puzzle sample. The lower cross-mapping results, 10/15 and 11/15, instead suggest that requiring an explicit input-output remapping can add difficulty. Because these differences involve only a few discordant puzzles and are concentrated in harder Sudoku instances, they should not be interpreted as isolating a single causal stage.
+RQ3 also produced mixed evidence. No prompt or output variant consistently improved accuracy in the nine-puzzle ablation. Exact prompt replicates varied by two correct answers, which limits interpretation of small differences. On 27 puzzle-representation pairs, two self-revisions yielded 23 correct final grids, compared with 18 after one pass. Checker-guided revision yielded 22. These exploratory gains warrant testing on a larger sample before changing the frozen benchmark procedure.
 
-The controlled token-length result likewise argues against a single-factor explanation. If token count alone caused a graded penalty, accuracy would be expected to decline from one- to two- to three-token labels. Instead, the two-token condition was highest. This does not show that tokenization is irrelevant: the sample is small, difficulty dominates many failures, and the planned regression was unidentifiable because the constructed features were collinear. It does show that the observed main-family ordering cannot be explained by a simple monotonic label-token count.
+Generation cost was substantial. Main-benchmark requests averaged \MainMeanLatency{} seconds and \MainMeanTokens{} completion tokens. Twenty-four responses reached the generation ceiling. Every main request finished at the inference layer, so these truncated answers were model-output failures rather than operational errors. The study kept the ceiling fixed across main representations to preserve comparability.
 
-The binding results point in the expected direction for semantic interference but remain underpowered. Both familiar-label conflicts reduced accuracy from 12/15 to 10/15, and no puzzle was uniquely rescued by the digit permutation. At the same time, the 10/15--13/15 range across mappings of the same uppercase tokens shows that a fixed alphabet does not ensure identical item-level behaviour. Perfect easy accuracy and sharply lower hard accuracy again indicate that binding effects become most visible near the model's reasoning limit.
-
-The exploratory ablations do not identify a universal prompt or formatting remedy. Explicit digit mapping reached 8/9, but exact default-prompt replicates themselves varied from 5/9 to 7/9. Compact output did not improve accuracy, a more explicit rule prompt did not outperform minimal wording, and case effects reversed between Latin and nonce labels. These results caution against attributing a small condition difference to one wording choice without replication. The self-revision experiment provides the remaining planned mechanism test.
+\section{Limitations}
+The main benchmark evaluates one model checkpoint and one prompt protocol. Its 60 puzzles were generated and certified by the study's solver, so the findings need not transfer to human-authored Sudoku collections or other reasoning tasks. Each representation appears once per puzzle. Sampling variability is visible in the exact-prompt ablation replicates, but the main benchmark does not estimate repeated-generation variance for every condition. The smaller mechanism and revision samples support descriptive comparisons, not precise estimates of causal effects. We score only the final grid and make no claims about the correctness of hidden reasoning.
 
 \section{Conclusion}
-This work implements an exactly scored test of representation invariance in LLM Sudoku solving. GPT-OSS-120B passed all qualification requests, solved 47/60 pilot requests, and solved 372/540 requests in the complete frozen main benchmark without operational failures. Main accuracy differed across bijective representations of the same puzzle set, ranging from 61.7\% to 75.0\%, and declined from 95.0\% on easy puzzles to 44.4\% on hard puzzles. Among the 45 puzzles solved in Arabic, transformed-representation retention ranged from 68.9\% to 82.2\%. Perfect basic symbol-control performance, non-monotonic token-length results, mapping-sensitive binding outcomes, and the absence of a universal prompt-format remedy rule out several simple explanations. Familiar-label conflicts produced a small directional penalty, but the binding and ablation samples do not support a single isolated mechanism. Successful Sudoku solving by GPT-OSS-120B is therefore not fully invariant to value renaming, and the observed effect reflects an interaction among representation, puzzle difficulty, stochastic generation, and termination behaviour.
+We built an exact, paired test of Sudoku solving under nine value alphabets. GPT-OSS-120B solved \MainCorrect{} frozen benchmark requests with no operational failures. Its accuracy ranged from 61.7\% to 75.0\% across representations of the same 60 puzzles. The paired analysis showed that even equal total accuracy can conceal different item-level successes. Basic symbol controls were all correct, while token-length, binding, prompt, and revision tests gave mixed or sample-limited results. The measured Sudoku performance was sensitive to value renaming, and the completed experiments do not identify a single sufficient explanation.
 
+\begingroup
+\small
+\setlength{\bibsep}{2pt}
 \bibliographystyle{plainnat}
 \bibliography{references}
+\endgroup
 
 \end{document}
