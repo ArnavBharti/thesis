@@ -94,10 +94,11 @@ otherwise change `config/local-models.json`, because that configuration is part
 of the frozen GPT-OSS protocol. The qualification threshold for this Qwen
 screen is 3/5 easy puzzles with zero operational failures; the default 5/5 rule
 remains unchanged for other runs. The user has chosen Qwen as the second model.
-Review the completed pilot before freezing its separate protocol or submitting
-its main benchmark. Use the same frozen 60 main puzzles and nine alphabets as
-GPT-OSS. Choose Qwen's shard count and wall-time from its pilot runtime,
-especially the hard tier. No Qwen main job has been submitted yet.
+Its pilot has completed and supports a full main benchmark. Use the same frozen
+60 main puzzles and nine alphabets as GPT-OSS. The isolated Qwen configuration
+sets 12 main hash shards. Submit each with a 12-hour wall-time, one H100, 12
+CPUs, and 96 GB RAM. No Qwen main job had been submitted when this paragraph
+was written.
 
 The authorized token file is local at `src/.env`. It is ignored by Git and must remain mode `0600`. When explicitly authorized, copy it only to `/scratch/kudhru/arnavbharti/src/.env`, set the server copy to mode `0600`, source it without printing it, and never include its contents in logs or tool output.
 
@@ -198,17 +199,28 @@ Qwen's 131,072-token medium timing rerun, job `363803`, completed correctly in
 387.20 inference seconds with exit `0:0`. Qualification job `363811` completed
 5/5 correct with zero operational failures and exit `0:0`.
 
+Qwen's 60-request pilot, job `363814`, completed in 7:38:08 with exit `0:0`,
+60/60 saved records, and a valid completion marker. It solved 54/60 with zero
+operational failures and two truncations. Easy, medium, and hard accuracy was
+20/20, 16/20, and 18/20. Arabic digits, emoji, and Greek letters each scored
+13/15; uppercase Latin scored 15/15. Mean latency was 452.30 seconds. Tier
+means were 122.37 seconds for easy, 654.35 for medium, and 580.18 for hard.
+The Qwen main plan has the same 60 puzzle IDs as the frozen GPT-OSS plan.
+Twelve shards have 36 to 56 requests each, with pilot-weighted estimates of
+4.4 to 7.2 inference hours. The 12-hour wall-time leaves room for slower main
+requests; interrupted parts can resume from saved request IDs.
+
 The complete main benchmark, qualification, pilot, and Steps 8--11 evidence is
 backed up under `evidence/`. Raw JSONL evidence is stored losslessly as
 gzip-compressed `.jsonl.gz` files.
 
-## Active queue state (recorded 2026-09-26 19:01 IST)
+## Active queue state (recorded 2026-09-27 06:20 IST)
 
-The Qwen v2 pilot is running after its successful timing and qualification jobs:
+The Qwen v2 timing, qualification, and pilot jobs have completed:
 
 - Medium timing rerun: `363803`, expected name `sdk-qwen-3-8-27b-local-timing-medium`, completed in 17:41 with exit `0:0`.
 - Qualification: `363811`, expected name `sdk-qwen-3-8-27b-local-qualification`, completed in 10:15 with exit `0:0`.
-- 60-request pilot: `363814`, expected name `sdk-qwen-3-8-27b-local-exp2-pilot`, running on `gpunode6`. At the recorded check, it had saved 29/60 responses with 28 correct, zero operational failures, and zero truncations. Easy was 20/20 and medium was 8/9. No hard request had been saved yet. There was no completion marker.
+- 60-request pilot: `363814`, expected name `sdk-qwen-3-8-27b-local-exp2-pilot`, completed in 7:38:08 with exit `0:0` and a valid completion marker.
 
 Each requests one H100 in `gpu_h100_4`, 12 CPUs, and 96 GB RAM. The older Qwen
 jobs `361306`, `361307`, and `361308` have completed; do not cancel them.

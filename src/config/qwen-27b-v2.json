@@ -9,6 +9,15 @@
     "top_p": 1,
     "seed": 20260826
   },
+  "experiment_shards": {
+    "exp2": 1,
+    "exp4": 12,
+    "exp6": 1,
+    "exp7": 1,
+    "exp8": 1,
+    "exp9": 1,
+    "exp10": 1
+  },
   "models": [
     {
       "name": "qwen-3.8-27b-local",

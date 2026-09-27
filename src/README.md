@@ -45,9 +45,10 @@ Sample sizes:
 - Exploratory ablations: three puzzles per difficulty.
 
 Each model's main benchmark presents the same 60 puzzles under nine alphabets,
-giving `60 x 9 = 540` requests per model. Review Qwen's completed pilot before
-freezing and submitting its main benchmark. Select Qwen shard count and wall-time
-from the observed pilot latency, especially on hard puzzles.
+giving `60 x 9 = 540` requests per model. Qwen's completed pilot scored 54/60
+with no operational failures. Its isolated main run uses 12 hash shards and a
+12-hour wall-time per shard, chosen from pilot latency. The GPT-OSS run remains
+unchanged in six shards.
 
 ## Safety rules
 
@@ -296,11 +297,18 @@ do
 done
 ```
 
-For Qwen, first use its completed pilot to choose a shard count in
-`config/qwen-27b-v2.json` and a realistic wall-time. Commit and push any local
-configuration change before pulling it on Sharanga. Freeze the Qwen protocol
-afterward, then run `07_run_main_benchmark.py` with
-`--config config/qwen-27b-v2.json`. Do not alter `config/local-models.json`.
+Qwen uses 12 parts. After its completed pilot, freeze the separate Qwen protocol
+with the Step 6 command above. Then submit the independent parts. Each part
+requests one H100, 12 CPUs, 96 GB RAM, and 12 hours. Check `squeue` after
+submission and record every job ID. Do not alter `config/local-models.json`.
+
+```bash
+for part in 1 2 3 4 5 6 7 8 9 10 11 12
+do
+  python 07_run_main_benchmark.py qwen-3.8-27b-local \
+    --part "$part" --config config/qwen-27b-v2.json --wall-time 0-12:00
+done
+```
 
 ## Steps 8 to 12: mechanism experiments
 
