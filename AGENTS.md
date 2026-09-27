@@ -94,11 +94,11 @@ otherwise change `config/local-models.json`, because that configuration is part
 of the frozen GPT-OSS protocol. The qualification threshold for this Qwen
 screen is 3/5 easy puzzles with zero operational failures; the default 5/5 rule
 remains unchanged for other runs. The user has chosen Qwen as the second model.
-Its pilot has completed and supports a full main benchmark. Use the same frozen
-60 main puzzles and nine alphabets as GPT-OSS. The isolated Qwen configuration
-sets 12 main hash shards. Submit each with a 12-hour wall-time, one H100, 12
-CPUs, and 96 GB RAM. No Qwen main job had been submitted when this paragraph
-was written.
+Its pilot has completed and supports a full main benchmark. The Qwen protocol
+was frozen after the pilot, using the same 60 main puzzles and nine alphabets
+as GPT-OSS. The isolated Qwen configuration sets 12 main hash shards. Each job
+requests a 12-hour wall-time, one H100, 12 CPUs, and 96 GB RAM. All 12 parts
+have been submitted; see exact IDs below.
 
 The authorized token file is local at `src/.env`. It is ignored by Git and must remain mode `0600`. When explicitly authorized, copy it only to `/scratch/kudhru/arnavbharti/src/.env`, set the server copy to mode `0600`, source it without printing it, and never include its contents in logs or tool output.
 
@@ -214,7 +214,7 @@ The complete main benchmark, qualification, pilot, and Steps 8--11 evidence is
 backed up under `evidence/`. Raw JSONL evidence is stored losslessly as
 gzip-compressed `.jsonl.gz` files.
 
-## Active queue state (recorded 2026-09-27 06:20 IST)
+## Active queue state (recorded 2026-09-27 06:25 IST)
 
 The Qwen v2 timing, qualification, and pilot jobs have completed:
 
@@ -229,6 +229,36 @@ The dependency fields for independent jobs were deliberately cleared after the
 user authorized concurrent work. Qwen timing, qualification, and pilot had
 actual data dependencies. Never assume the recorded states remain current;
 query Slurm first.
+
+Qwen's separate sample plan and protocol were frozen by CPU job `366208`,
+expected name `sdk-qwen-3-8-27b-local-freeze`, which completed with exit `0:0`.
+The main benchmark consists of 540 requests in 12 independent hash shards.
+Exact part-to-job mappings are:
+
+| Part | Job ID | Expected job name |
+|---|---:|---|
+| 1 | 366211 | `sdk-qwen-3-8-27b-local-exp4-part-001-of-012` |
+| 2 | 366212 | `sdk-qwen-3-8-27b-local-exp4-part-002-of-012` |
+| 3 | 366213 | `sdk-qwen-3-8-27b-local-exp4-part-003-of-012` |
+| 4 | 366214 | `sdk-qwen-3-8-27b-local-exp4-part-004-of-012` |
+| 5 | 366215 | `sdk-qwen-3-8-27b-local-exp4-part-005-of-012` |
+| 6 | 366216 | `sdk-qwen-3-8-27b-local-exp4-part-006-of-012` |
+| 7 | 366217 | `sdk-qwen-3-8-27b-local-exp4-part-007-of-012` |
+| 8 | 366218 | `sdk-qwen-3-8-27b-local-exp4-part-008-of-012` |
+| 9 | 366219 | `sdk-qwen-3-8-27b-local-exp4-part-009-of-012` |
+| 10 | 366220 | `sdk-qwen-3-8-27b-local-exp4-part-010-of-012` |
+| 11 | 366221 | `sdk-qwen-3-8-27b-local-exp4-part-011-of-012` |
+| 12 | 366222 | `sdk-qwen-3-8-27b-local-exp4-part-012-of-012` |
+
+At the recorded check, part 1 was running on `gpunode5`; parts 2--12 were
+pending under `QOSMaxCpuPerUserLimit`. All requested the announced resources,
+and none has a dependency. Do not assume part order or state remains unchanged.
+Qwen result files and markers are under
+`experiment_outputs/qwen-3.8-27b-v2/qwen-3.8-27b-local/exp4/`.
+Part `N` uses `shard-(N-1)-of-012.jsonl` and `part-N-of-012.complete.json`,
+with three-digit indices. Verify counts and markers before treating a part as
+complete. If a part times out, resume only that part with the numbered script;
+saved request IDs are skipped.
 
 Superseded pending jobs `356607`, `356608`, and `356609` were safely cancelled after exact name verification. Earlier blocked jobs `353505` and `353506` were also safely cancelled. Do not operate on these completed/cancelled IDs.
 

@@ -274,7 +274,9 @@ run_and_wait python 05_run_pilot.py qwen-3.8-27b-local --config config/qwen-27b-
 
 ## Step 6: freeze the protocol
 
-Freeze each model's separate protocol only after its pilot is complete:
+Freeze each model's separate protocol only after its pilot is complete. Run
+these dataset-audit commands inside a CPU compute allocation, not on the login
+node:
 
 ```bash
 python 06_freeze_protocol.py --config config/local-models.json --model gpt-oss-120b-local
