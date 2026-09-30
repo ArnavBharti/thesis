@@ -265,6 +265,15 @@ CPU submission script, and review are under
 `evidence/submissions/2026-09-30-gptoss-final-analysis/`. Run its numbered
 Step 13 from that separate historical export, keeping the original guard
 enabled. Do not edit frozen artifacts or overwrite the active Qwen source.
+CPU job `373562`, expected name
+`sdk-gpt-oss-120b-local-final-analysis-frozen`, was subsequently submitted
+from tested/pushed script commit `b234f3c`. It requests `compute`, 4 CPUs,
+16 GB RAM, zero GPUs, and two hours, with no dependency. It started on
+`node22` and completed in 3:44 with exit `0:0` and an empty error log.
+The numbered script wrote 2,781 registry rows and analyzed 1,229 saved records.
+The additional local backup is
+`evidence/snapshots/2026-09-30-gptoss-step13/`; the earlier report snapshot
+remains unchanged. GPT-OSS Step 13 is now complete.
 The report and dated snapshot remain an immutable capture preceding these
 new runs. Update them only from verified completed follow-up evidence.
 

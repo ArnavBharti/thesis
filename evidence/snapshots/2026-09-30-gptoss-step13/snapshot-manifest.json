@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "archived_at_utc": "2026-09-30T16:45:55.864550+00:00",
+  "source": "Read-only rsync of Sharanga experiment_outputs and slurm/generated",
+  "capture_note": "Qwen active shard status must be checked against its completion marker and request digest.",
+  "files": [
+    {
+      "path": "experiment_outputs/local-models-v1/gpt-oss-120b-local/analysis/observations.jsonl.gz",
+      "compressed": true,
+      "raw_bytes": 361539,
+      "stored_bytes": 44914,
+      "raw_sha256": "4f7ba525e978dfdb0dd17f9a684553dc2988848a641e2e57da8671d12ac54dad",
+      "stored_sha256": "04f85632d2b51d5224f0dbadacd7a366fca0590715ff21378a17d56ab6465ae6"
+    },
+    {
+      "path": "experiment_outputs/local-models-v1/gpt-oss-120b-local/analysis/summary.json",
+      "compressed": false,
+      "raw_bytes": 79204,
+      "stored_bytes": 79204,
+      "raw_sha256": "80fabe6f9dc9941a0c55a08182aab4e1e51ab7bf9ba1f09f85119a8766d260ca",
+      "stored_sha256": "80fabe6f9dc9941a0c55a08182aab4e1e51ab7bf9ba1f09f85119a8766d260ca"
+    },
+    {
+      "path": "experiment_outputs/local-models-v1/gpt-oss-120b-local/exp3/representation-registry.jsonl.gz",
+      "compressed": true,
+      "raw_bytes": 644992,
+      "stored_bytes": 18709,
+      "raw_sha256": "fd1155f62e559d9e580901580838b0860d9bafe3987f1b97a898384d7e2ae10c",
+      "stored_sha256": "276456d3777bdb6301938c83388a418057af55d9b9391c4832204cbf2491e5a0"
+    },
+    {
+      "path": "generated/local-models-v1/gpt-oss-120b-local/logs/sdk-gpt-oss-120b-local-final-analysis-frozen-373562.err.gz",
+      "compressed": true,
+      "raw_bytes": 0,
+      "stored_bytes": 20,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "path": "generated/local-models-v1/gpt-oss-120b-local/logs/sdk-gpt-oss-120b-local-final-analysis-frozen-373562.out.gz",
+      "compressed": true,
+      "raw_bytes": 81,
+      "stored_bytes": 97,
+      "raw_sha256": "0487b242d979655dea8560af249010d25e05b37feadc9f13ffa4faa1aab04c7f",
+      "stored_sha256": "df984de740ca8df4f66f122979f78dc9e8413ac2cd91ce19f8108b85285e5358"
+    }
+  ]
+}

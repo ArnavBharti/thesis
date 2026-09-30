@@ -1,0 +1,17 @@
+{
+  "job_id": "373562",
+  "expected_job_name": "sdk-gpt-oss-120b-local-final-analysis-frozen",
+  "partition": "compute",
+  "cpus": 4,
+  "memory": "16G",
+  "gpus": 0,
+  "wall_time": "0-02:00",
+  "frozen_source_commit": "2cdbc1f",
+  "submission_script_commit": "b234f3c",
+  "dependencies": [],
+  "final_state": "COMPLETED",
+  "elapsed": "00:03:44",
+  "exit_code": "0:0",
+  "token_registry_rows": 2781,
+  "analyzed_records": 1229
+}

@@ -53,9 +53,13 @@ unchanged in six shards.
 
 On 30 September 2026, Qwen Steps 8--12 were queued independently, followed
 by a dependent CPU Step 13. Exact job IDs, resource overrides, and the separate
-GPT-OSS Step 13 freeze-check blocker are recorded in [AGENTS.md](../AGENTS.md).
+GPT-OSS Step 13 frozen-source resolution are recorded in [AGENTS.md](../AGENTS.md).
 These submissions are not completed results. The dated paper-report snapshot
 predates them and remains unchanged.
+GPT-OSS Step 13 subsequently completed in CPU job `373562`, using the exact
+frozen source without bypassing its protocol check. Its token diagnostics
+and analysis are backed up separately under
+`evidence/snapshots/2026-09-30-gptoss-step13/`.
 
 ## Safety rules
 
