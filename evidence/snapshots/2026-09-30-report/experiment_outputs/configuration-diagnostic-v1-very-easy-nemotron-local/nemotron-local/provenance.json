@@ -1,0 +1,48 @@
+{
+  "backend": "vllm",
+  "dataset_sha256": "43a1ef3a4dfe22fa6cd8939021a80ef3cc812c5916ab62ef6b11501b45b58cc2",
+  "dtype": "bfloat16",
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "0",
+    "SLURM_JOB_ID": "342235",
+    "SLURM_JOB_NODELIST": "gpunode5"
+  },
+  "git_commit": "ce844156f32d12cdc1aa429a2a6b942c62f1a769",
+  "gpu": [
+    {
+      "driver_version": "580.126.20",
+      "index": "0",
+      "memory_total_mib": "81559",
+      "name": "NVIDIA H100 80GB HBM3",
+      "uuid": "GPU-74e7b308-ad79-b152-6dab-1bdfde115038"
+    }
+  ],
+  "hostname": "gpunode5.hpc.bits-hyderabad.ac.in",
+  "model": "nemotron-local",
+  "model_id": "nvidia/Llama-3_3-Nemotron-Super-49B-v1_5-FP8",
+  "packages": {
+    "accelerate": "1.14.0",
+    "torch": "2.13.0",
+    "transformers": "5.16.1",
+    "vllm": "0.28.0"
+  },
+  "platform": "Linux-4.18.0-553.42.1.el8_10.x86_64-x86_64-with-glibc2.28",
+  "python": "3.11.5 (main, Sep 11 2023, 13:54:46) [GCC 11.2.0]",
+  "revision": "04822723e77e036ddf2d24e83c6d469d3b009252",
+  "run_id": "configuration-diagnostic-v1-very-easy-nemotron-local",
+  "runtime_options": {
+    "enforce_eager": true,
+    "gpu_memory_utilization": 0.9,
+    "max_model_len": 32768,
+    "max_num_seqs": 1,
+    "quantization": "modelopt"
+  },
+  "sampling_options": {
+    "max_tokens": 256,
+    "seed": 20260826,
+    "temperature": 0.0,
+    "top_p": 1.0
+  },
+  "tensor_parallel_size": 1,
+  "tokenizer_id": "nvidia/Llama-3_3-Nemotron-Super-49B-v1_5-FP8"
+}

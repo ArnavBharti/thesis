@@ -1,0 +1,54 @@
+{
+  "inference": {
+    "max_new_tokens": 28672,
+    "seed": 20260826,
+    "temperature": 0.0,
+    "top_p": 1.0
+  },
+  "model": {
+    "api_base": null,
+    "api_key_env": null,
+    "backend": "vllm",
+    "dtype": "bfloat16",
+    "enabled": true,
+    "extra": {
+      "chat_template": {
+        "reasoning_effort": "low"
+      },
+      "protocol": {
+        "cohort_role": "exact open-weight model from the outline"
+      },
+      "reasoning_output": "think_tags",
+      "vllm": {
+        "gpu_memory_utilization": 0.9,
+        "max_model_len": 32768
+      }
+    },
+    "local_files_only": true,
+    "model_id": "Qwen/Qwen3.8-27B",
+    "name": "qwen-local",
+    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "slurm": {
+      "cpus": 12,
+      "gpus": 1,
+      "memory": "192G",
+      "modules": [],
+      "nodelist": null,
+      "partition": "gpu_h100_4",
+      "time_limit": "0-23:30"
+    },
+    "tensor_parallel_size": 1,
+    "tokenizer_id": null,
+    "trust_remote_code": false
+  },
+  "request_count": 5,
+  "request_id_sha256": "b7fa9e419e7938a8830385f01fa8907571244238c64ad083a33ba362956896ad",
+  "retry": {
+    "attempts": 5,
+    "initial_delay_seconds": 2.0,
+    "maximum_delay_seconds": 30.0,
+    "timeout_seconds": 600.0
+  },
+  "run_id": "thesis-confirmatory-lean-v4",
+  "step": "qualification"
+}

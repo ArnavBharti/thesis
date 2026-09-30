@@ -1,0 +1,70 @@
+{
+  "inference": {
+    "max_new_tokens": 131072,
+    "seed": 20260826,
+    "temperature": 0.6,
+    "top_p": 0.95
+  },
+  "model": {
+    "api_base": null,
+    "api_key_env": null,
+    "backend": "vllm",
+    "dtype": "auto",
+    "enabled": true,
+    "extra": {
+      "chat_template": {
+        "reasoning_effort": "high"
+      },
+      "reasoning_output": "harmony_channels",
+      "sampling": {
+        "skip_special_tokens": false,
+        "temperature": 1,
+        "top_p": 1
+      },
+      "vllm": {
+        "gpu_memory_utilization": 0.9,
+        "max_model_len": 131072
+      }
+    },
+    "local_files_only": true,
+    "model_id": "openai/gpt-oss-120b",
+    "name": "gpt-oss-120b-local",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "slurm": {
+      "cpus": 12,
+      "gpus": 1,
+      "memory": "192G",
+      "modules": [],
+      "nodelist": null,
+      "partition": "gpu_h100_4",
+      "time_limit": "0-01:00"
+    },
+    "tensor_parallel_size": 1,
+    "tokenizer_id": null,
+    "trust_remote_code": false
+  },
+  "notes": {
+    "puzzles": 60,
+    "representations": [
+      "arabic_digits",
+      "devanagari_numerals",
+      "bengali_numerals",
+      "uppercase_latin",
+      "lowercase_latin",
+      "greek_letters",
+      "abstract_symbols",
+      "emoji",
+      "nonce_labels"
+    ]
+  },
+  "request_count": 540,
+  "request_id_sha256": "20dbf33253a3ef26f9179bce9fa8a327a898cee7376b323f0b313d3926d166b1",
+  "retry": {
+    "attempts": 5,
+    "initial_delay_seconds": 2.0,
+    "maximum_delay_seconds": 30.0,
+    "timeout_seconds": 600.0
+  },
+  "run_id": "local-models-v1",
+  "step": "exp4"
+}

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="365" viewBox="0 0 960 365">
+<rect width="100%" height="100%" fill="white"/>
+<text x="24" y="30" font-family="Arial, sans-serif" font-size="23" fill="#182635" font-weight="bold" text-anchor="start">Main outcomes: correctness and failure types</text>
+<rect x="24" y="49" width="14" height="14" rx="3" fill="#287b67" stroke="none"/>
+<text x="44" y="61" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">Correct</text>
+<rect x="254" y="49" width="14" height="14" rx="3" fill="#b96a37" stroke="none"/>
+<text x="274" y="61" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">Incorrect grid</text>
+<rect x="484" y="49" width="14" height="14" rx="3" fill="#a94259" stroke="none"/>
+<text x="504" y="61" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">Truncated</text>
+<rect x="714" y="49" width="14" height="14" rx="3" fill="#7c74a9" stroke="none"/>
+<text x="734" y="61" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">Other output error</text>
+<text x="24" y="110" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">GPT-OSS easy</text>
+<rect x="185" y="91" width="560.5" height="27" rx="3" fill="#287b67" stroke="none"/>
+<text x="465.25" y="110" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="middle">171</text>
+<rect x="745.5" y="91" width="3.2777777777777777" height="27" rx="3" fill="#b96a37" stroke="none"/>
+<rect x="748.7777777777778" y="91" width="26.22222222222222" height="27" rx="3" fill="#7c74a9" stroke="none"/>
+<text x="794" y="110" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">n=180, mean=53s</text>
+<text x="24" y="147" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">GPT-OSS medium</text>
+<rect x="185" y="128" width="396.6111111111111" height="27" rx="3" fill="#287b67" stroke="none"/>
+<text x="383.30555555555554" y="147" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="middle">121</text>
+<rect x="581.6111111111111" y="128" width="114.72222222222223" height="27" rx="3" fill="#b96a37" stroke="none"/>
+<text x="638.9722222222222" y="147" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="middle">35</text>
+<rect x="696.3333333333333" y="128" width="26.22222222222222" height="27" rx="3" fill="#a94259" stroke="none"/>
+<rect x="722.5555555555554" y="128" width="52.44444444444444" height="27" rx="3" fill="#7c74a9" stroke="none"/>
+<text x="748.7777777777776" y="147" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="middle">16</text>
+<text x="794" y="147" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">n=180, mean=372s</text>
+<text x="24" y="184" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">GPT-OSS hard</text>
+<rect x="185" y="165" width="262.22222222222223" height="27" rx="3" fill="#287b67" stroke="none"/>
+<text x="316.1111111111111" y="184" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="middle">80</text>
+<rect x="447.22222222222223" y="165" width="196.66666666666666" height="27" rx="3" fill="#b96a37" stroke="none"/>
+<text x="545.5555555555555" y="184" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="middle">60</text>
+<rect x="643.8888888888889" y="165" width="52.44444444444444" height="27" rx="3" fill="#a94259" stroke="none"/>
+<text x="670.1111111111111" y="184" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="middle">16</text>
+<rect x="696.3333333333334" y="165" width="78.66666666666667" height="27" rx="3" fill="#7c74a9" stroke="none"/>
+<text x="735.6666666666667" y="184" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="middle">24</text>
+<text x="794" y="184" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">n=180, mean=446s</text>
+<text x="24" y="221" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Qwen easy</text>
+<rect x="185" y="202" width="570.3333333333334" height="27" rx="3" fill="#287b67" stroke="none"/>
+<text x="470.1666666666667" y="221" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="middle">174</text>
+<rect x="755.3333333333334" y="202" width="16.38888888888889" height="27" rx="3" fill="#b96a37" stroke="none"/>
+<rect x="771.7222222222223" y="202" width="3.2777777777777777" height="27" rx="3" fill="#7c74a9" stroke="none"/>
+<text x="794" y="221" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">n=180, mean=110s</text>
+<text x="24" y="258" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Qwen medium</text>
+<rect x="185" y="239" width="524.4444444444445" height="27" rx="3" fill="#287b67" stroke="none"/>
+<text x="447.22222222222223" y="258" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="middle">160</text>
+<rect x="709.4444444444445" y="239" width="49.166666666666664" height="27" rx="3" fill="#b96a37" stroke="none"/>
+<text x="734.0277777777778" y="258" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="middle">15</text>
+<rect x="758.6111111111111" y="239" width="6.555555555555555" height="27" rx="3" fill="#a94259" stroke="none"/>
+<rect x="765.1666666666666" y="239" width="9.833333333333334" height="27" rx="3" fill="#7c74a9" stroke="none"/>
+<text x="794" y="258" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">n=180, mean=605s</text>
+<text x="24" y="295" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Qwen hard</text>
+<rect x="185" y="276" width="452.3333333333333" height="27" rx="3" fill="#287b67" stroke="none"/>
+<text x="411.16666666666663" y="295" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="middle">138</text>
+<rect x="637.3333333333333" y="276" width="42.611111111111114" height="27" rx="3" fill="#b96a37" stroke="none"/>
+<text x="658.6388888888888" y="295" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="middle">13</text>
+<rect x="679.9444444444443" y="276" width="72.11111111111111" height="27" rx="3" fill="#a94259" stroke="none"/>
+<text x="715.9999999999999" y="295" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="middle">22</text>
+<rect x="752.0555555555554" y="276" width="22.944444444444443" height="27" rx="3" fill="#7c74a9" stroke="none"/>
+<text x="794" y="295" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">n=180, mean=879s</text>
+<text x="24" y="341" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">Categories are exclusive. Zero recorded operational errors. Each tier has 180 requests per model.</text>
+</svg>

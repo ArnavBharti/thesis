@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="410" viewBox="0 0 960 410">
+<rect width="100%" height="100%" fill="white"/>
+<text x="24" y="30" font-family="Arial, sans-serif" font-size="23" fill="#182635" font-weight="bold" text-anchor="start">Design: puzzles, requests, and evidence reuse</text>
+<rect x="350" y="55" width="260" height="60" rx="3" fill="#eff5f9" stroke="#bfd1df"/>
+<text x="480.0" y="79" font-family="Arial, sans-serif" font-size="16" fill="#182635" font-weight="bold" text-anchor="middle">Certified dataset</text>
+<text x="480.0" y="101" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="middle">300 puzzles: 100 per tier</text>
+<rect x="40" y="150" width="270" height="65" rx="3" fill="#eff5f9" stroke="#bfd1df"/>
+<text x="175.0" y="174" font-family="Arial, sans-serif" font-size="16" fill="#182635" font-weight="bold" text-anchor="middle">Pilot: 15 puzzles</text>
+<text x="175.0" y="196" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="middle">4 alphabets = 60 calls/model</text>
+<rect x="350" y="150" width="260" height="65" rx="3" fill="#eff5f9" stroke="#bfd1df"/>
+<text x="480.0" y="174" font-family="Arial, sans-serif" font-size="16" fill="#182635" font-weight="bold" text-anchor="middle">Main: 60 different puzzles</text>
+<text x="480.0" y="196" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="middle">9 alphabets = 540 calls/model</text>
+<rect x="650" y="150" width="275" height="65" rx="3" fill="#eff5f9" stroke="#bfd1df"/>
+<text x="787.5" y="174" font-family="Arial, sans-serif" font-size="16" fill="#182635" font-weight="bold" text-anchor="middle">Paired final-grid scoring</text>
+<text x="787.5" y="196" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="middle">Format, clues, units, reference</text>
+<rect x="220" y="275" width="260" height="65" rx="3" fill="#eff5f9" stroke="#bfd1df"/>
+<text x="350.0" y="299" font-family="Arial, sans-serif" font-size="16" fill="#182635" font-weight="bold" text-anchor="middle">Mechanism subset: 15</text>
+<text x="350.0" y="321" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="middle">Cross, token length, binding</text>
+<rect x="580" y="275" width="300" height="65" rx="3" fill="#eff5f9" stroke="#bfd1df"/>
+<text x="730.0" y="299" font-family="Arial, sans-serif" font-size="16" fill="#182635" font-weight="bold" text-anchor="middle">Ablation subset: 9</text>
+<text x="730.0" y="321" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="middle">Prompts and shared-initial revisions</text>
+<line x1="480" y1="115" x2="175" y2="150" stroke="#245f86"/>
+<line x1="480" y1="115" x2="480" y2="150" stroke="#245f86"/>
+<line x1="610" y1="182" x2="650" y2="182" stroke="#245f86"/>
+<line x1="480" y1="215" x2="350" y2="275" stroke="#245f86"/>
+<line x1="480" y1="215" x2="730" y2="275" stroke="#245f86"/>
+<line x1="480" y1="308" x2="580" y2="308" stroke="#245f86"/>
+<text x="24" y="380" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Pilot and main are disjoint. Smaller sets are nested. Reused main outputs are not fresh model calls.</text>
+</svg>

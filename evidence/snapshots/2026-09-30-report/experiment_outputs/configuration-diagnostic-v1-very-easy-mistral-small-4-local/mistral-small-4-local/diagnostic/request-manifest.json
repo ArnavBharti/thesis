@@ -1,0 +1,58 @@
+{
+  "inference": {
+    "max_new_tokens": 256,
+    "seed": 20260826,
+    "temperature": 0.1,
+    "top_p": 1.0
+  },
+  "model": {
+    "api_base": null,
+    "api_key_env": null,
+    "backend": "vllm",
+    "dtype": "bfloat16",
+    "enabled": true,
+    "extra": {
+      "bounded_final": null,
+      "chat_template": {
+        "reasoning_effort": "none"
+      },
+      "protocol": {
+        "cohort_role": "strong open-weight reasoning model"
+      },
+      "reasoning_output": null,
+      "structured_regex": "[1-9]( [1-9]){8}(\\n[1-9]( [1-9]){8}){8}",
+      "vllm": {
+        "attention_backend": "FLASH_ATTN_MLA",
+        "gpu_memory_utilization": 0.8,
+        "max_model_len": 32768,
+        "moe_backend": "triton"
+      }
+    },
+    "local_files_only": true,
+    "model_id": "mistralai/Mistral-Small-4-119B-2603",
+    "name": "mistral-small-4-local",
+    "revision": "a11f36bebf709121056b1dbcc943d1c6afbe494d",
+    "slurm": {
+      "cpus": 8,
+      "gpus": 2,
+      "memory": "256G",
+      "modules": [],
+      "nodelist": null,
+      "partition": "gpu_h200_8",
+      "time_limit": "0-00:30"
+    },
+    "tensor_parallel_size": 2,
+    "tokenizer_id": null,
+    "trust_remote_code": true
+  },
+  "request_count": 1,
+  "request_id_sha256": "120e28d98526e4da3cb4005fde03aeeb2087ecf723ea790b0e8697f86f6d7134",
+  "retry": {
+    "attempts": 5,
+    "initial_delay_seconds": 2.0,
+    "maximum_delay_seconds": 30.0,
+    "timeout_seconds": 600.0
+  },
+  "run_id": "configuration-diagnostic-v1-very-easy-mistral-small-4-local",
+  "step": "diagnostic"
+}

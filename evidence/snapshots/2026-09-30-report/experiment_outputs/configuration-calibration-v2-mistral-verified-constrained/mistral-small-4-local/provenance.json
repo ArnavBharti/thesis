@@ -1,0 +1,55 @@
+{
+  "backend": "vllm",
+  "dataset_sha256": "43a1ef3a4dfe22fa6cd8939021a80ef3cc812c5916ab62ef6b11501b45b58cc2",
+  "dtype": "bfloat16",
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "0,1",
+    "SLURM_JOB_ID": "342141",
+    "SLURM_JOB_NODELIST": "gpunode7"
+  },
+  "git_commit": "1793a56ab9d40817acbccbf808ee7d6e112089d9",
+  "gpu": [
+    {
+      "driver_version": "580.126.20",
+      "index": "0",
+      "memory_total_mib": "143771",
+      "name": "NVIDIA H200 NVL",
+      "uuid": "GPU-0b48f730-b002-4253-a60e-38f0ea221bdb"
+    },
+    {
+      "driver_version": "580.126.20",
+      "index": "1",
+      "memory_total_mib": "143771",
+      "name": "NVIDIA H200 NVL",
+      "uuid": "GPU-1c012fa0-b7ae-1fb8-be44-0913d50c80d3"
+    }
+  ],
+  "hostname": "gpunode7.sharanga.local",
+  "model": "mistral-small-4-local",
+  "model_id": "mistralai/Mistral-Small-4-119B-2603",
+  "packages": {
+    "accelerate": "1.14.0",
+    "torch": "2.13.0",
+    "transformers": "5.16.1",
+    "vllm": "0.28.0"
+  },
+  "platform": "Linux-4.18.0-553.109.1.el8_10.x86_64-x86_64-with-glibc2.28",
+  "python": "3.11.5 (main, Sep 11 2023, 13:54:46) [GCC 11.2.0]",
+  "revision": "a11f36bebf709121056b1dbcc943d1c6afbe494d",
+  "run_id": "configuration-calibration-v2-mistral-verified-constrained",
+  "runtime_options": {
+    "attention_backend": "FLASH_ATTN_MLA",
+    "gpu_memory_utilization": 0.8,
+    "max_model_len": 32768,
+    "max_num_seqs": 1,
+    "moe_backend": "triton"
+  },
+  "sampling_options": {
+    "max_tokens": 256,
+    "seed": 20260826,
+    "temperature": 0.1,
+    "top_p": 1.0
+  },
+  "tensor_parallel_size": 2,
+  "tokenizer_id": "mistralai/Mistral-Small-4-119B-2603"
+}

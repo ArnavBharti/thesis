@@ -16,12 +16,12 @@ not submitted twice, and interrupted runs resume from saved results.
 ## Models and sample sizes
 
 The study uses GPT-OSS-120B and Qwen3.8-27B-FP8 as its two local models. The
-GPT-OSS benchmark is complete. Qwen uses a separate configuration and run ID,
+main benchmarks are complete for both models. Qwen uses a separate configuration and run ID,
 so its protocol can be frozen without changing the completed GPT-OSS protocol.
 
 | Script name | Pinned model | Hidden reasoning | Sharanga request |
 |---|---|---|---|
-| `gpt-oss-120b-local` | `openai/gpt-oss-120b` | Harmony analysis/final channels | 1 H100, 12 CPUs, 96 GB RAM |
+| `gpt-oss-120b-local` | `openai/gpt-oss-120b` | Harmony analysis/final channels | 1 H100, 12 CPUs, 192 GB main / 96 GB later mechanisms |
 | `qwen-3.8-27b-local` | `Qwen/Qwen3.8-27B-FP8` | thinking tags removed before scoring | 1 H100, 12 CPUs, 96 GB RAM |
 
 The choices are supported by primary documentation:
@@ -46,7 +46,8 @@ Sample sizes:
 
 Each model's main benchmark presents the same 60 puzzles under nine alphabets,
 giving `60 x 9 = 540` requests per model. Qwen's completed pilot scored 54/60
-with no operational failures. Its isolated main run uses 12 hash shards and a
+with no operational failures. Its complete main run scored 472/540, compared
+with 372/540 for GPT-OSS. Its isolated main run uses 12 hash shards and a
 12-hour wall-time per shard, chosen from pilot latency. The GPT-OSS run remains
 unchanged in six shards.
 
@@ -386,6 +387,44 @@ Press `Ctrl+C` to stop following a log. This does not cancel the job.
 - Results are append-only.
 - Frozen manifests reject changed settings.
 - Never manually edit files under `experiment_outputs/`.
+
+## Paper-writing report and offline evidence checks
+
+The detailed writing dossier is at `../paper/report/complete_report.md`. It
+contains section-by-section guidance, primary-source literature, exact methods,
+all captured experimental results, plots, interpretation limits, and verification
+commands. Its PDF is `../output/pdf/thesis-paper-writing-report.pdf`. Invoke
+`$thesis-paper-report` in Codex to use the installed reusable skill. This does
+not authorize additional inference or change the frozen protocol.
+
+The durable snapshot at `../evidence/snapshots/2026-09-30-report/` includes
+GPT-OSS Steps 8--12, historical diagnostics, captured Qwen outputs, protocols,
+sample plans, and job logs. It excludes weights and credentials. Both main
+benchmarks have 540/540 records, matching frozen request digests and valid
+markers. Qwen's final job completed on 30 September 2026 at 19:29:44 IST.
+Qwen mechanism experiments are not completed evidence in this snapshot.
+
+Run these on your Mac, not on the login node:
+
+```bash
+cd "/Users/arnavbharti/Developer/arnavbharti/thesis"
+python3 paper/report/prepare_snapshot.py tmp/research-report/snapshot \
+  evidence/snapshots/2026-09-30-report --verify
+python3 paper/report/analyze_evidence.py \
+  --snapshot evidence/snapshots/2026-09-30-report \
+  --output tmp/research-report/recheck
+diff paper/report/generated/results_tables.md \
+  tmp/research-report/recheck/results_tables.md
+```
+
+The first command verifies stored-file and decompressed-content checksums. The
+analysis checks request hashes, frozen digests, shard and marker counts,
+registered scoring, independent Sudoku constraints, and dataset certificates.
+Expect `dataset_valid: true` and `audit_errors: []`. No output from `diff`
+means the numeric tables reproduce. To regenerate report assets from the same
+snapshot, use `build_assets.py --snapshot ...`; rendering with `build_report.py`
+also needs the existing local Pandoc, XeLaTeX, and `rsvg-convert` commands.
+No model installation or GPU allocation is needed for offline verification.
 
 ## Local verification before committing
 

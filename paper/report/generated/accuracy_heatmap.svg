@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="455" viewBox="0 0 960 455">
+<rect width="100%" height="100%" fill="white"/>
+<text x="24" y="30" font-family="Arial, sans-serif" font-size="23" fill="#182635" font-weight="bold" text-anchor="start">Main accuracy by alphabet and difficulty</text>
+<text x="24" y="52" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">Cells show correct / saved requests. These are not independent repeated solves.</text>
+<text x="24" y="88" font-family="Arial, sans-serif" font-size="19" fill="#182635" font-weight="bold" text-anchor="start">GPT-OSS: complete</text>
+<text x="251" y="116" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">Easy</text>
+<text x="335" y="116" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">Medium</text>
+<text x="419" y="116" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">Hard</text>
+<text x="24" y="149" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Arabic digits</text>
+<rect x="214" y="129" width="76" height="27" rx="3" fill="rgb(47,130,153)" stroke="none"/>
+<text x="252" y="148" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">20/20</text>
+<rect x="298" y="129" width="76" height="27" rx="3" fill="rgb(103,164,181)" stroke="none"/>
+<text x="336" y="148" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">14/20</text>
+<rect x="382" y="129" width="76" height="27" rx="3" fill="rgb(132,181,196)" stroke="none"/>
+<text x="420" y="148" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">11/20</text>
+<text x="24" y="179" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Uppercase Latin</text>
+<rect x="214" y="159" width="76" height="27" rx="3" fill="rgb(47,130,153)" stroke="none"/>
+<text x="252" y="178" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">20/20</text>
+<rect x="298" y="159" width="76" height="27" rx="3" fill="rgb(94,158,177)" stroke="none"/>
+<text x="336" y="178" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">15/20</text>
+<rect x="382" y="159" width="76" height="27" rx="3" fill="rgb(141,187,201)" stroke="none"/>
+<text x="420" y="178" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">10/20</text>
+<text x="24" y="209" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Lowercase Latin</text>
+<rect x="214" y="189" width="76" height="27" rx="3" fill="rgb(47,130,153)" stroke="none"/>
+<text x="252" y="208" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">20/20</text>
+<rect x="298" y="189" width="76" height="27" rx="3" fill="rgb(94,158,177)" stroke="none"/>
+<text x="336" y="208" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">15/20</text>
+<rect x="382" y="189" width="76" height="27" rx="3" fill="rgb(150,193,205)" stroke="none"/>
+<text x="420" y="208" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">9/20</text>
+<text x="24" y="239" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Greek letters</text>
+<rect x="214" y="219" width="76" height="27" rx="3" fill="rgb(47,130,153)" stroke="none"/>
+<text x="252" y="238" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">20/20</text>
+<rect x="298" y="219" width="76" height="27" rx="3" fill="rgb(132,181,196)" stroke="none"/>
+<text x="336" y="238" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">11/20</text>
+<rect x="382" y="219" width="76" height="27" rx="3" fill="rgb(179,210,220)" stroke="none"/>
+<text x="420" y="238" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">6/20</text>
+<text x="24" y="269" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Bengali numerals</text>
+<rect x="214" y="249" width="76" height="27" rx="3" fill="rgb(75,147,167)" stroke="none"/>
+<text x="252" y="268" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">17/20</text>
+<rect x="298" y="249" width="76" height="27" rx="3" fill="rgb(94,158,177)" stroke="none"/>
+<text x="336" y="268" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">15/20</text>
+<rect x="382" y="249" width="76" height="27" rx="3" fill="rgb(132,181,196)" stroke="none"/>
+<text x="420" y="268" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">11/20</text>
+<text x="24" y="299" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Devanagari numerals</text>
+<rect x="214" y="279" width="76" height="27" rx="3" fill="rgb(65,141,162)" stroke="none"/>
+<text x="252" y="298" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">18/20</text>
+<rect x="298" y="279" width="76" height="27" rx="3" fill="rgb(122,176,191)" stroke="none"/>
+<text x="336" y="298" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">12/20</text>
+<rect x="382" y="279" width="76" height="27" rx="3" fill="rgb(150,193,205)" stroke="none"/>
+<text x="420" y="298" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">9/20</text>
+<text x="24" y="329" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Abstract symbols</text>
+<rect x="214" y="309" width="76" height="27" rx="3" fill="rgb(65,141,162)" stroke="none"/>
+<text x="252" y="328" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">18/20</text>
+<rect x="298" y="309" width="76" height="27" rx="3" fill="rgb(141,187,201)" stroke="none"/>
+<text x="336" y="328" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">10/20</text>
+<rect x="382" y="309" width="76" height="27" rx="3" fill="rgb(141,187,201)" stroke="none"/>
+<text x="420" y="328" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">10/20</text>
+<text x="24" y="359" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Nonce labels</text>
+<rect x="214" y="339" width="76" height="27" rx="3" fill="rgb(47,130,153)" stroke="none"/>
+<text x="252" y="358" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">20/20</text>
+<rect x="298" y="339" width="76" height="27" rx="3" fill="rgb(84,153,172)" stroke="none"/>
+<text x="336" y="358" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">16/20</text>
+<rect x="382" y="339" width="76" height="27" rx="3" fill="rgb(169,204,215)" stroke="none"/>
+<text x="420" y="358" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">7/20</text>
+<text x="24" y="389" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Emoji</text>
+<rect x="214" y="369" width="76" height="27" rx="3" fill="rgb(65,141,162)" stroke="none"/>
+<text x="252" y="388" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">18/20</text>
+<rect x="298" y="369" width="76" height="27" rx="3" fill="rgb(113,170,186)" stroke="none"/>
+<text x="336" y="388" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">13/20</text>
+<rect x="382" y="369" width="76" height="27" rx="3" fill="rgb(169,204,215)" stroke="none"/>
+<text x="420" y="388" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">7/20</text>
+<text x="499" y="88" font-family="Arial, sans-serif" font-size="19" fill="#182635" font-weight="bold" text-anchor="start">Qwen: complete</text>
+<text x="726" y="116" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">Easy</text>
+<text x="810" y="116" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">Medium</text>
+<text x="894" y="116" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">Hard</text>
+<text x="499" y="149" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Arabic digits</text>
+<rect x="689" y="129" width="76" height="27" rx="3" fill="rgb(47,130,153)" stroke="none"/>
+<text x="727" y="148" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">20/20</text>
+<rect x="773" y="129" width="76" height="27" rx="3" fill="rgb(56,135,157)" stroke="none"/>
+<text x="811" y="148" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">19/20</text>
+<rect x="857" y="129" width="76" height="27" rx="3" fill="rgb(103,164,181)" stroke="none"/>
+<text x="895" y="148" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">14/20</text>
+<text x="499" y="179" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Uppercase Latin</text>
+<rect x="689" y="159" width="76" height="27" rx="3" fill="rgb(56,135,157)" stroke="none"/>
+<text x="727" y="178" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">19/20</text>
+<rect x="773" y="159" width="76" height="27" rx="3" fill="rgb(65,141,162)" stroke="none"/>
+<text x="811" y="178" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">18/20</text>
+<rect x="857" y="159" width="76" height="27" rx="3" fill="rgb(65,141,162)" stroke="none"/>
+<text x="895" y="178" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">18/20</text>
+<text x="499" y="209" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Lowercase Latin</text>
+<rect x="689" y="189" width="76" height="27" rx="3" fill="rgb(56,135,157)" stroke="none"/>
+<text x="727" y="208" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">19/20</text>
+<rect x="773" y="189" width="76" height="27" rx="3" fill="rgb(94,158,177)" stroke="none"/>
+<text x="811" y="208" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">15/20</text>
+<rect x="857" y="189" width="76" height="27" rx="3" fill="rgb(75,147,167)" stroke="none"/>
+<text x="895" y="208" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">17/20</text>
+<text x="499" y="239" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Greek letters</text>
+<rect x="689" y="219" width="76" height="27" rx="3" fill="rgb(47,130,153)" stroke="none"/>
+<text x="727" y="238" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">20/20</text>
+<rect x="773" y="219" width="76" height="27" rx="3" fill="rgb(75,147,167)" stroke="none"/>
+<text x="811" y="238" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">17/20</text>
+<rect x="857" y="219" width="76" height="27" rx="3" fill="rgb(103,164,181)" stroke="none"/>
+<text x="895" y="238" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">14/20</text>
+<text x="499" y="269" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Bengali numerals</text>
+<rect x="689" y="249" width="76" height="27" rx="3" fill="rgb(56,135,157)" stroke="none"/>
+<text x="727" y="268" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">19/20</text>
+<rect x="773" y="249" width="76" height="27" rx="3" fill="rgb(56,135,157)" stroke="none"/>
+<text x="811" y="268" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">19/20</text>
+<rect x="857" y="249" width="76" height="27" rx="3" fill="rgb(94,158,177)" stroke="none"/>
+<text x="895" y="268" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">15/20</text>
+<text x="499" y="299" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Devanagari numerals</text>
+<rect x="689" y="279" width="76" height="27" rx="3" fill="rgb(47,130,153)" stroke="none"/>
+<text x="727" y="298" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">20/20</text>
+<rect x="773" y="279" width="76" height="27" rx="3" fill="rgb(56,135,157)" stroke="none"/>
+<text x="811" y="298" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">19/20</text>
+<rect x="857" y="279" width="76" height="27" rx="3" fill="rgb(75,147,167)" stroke="none"/>
+<text x="895" y="298" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">17/20</text>
+<text x="499" y="329" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Abstract symbols</text>
+<rect x="689" y="309" width="76" height="27" rx="3" fill="rgb(56,135,157)" stroke="none"/>
+<text x="727" y="328" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">19/20</text>
+<rect x="773" y="309" width="76" height="27" rx="3" fill="rgb(75,147,167)" stroke="none"/>
+<text x="811" y="328" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">17/20</text>
+<rect x="857" y="309" width="76" height="27" rx="3" fill="rgb(94,158,177)" stroke="none"/>
+<text x="895" y="328" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">15/20</text>
+<text x="499" y="359" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Nonce labels</text>
+<rect x="689" y="339" width="76" height="27" rx="3" fill="rgb(56,135,157)" stroke="none"/>
+<text x="727" y="358" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">19/20</text>
+<rect x="773" y="339" width="76" height="27" rx="3" fill="rgb(84,153,172)" stroke="none"/>
+<text x="811" y="358" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">16/20</text>
+<rect x="857" y="339" width="76" height="27" rx="3" fill="rgb(113,170,186)" stroke="none"/>
+<text x="895" y="358" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">13/20</text>
+<text x="499" y="389" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="start">Emoji</text>
+<rect x="689" y="369" width="76" height="27" rx="3" fill="rgb(56,135,157)" stroke="none"/>
+<text x="727" y="388" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">19/20</text>
+<rect x="773" y="369" width="76" height="27" rx="3" fill="rgb(47,130,153)" stroke="none"/>
+<text x="811" y="388" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">20/20</text>
+<rect x="857" y="369" width="76" height="27" rx="3" fill="rgb(94,158,177)" stroke="none"/>
+<text x="895" y="388" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="normal" text-anchor="middle">15/20</text>
+<text x="24" y="432" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">Same frozen 60 puzzles. Nine representations. Darker cells indicate higher realized accuracy.</text>
+</svg>

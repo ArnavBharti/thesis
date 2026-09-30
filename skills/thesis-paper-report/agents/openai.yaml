@@ -1,0 +1,4 @@
+interface:
+  display_name: "Thesis Paper Report"
+  short_description: "Evidence-backed Sudoku thesis writing guidance"
+  default_prompt: "Use $thesis-paper-report to help me write a thesis-paper section using verified results and the BITS Pilani guidance."

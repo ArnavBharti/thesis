@@ -1,0 +1,8 @@
+{
+  "eligible_requests": 40,
+  "experiment": "exp4",
+  "model": "qwen-3.8-27b-local",
+  "part": 3,
+  "parts": 12,
+  "status": "COMPLETE"
+}

@@ -1,0 +1,8 @@
+{
+  "eligible_requests": 165,
+  "experiment": "exp8",
+  "model": "gpt-oss-120b-local",
+  "part": 1,
+  "parts": 1,
+  "status": "COMPLETE"
+}

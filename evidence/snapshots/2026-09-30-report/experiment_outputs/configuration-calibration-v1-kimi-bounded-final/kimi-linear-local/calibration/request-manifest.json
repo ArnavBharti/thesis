@@ -1,0 +1,61 @@
+{
+  "inference": {
+    "max_new_tokens": 8192,
+    "seed": 20260826,
+    "temperature": 0.7,
+    "top_p": 0.9
+  },
+  "model": {
+    "api_base": null,
+    "api_key_env": null,
+    "backend": "vllm",
+    "dtype": "bfloat16",
+    "enabled": true,
+    "extra": {
+      "bounded_final": {
+        "final_tokens": 1024,
+        "mode": "followup",
+        "reasoning_tokens": 7168
+      },
+      "protocol": {
+        "cohort_role": "local Kimi-family replacement",
+        "replacement_reason": "the exact 2.8T-parameter model is not locally deployable on available Sharanga nodes",
+        "replaces_outline_model": "moonshotai/Kimi-K3"
+      },
+      "sampling": {
+        "repetition_penalty": 1.05,
+        "top_k": 20
+      },
+      "vllm": {
+        "gpu_memory_utilization": 0.9,
+        "max_model_len": 32768
+      }
+    },
+    "local_files_only": true,
+    "model_id": "moonshotai/Kimi-Linear-48B-A3B-Instruct",
+    "name": "kimi-linear-local",
+    "revision": "e1df551a447157d4658b573f9a695d57658590e9",
+    "slurm": {
+      "cpus": 8,
+      "gpus": 2,
+      "memory": "256G",
+      "modules": [],
+      "nodelist": null,
+      "partition": "gpu_h200_8",
+      "time_limit": "0-23:30"
+    },
+    "tensor_parallel_size": 2,
+    "tokenizer_id": null,
+    "trust_remote_code": true
+  },
+  "request_count": 15,
+  "request_id_sha256": "f29698c7b884b78a306a2e8c4f007433e7df91b67d44941a63f3710a243f1a3a",
+  "retry": {
+    "attempts": 5,
+    "initial_delay_seconds": 2.0,
+    "maximum_delay_seconds": 30.0,
+    "timeout_seconds": 600.0
+  },
+  "run_id": "configuration-calibration-v1-kimi-bounded-final",
+  "step": "calibration"
+}

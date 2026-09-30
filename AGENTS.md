@@ -65,10 +65,14 @@ benchmark and mechanism experiments:
 - Partition: `gpu_h100_4`
 - GPUs: 1 H100
 - CPUs: 12
-- Memory: 96 GB
+- Memory: 192 GB for the frozen main profile; 96 GB for later mechanism jobs
 - Normal main-part wall-time: 8 hours
 
-Do not describe 192 GB as the GPT-OSS allocation; the committed profile requests 96 GB.
+The 2026-09-30 evidence audit corrected an earlier handoff error: the frozen
+GPT-OSS main profile and main job scripts request 192 GB host RAM. Later
+mechanism scripts request 96 GB. Verify the exact saved script and scheduler
+record rather than assuming one allocation for every stage. These are host
+memory requests, not GPU VRAM.
 
 Reasoning must not appear in the final response, but hidden reasoning tokens may be used internally. The earlier error was treating reasoning as a small output-token budget rather than bounding execution by time.
 
@@ -180,7 +184,9 @@ the 15-hour wall-time. The records contain zero request-level operational
 failures, 103/171 correct outcomes, and 12 truncations. A digit mapping scored
 8/9, while no rule or output-format variant was uniformly better. Four
 conditions that generated identical default prompts independently scored 5/9,
-6/9, 5/9, and 7/9, demonstrating sampling variability at this scale. Do not
+6/9, 5/9, and 7/9, demonstrating generation variability despite the recorded
+fixed sampling seed. The evidence does not isolate numerical/runtime
+nondeterminism from stochastic effects. Do not
 treat small ablation differences as grounds to change the frozen protocol.
 
 The self-revision experiment (Step 12, job `361283`) completed 108/108 records
@@ -188,7 +194,8 @@ with a valid completion marker and zero request-level operational failures.
 Correct counts were 18/27 for one pass, 19/27 for one self-revision, 23/27 for
 two self-revisions, and 22/27 for checker-guided revision. These 27-request
 condition results are exploratory and do not establish a universal revision
-benefit. The Step 12 evidence has not yet been added to the local backup.
+benefit. Step 12 raw evidence is now backed up in the dated report snapshot
+and included in its offline tables and stage-cost analysis.
 
 Qwen's first 32,768-token timing screen completed: easy was correct in 80.48
 inference seconds; medium and hard were incorrect after 32,425 and 32,426
@@ -210,11 +217,14 @@ Twelve shards have 36 to 56 requests each, with pilot-weighted estimates of
 4.4 to 7.2 inference hours. The 12-hour wall-time leaves room for slower main
 requests; interrupted parts can resume from saved request IDs.
 
-The complete main benchmark, qualification, pilot, and Steps 8--11 evidence is
-backed up under `evidence/`. Raw JSONL evidence is stored losslessly as
-gzip-compressed `.jsonl.gz` files.
+The complete GPT-OSS main benchmark, qualification, pilot, and Steps 8--12
+evidence is backed up under `evidence/snapshots/2026-09-30-report/`, alongside
+historical diagnostics and the captured Qwen outputs. JSONL and job logs are
+losslessly gzip-compressed. `snapshot-manifest.json` records stored-file and
+raw-content SHA-256 checksums. Model weights, environments, and credentials
+are excluded.
 
-## Active queue state (recorded 2026-09-27 06:25 IST)
+## Recorded job state (2026-09-30 19:31 IST)
 
 The Qwen v2 timing, qualification, and pilot jobs have completed:
 
@@ -250,9 +260,22 @@ Exact part-to-job mappings are:
 | 11 | 366221 | `sdk-qwen-3-8-27b-local-exp4-part-011-of-012` |
 | 12 | 366222 | `sdk-qwen-3-8-27b-local-exp4-part-012-of-012` |
 
-At the recorded check, part 1 was running on `gpunode5`; parts 2--12 were
-pending under `QOSMaxCpuPerUserLimit`. All requested the announced resources,
-and none has a dependency. Do not assume part order or state remains unchanged.
+All twelve Qwen main parts completed with valid markers and exit `0:0`.
+Final part job `366222` completed on `gpunode5` at 19:29:44 IST in 8:18:28.
+The final copied snapshot has 540/540 records and the matching frozen request
+digest: 472 correct (87.4%), 33 nontruncated incorrect grids, 24 truncations,
+11 other output errors, and zero request-level operational errors. Easy is
+174/180, medium 160/180, and hard 138/180. Mean generation latency is 531.25
+seconds and median 422.78. There are 505 parseable grids, 488 preserving all
+clues and 487 satisfying all Sudoku units. Seventeen grids modify givens.
+The GPT-OSS main result is 372/540 (68.9%), with mean latency 290.81 seconds.
+The paired matrix has 338 both correct, 34 GPT-OSS only, 134 Qwen only, and
+34 neither. The exploratory stratified puzzle bootstrap gives a Qwen-minus-
+GPT-OSS difference of 18.52 points, 95% interval 13.70--23.52. Neither model's
+eight Arabic-baseline comparisons survives Holm adjustment at 0.05.
+Qwen mechanism experiments are not represented by completed outputs; do not
+claim a two-model mechanism replication or submit those jobs from a report
+request alone. Query current state for any later authorized submissions.
 Qwen result files and markers are under
 `experiment_outputs/qwen-3.8-27b-v2/qwen-3.8-27b-local/exp4/`.
 Part `N` uses `shard-(N-1)-of-012.jsonl` and `part-N-of-012.complete.json`,
@@ -319,11 +342,29 @@ The paper sources are local under `paper/`:
 Commit `0ff0d34` introduced the initial paper draft and generated tables. It contains only evidence available at that time (pilot and completed main part 1). Update results only from completed, verified experiment evidence. Do not label results as “preliminary”; write final-draft technical English while leaving unavailable results unwritten. Do not invent findings.
 
 The GPT-OSS main benchmark and Steps 8--12 are complete. The paper includes
-their results, but Step 12 raw evidence is not yet in the local backup or table
-generator. Qwen results should enter the paper only after their corresponding
+their results. The report snapshot now includes Step 12 raw evidence and its
+offline table generator. Qwen results should enter the paper only after their corresponding
 experiments complete. Do not present partial pilot counts as final model
 accuracy. Keep raw copied server evidence under the ignored `tmp/` tree unless
-the repository explicitly requires otherwise.
+the repository explicitly requires otherwise. The user requested a detailed
+paper-writing dossier rather than a manuscript rewrite. Its maintained source
+is `paper/report/writing_report.md`; the assembled report is
+`paper/report/complete_report.md`, and the PDF is
+`output/pdf/thesis-paper-writing-report.pdf`. Do not replace `paper/draft.tex`
+unless asked. The reusable skill is `$thesis-paper-report`, versioned under
+`skills/thesis-paper-report/` and installed in the local Codex skill directory.
+
+Offline verification is documented in the report and `src/README.md`. Run
+`paper/report/prepare_snapshot.py ... --verify` for backup checksums and
+`paper/report/analyze_evidence.py --snapshot ...` for re-scoring, independent
+clue/unit checks, request content hashes, shard/marker integrity, and tables.
+These scripts run locally without model loading. The added Holm comparisons
+and puzzle-cluster bootstrap are exploratory report analyses, not frozen
+preregistration amendments. No saved completed server Step 13 analysis or
+Qwen mechanism outputs were found in this capture; do not infer execution
+from the existence of their scripts. The report's local analysis reproduces
+the implemented retention and token-length procedures and adds explicitly
+exploratory paired analyses.
 
 ## Historical model evidence
 
