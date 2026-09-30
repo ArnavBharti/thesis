@@ -406,6 +406,11 @@ is `paper/report/writing_report.md`; the assembled report is
 `output/pdf/thesis-paper-writing-report.pdf`. Do not replace `paper/draft.tex`
 unless asked. The reusable skill is `$thesis-paper-report`, versioned under
 `skills/thesis-paper-report/` and installed in the local Codex skill directory.
+The added `paper/report/experiment_guide.md` groups methodology/rationale,
+alternatives, limitations, GPT-OSS results, Qwen results, and discussion by
+experiment. The builder inserts it before the verification section without
+replacing the original separate sections or twelve discussion lenses.
+Its Qwen follow-up blocks are evidence placeholders, not live queue status.
 
 Offline verification is documented in the report and `src/README.md`. Run
 `paper/report/prepare_snapshot.py ... --verify` for backup checksums and

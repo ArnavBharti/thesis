@@ -57,3 +57,18 @@ python3 -m unittest discover -s tests -q
 The snapshot verification command uses only the destination when `--verify`
 is supplied; the ignored working capture is not required to verify the backup.
 No command above loads a model or submits a job.
+
+## Experiment-centered guide addition
+
+The updated assembled report has 71 pages and adds the approximately
+4,000-word `experiment_guide.md` section before the verification instructions.
+Removing that one insertion from the assembled Markdown reproduces the
+previous assembled report exactly. The original narrative source, separate
+sections, twelve discussion lenses, figures, and result tables are unchanged.
+
+The new section incorporates the separately verified completed GPT-OSS
+Step 13 artifact and distinguishes submitted Qwen follow-ups from completed
+results. It makes no fresh live-queue claim. The rebuilt PDF has no extracted
+replacement characters. All 71 pages were visually reviewed, including a
+full-size check of the new methodology/results/discussion blocks. The full
+95-test unit suite passes after the builder change.
