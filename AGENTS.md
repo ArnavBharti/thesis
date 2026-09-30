@@ -411,6 +411,13 @@ alternatives, limitations, GPT-OSS results, Qwen results, and discussion by
 experiment. The builder inserts it before the verification section without
 replacing the original separate sections or twelve discussion lenses.
 Its Qwen follow-up blocks are evidence placeholders, not live queue status.
+The experiment-centered guide is self-contained. Edit its manually maintained
+`experiment_guide_notes.md` and `build_experiment_guide.py`, not the generated
+`experiment_guide.md` directly. `build_report.py` rebuilds it from those notes,
+the original narrative, audited tables, and preserved request messages. Keep
+the exact procedures, complete available condition/tier/error tables, local
+prompt inventories, interpretation and verification inside each block. Do not
+require the reader to consult the separate Methods/Results/Discussion sections.
 
 Offline verification is documented in the report and `src/README.md`. Run
 `paper/report/prepare_snapshot.py ... --verify` for backup checksums and

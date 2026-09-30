@@ -5,6 +5,8 @@ import argparse
 import subprocess
 from pathlib import Path
 
+from build_experiment_guide import build_guide
+
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
 
@@ -16,7 +18,8 @@ def main():
     for name in ("accuracy_heatmap", "failure_decomposition", "revision_cost", "design_hierarchy"):
         subprocess.run(["rsvg-convert", "-w", "1920", "-o", str(HERE / "generated" / (name + ".png")), str(HERE / "generated" / (name + ".svg"))], check=True)
     narrative = (HERE / "writing_report.md").read_text(encoding="utf-8")
-    experiment_guide = (HERE / "experiment_guide.md").read_text(encoding="utf-8")
+    experiment_guide = build_guide()
+    (HERE / "experiment_guide.md").write_text(experiment_guide, encoding="utf-8")
     verification_heading = "# How to verify every result yourself"
     if narrative.count(verification_heading) != 1:
         raise ValueError("expected exactly one verification section")
