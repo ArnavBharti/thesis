@@ -51,6 +51,12 @@ with 372/540 for GPT-OSS. Its isolated main run uses 12 hash shards and a
 12-hour wall-time per shard, chosen from pilot latency. The GPT-OSS run remains
 unchanged in six shards.
 
+On 30 September 2026, Qwen Steps 8--12 were queued independently, followed
+by a dependent CPU Step 13. Exact job IDs, resource overrides, and the separate
+GPT-OSS Step 13 freeze-check blocker are recorded in [AGENTS.md](../AGENTS.md).
+These submissions are not completed results. The dated paper-report snapshot
+predates them and remains unchanged.
+
 ## Safety rules
 
 - The HPC account is shared. Never change or cancel another user's job.

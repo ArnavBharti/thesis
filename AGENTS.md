@@ -224,7 +224,43 @@ losslessly gzip-compressed. `snapshot-manifest.json` records stored-file and
 raw-content SHA-256 checksums. Model weights, environments, and credentials
 are excluded.
 
-## Recorded job state (2026-09-30 19:31 IST)
+## Follow-up submissions (2026-09-30 21:57 IST)
+
+The user explicitly authorized all remaining experiments after receiving the
+complete report. Five independent Qwen mechanism jobs were submitted with no
+dependencies. Each uses the unchanged `config/qwen-27b-v2.json`, one H100 in
+`gpu_h100_4`, 12 CPUs, and 96 GB host RAM. Wall-times are submission overrides,
+not changes to the frozen configuration or generation settings.
+
+| Step | Job ID | Expected job name | Wall-time |
+|---|---:|---|---|
+| 8 | 373543 | `sdk-qwen-3-8-27b-local-exp6-input-output` | 12 hours |
+| 9 | 373544 | `sdk-qwen-3-8-27b-local-exp7-token-length` | 12 hours |
+| 10 | 373545 | `sdk-qwen-3-8-27b-local-exp8-binding` | 24 hours |
+| 11 | 373546 | `sdk-qwen-3-8-27b-local-exp9-ablations` | 36 hours |
+| 12 | 373547 | `sdk-qwen-3-8-27b-local-exp10-revisions` | 18 hours |
+| 13 | 373551 | `sdk-qwen-3-8-27b-local-final-analysis` | 2 hours |
+
+At submission verification, all GPU jobs were pending for Resources/Priority.
+CPU analysis `373551` was pending with `afterok` dependencies on all five GPU
+IDs. It uses `compute`, zero GPUs, 4 CPUs, and 16 GB RAM. The partition's
+default `cpulimit` QOS currently requires at least 4 CPUs; the generated
+2-CPU default was rejected before submission. No QOS override was used.
+The CPU job file was generated with the existing `write_python_job` helper
+for `13_analyze_results.py`; only execution, after dependencies finish, performs
+the experiment-completion checks and analysis. Submission IDs are also saved
+in their `.submitted.json` files under the Qwen generated-job directory.
+
+GPT-OSS Step 13 was not submitted: its normal numbered entry point refused
+the current tree because `models`, `sample_plan`, and `source_sha256` differ
+from `local-models-v1/protocol.json`. Do not bypass the guard, edit frozen
+artifacts, or overwrite the active Qwen source to resolve this. The completed
+report's local analysis remains available. Resolve a separate exact frozen
+execution environment before attempting this remaining GPT-OSS artifact.
+The report and dated snapshot remain an immutable capture preceding these
+new runs. Update them only from verified completed follow-up evidence.
+
+## Recorded main job state (2026-09-30 19:31 IST)
 
 The Qwen v2 timing, qualification, and pilot jobs have completed:
 
