@@ -25,7 +25,7 @@ export PYTHONDONTWRITEBYTECODE=1
 # Unpack the locally tested historical source, not the active Qwen tree.
 THESIS_FROZEN_ROOT=/scratch/kudhru/arnavbharti/reproducibility/gpt-oss-2cdbc1f
 mkdir -p "$THESIS_FROZEN_ROOT"
-tar -xzf evidence/submissions/2026-09-30-gptoss-final-analysis/frozen-source.tar.gz \
+tar -xzf ../evidence/submissions/2026-09-30-gptoss-final-analysis/frozen-source.tar.gz \
   -C "$THESIS_FROZEN_ROOT"
 srun python3 "$THESIS_FROZEN_ROOT/src/13_analyze_results.py" \
   gpt-oss-120b-local \
