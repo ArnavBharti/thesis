@@ -251,12 +251,20 @@ for `13_analyze_results.py`; only execution, after dependencies finish, performs
 the experiment-completion checks and analysis. Submission IDs are also saved
 in their `.submitted.json` files under the Qwen generated-job directory.
 
-GPT-OSS Step 13 was not submitted: its normal numbered entry point refused
-the current tree because `models`, `sample_plan`, and `source_sha256` differ
-from `local-models-v1/protocol.json`. Do not bypass the guard, edit frozen
-artifacts, or overwrite the active Qwen source to resolve this. The completed
-report's local analysis remains available. Resolve a separate exact frozen
-execution environment before attempting this remaining GPT-OSS artifact.
+GPT-OSS Step 13 initially refused the current tree. The normalized comparison
+confirmed that only `source_sha256` differs: the earlier report of `models`
+and `sample_plan` differences was a Python tuple-versus-JSON-list comparison
+error. The exact changes are a new isolated timing script, qualification
+threshold support, and qualification-summary threshold support. Step 13 and
+the remaining analysis implementation are unchanged. A 1,229-record local
+comparison produced identical old/new analysis outputs apart from the new
+`min_correct: 5` qualification field. The exact frozen commit is `2cdbc1f`;
+its 82-test suite and the full archived global-protocol comparison pass.
+The user authorized safe execution after this review. The source archive,
+CPU submission script, and review are under
+`evidence/submissions/2026-09-30-gptoss-final-analysis/`. Run its numbered
+Step 13 from that separate historical export, keeping the original guard
+enabled. Do not edit frozen artifacts or overwrite the active Qwen source.
 The report and dated snapshot remain an immutable capture preceding these
 new runs. Update them only from verified completed follow-up evidence.
 
