@@ -28,7 +28,7 @@ git pull origin main --ff-only
 
 Never edit tracked source independently on the server. Test, commit, and push local changes to `origin/main` before pulling them on Sharanga.
 
-If SSH connects only as far as the login banner or otherwise stalls, stop immediately and ask the user to unlock SSH. Do not repeatedly troubleshoot the connection.
+If SSH reaches the login banner but does not reach the shell or run the requested command, wait briefly (about 10 seconds), then press Ctrl+C once in that SSH session. The user has confirmed that interrupting the banner can allow login to continue. Check whether the shell or requested command proceeds; Ctrl+C can also close the session, so do not assume login succeeded. Use this only during the stalled login, never to interrupt inference or another running task. If SSH still stalls or authentication is blocked, stop and ask the user to unlock SSH. Do not repeatedly troubleshoot the connection.
 
 ## Sharanga safety rules
 
