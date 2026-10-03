@@ -1,0 +1,53 @@
+{
+  "inference": {
+    "max_new_tokens": 28672,
+    "seed": 20260826,
+    "temperature": 0.0,
+    "top_p": 1.0
+  },
+  "model": {
+    "api_base": null,
+    "api_key_env": null,
+    "backend": "vllm",
+    "dtype": "bfloat16",
+    "enabled": true,
+    "extra": {
+      "protocol": {
+        "cohort_role": "local GLM-family replacement",
+        "replacement_reason": "the exact checkpoint is not locally deployable on available Sharanga nodes",
+        "replaces_outline_model": "zai-org/GLM-5.2"
+      },
+      "reasoning_output": "think_tags",
+      "vllm": {
+        "gpu_memory_utilization": 0.9,
+        "max_model_len": 32768
+      }
+    },
+    "local_files_only": true,
+    "model_id": "zai-org/GLM-4.7-Flash",
+    "name": "glm-flash-local",
+    "revision": "7dd20894a642a0aa287e9827cb1a1f7f91386b67",
+    "slurm": {
+      "cpus": 12,
+      "gpus": 2,
+      "memory": "256G",
+      "modules": [],
+      "nodelist": null,
+      "partition": "gpu_h100_4",
+      "time_limit": "0-23:30"
+    },
+    "tensor_parallel_size": 2,
+    "tokenizer_id": null,
+    "trust_remote_code": true
+  },
+  "request_count": 5,
+  "request_id_sha256": "329ac071eb65a81edf6082efc12c4e4d382c98b7b4dc03c0b5363b8a0d67ba8e",
+  "retry": {
+    "attempts": 5,
+    "initial_delay_seconds": 2.0,
+    "maximum_delay_seconds": 30.0,
+    "timeout_seconds": 600.0
+  },
+  "run_id": "thesis-confirmatory-lean-v5",
+  "step": "qualification"
+}

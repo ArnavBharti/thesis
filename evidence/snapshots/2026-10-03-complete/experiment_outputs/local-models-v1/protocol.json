@@ -1,0 +1,244 @@
+{
+  "baseline_reuse": {
+    "exp10": "Each revision branch starts from its matching exp4 response.",
+    "exp6": [
+      "A_arabic_to_arabic",
+      "B_greek_to_greek"
+    ],
+    "exp8": [
+      "uppercase_standard",
+      "digits_ordinary",
+      "nonce_neutral"
+    ]
+  },
+  "dataset_path": "/scratch/kudhru/arnavbharti/src/data/puzzles.jsonl",
+  "dataset_sha256": "43a1ef3a4dfe22fa6cd8939021a80ef3cc812c5916ab62ef6b11501b45b58cc2",
+  "experiment_shards": {
+    "exp10": 1,
+    "exp2": 1,
+    "exp4": 6,
+    "exp6": 1,
+    "exp7": 1,
+    "exp8": 1,
+    "exp9": 1
+  },
+  "inference": {
+    "max_new_tokens": 131072,
+    "seed": 20260826,
+    "temperature": 0.6,
+    "top_p": 0.95
+  },
+  "master_seed": 20260826,
+  "models": [
+    {
+      "api_base": null,
+      "api_key_env": null,
+      "backend": "vllm",
+      "dtype": "auto",
+      "enabled": true,
+      "extra": {
+        "chat_template": {
+          "reasoning_effort": "high"
+        },
+        "reasoning_output": "harmony_channels",
+        "sampling": {
+          "skip_special_tokens": false,
+          "temperature": 1,
+          "top_p": 1
+        },
+        "vllm": {
+          "gpu_memory_utilization": 0.9,
+          "max_model_len": 131072
+        }
+      },
+      "local_files_only": true,
+      "model_id": "openai/gpt-oss-120b",
+      "name": "gpt-oss-120b-local",
+      "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+      "slurm": {
+        "cpus": 12,
+        "gpus": 1,
+        "memory": "192G",
+        "modules": [],
+        "nodelist": null,
+        "partition": "gpu_h100_4",
+        "time_limit": "0-01:00"
+      },
+      "tensor_parallel_size": 1,
+      "tokenizer_id": null,
+      "trust_remote_code": false
+    },
+    {
+      "api_base": null,
+      "api_key_env": null,
+      "backend": "vllm",
+      "dtype": "auto",
+      "enabled": true,
+      "extra": {
+        "chat_template": {
+          "enable_thinking": true,
+          "preserve_thinking": false,
+          "reasoning_effort": "high"
+        },
+        "reasoning_output": "think_tags",
+        "sampling": {
+          "min_p": 0,
+          "presence_penalty": 1.5,
+          "repetition_penalty": 1,
+          "temperature": 1,
+          "top_k": 20,
+          "top_p": 0.95
+        },
+        "vllm": {
+          "gdn_prefill_backend": "triton",
+          "gpu_memory_utilization": 0.9,
+          "language_model_only": true,
+          "linear_backend": "triton",
+          "max_model_len": 131072
+        }
+      },
+      "local_files_only": true,
+      "model_id": "Qwen/Qwen3.5-122B-A10B-FP8",
+      "name": "qwen-3.5-122b-local",
+      "revision": "a099dee70ccfcd8d5dda56aaa0b60cb8ecadabc9",
+      "slurm": {
+        "cpus": 8,
+        "gpus": 2,
+        "memory": "256G",
+        "modules": [],
+        "nodelist": null,
+        "partition": "gpu_h200_8",
+        "time_limit": "0-01:00"
+      },
+      "tensor_parallel_size": 2,
+      "tokenizer_id": null,
+      "trust_remote_code": false
+    }
+  ],
+  "protocol_version": "2.0.0-lean",
+  "retry": {
+    "attempts": 5,
+    "initial_delay_seconds": 2.0,
+    "maximum_delay_seconds": 30.0,
+    "timeout_seconds": 600.0
+  },
+  "run_id": "local-models-v1",
+  "sample_plan": {
+    "ablation_ids": [
+      "E012",
+      "E087",
+      "E021",
+      "M087",
+      "M085",
+      "M078",
+      "H028",
+      "H050",
+      "H060"
+    ],
+    "dataset_sha256": "43a1ef3a4dfe22fa6cd8939021a80ef3cc812c5916ab62ef6b11501b45b58cc2",
+    "main_ids": [
+      "E084",
+      "E046",
+      "E012",
+      "E003",
+      "E032",
+      "E087",
+      "E016",
+      "E035",
+      "E027",
+      "E079",
+      "E030",
+      "E007",
+      "E021",
+      "E033",
+      "E082",
+      "E014",
+      "E049",
+      "E066",
+      "E037",
+      "E051",
+      "M018",
+      "M035",
+      "M059",
+      "M034",
+      "M048",
+      "M078",
+      "M052",
+      "M021",
+      "M063",
+      "M003",
+      "M037",
+      "M064",
+      "M061",
+      "M087",
+      "M085",
+      "M053",
+      "M032",
+      "M033",
+      "M047",
+      "M044",
+      "H092",
+      "H050",
+      "H060",
+      "H018",
+      "H023",
+      "H032",
+      "H017",
+      "H074",
+      "H005",
+      "H030",
+      "H026",
+      "H028",
+      "H051",
+      "H029",
+      "H049",
+      "H034",
+      "H020",
+      "H048",
+      "H008",
+      "H079"
+    ],
+    "master_seed": 20260826,
+    "mechanism_ids": [
+      "E030",
+      "E087",
+      "E021",
+      "E007",
+      "E012",
+      "M087",
+      "M064",
+      "M053",
+      "M078",
+      "M085",
+      "H079",
+      "H028",
+      "H018",
+      "H060",
+      "H050"
+    ],
+    "pilot_ids": [
+      "E002",
+      "E036",
+      "E064",
+      "E061",
+      "E062",
+      "M013",
+      "M019",
+      "M072",
+      "M096",
+      "M099",
+      "H043",
+      "H027",
+      "H093",
+      "H085",
+      "H009"
+    ]
+  },
+  "sample_sizes_per_tier": {
+    "ablation": 3,
+    "main": 20,
+    "mechanism": 5,
+    "pilot": 5
+  },
+  "source_sha256": "3a0be67794c976e26dd4b7b70fbc8b4ac57155e796d7d87d9ce4ad38cb0b7de7"
+}

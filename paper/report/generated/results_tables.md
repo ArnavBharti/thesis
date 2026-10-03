@@ -506,6 +506,228 @@ These use the registered retention procedure. The p-values below are unadjusted 
 | uppercase_latin | medium | 17/19 | 2 | 1 | 1.0000 |
 | uppercase_latin | hard | 13/14 | 1 | 5 | 0.2188 |
 
+## Qwen exp6
+
+Evidence path: `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp6`. Saved 135 of 135. Complete: True.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| All | 120/135 | 88.9 | 9 | 6 | 0 | 0 | 257.18 |
+| easy | 44/45 | 97.8 | 1 | 0 | 0 | 0 | 52.43 |
+| medium | 43/45 | 95.6 | 2 | 0 | 0 | 0 | 246.05 |
+| hard | 33/45 | 73.3 | 6 | 6 | 0 | 0 | 473.07 |
+
+Parseable Sudoku grids: 54/60. Clues preserved among parseable grids: 48/54. Valid Sudoku units together: 51/54. Median record latency: 9.65 seconds. Reused outcome rows: 30.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| A_arabic_to_arabic | 13/15 | 86.7 | 0 | 2 | 0 | 0 | 538.91 |
+| B_greek_to_greek | 11/15 | 73.3 | 3 | 1 | 0 | 0 | 584.72 |
+| C_greek_to_arabic | 11/15 | 73.3 | 4 | 0 | 0 | 0 | 531.30 |
+| D_arabic_to_greek | 10/15 | 66.7 | 2 | 3 | 0 | 0 | 642.79 |
+| control_coordinate_retrieval | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 1.60 |
+| control_copy | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 1.63 |
+| control_grid_conversion | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 9.09 |
+| control_mapping_translation | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 1.41 |
+| control_occurrence_count | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 3.18 |
+
+### Condition by difficulty
+
+| Condition | Easy | Medium | Hard |
+| --- | --- | --- | --- |
+| A_arabic_to_arabic | 5/5 | 5/5 | 3/5 |
+| B_greek_to_greek | 5/5 | 5/5 | 1/5 |
+| C_greek_to_arabic | 5/5 | 4/5 | 2/5 |
+| D_arabic_to_greek | 4/5 | 4/5 | 2/5 |
+| control_coordinate_retrieval | 5/5 | 5/5 | 5/5 |
+| control_copy | 5/5 | 5/5 | 5/5 |
+| control_grid_conversion | 5/5 | 5/5 | 5/5 |
+| control_mapping_translation | 5/5 | 5/5 | 5/5 |
+| control_occurrence_count | 5/5 | 5/5 | 5/5 |
+
+## Qwen exp7
+
+Evidence path: `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp7`. Saved 45 of 45. Complete: True.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| All | 37/45 | 82.2 | 3 | 2 | 3 | 0 | 570.43 |
+| easy | 14/15 | 93.3 | 0 | 0 | 1 | 0 | 142.82 |
+| medium | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 627.87 |
+| hard | 8/15 | 53.3 | 3 | 2 | 2 | 0 | 940.61 |
+
+Parseable Sudoku grids: 40/45. Clues preserved among parseable grids: 38/40. Valid Sudoku units together: 39/40. Median record latency: 440.05 seconds. Reused outcome rows: 0.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| neutral_1_tokens | 12/15 | 80.0 | 2 | 1 | 0 | 0 | 608.61 |
+| neutral_2_tokens | 11/15 | 73.3 | 0 | 1 | 3 | 0 | 563.30 |
+| neutral_3_tokens | 14/15 | 93.3 | 1 | 0 | 0 | 0 | 539.39 |
+
+### Condition by difficulty
+
+| Condition | Easy | Medium | Hard |
+| --- | --- | --- | --- |
+| neutral_1_tokens | 5/5 | 5/5 | 2/5 |
+| neutral_2_tokens | 4/5 | 5/5 | 2/5 |
+| neutral_3_tokens | 5/5 | 5/5 | 4/5 |
+
+## Qwen exp8
+
+Evidence path: `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp8`. Saved 165 of 165. Complete: True.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| All | 147/165 | 89.1 | 9 | 8 | 1 | 0 | 477.57 |
+| easy | 50/55 | 90.9 | 5 | 0 | 0 | 0 | 112.43 |
+| medium | 51/55 | 92.7 | 1 | 2 | 1 | 0 | 484.95 |
+| hard | 46/55 | 83.6 | 3 | 6 | 0 | 0 | 835.32 |
+
+Parseable Sudoku grids: 156/165. Clues preserved among parseable grids: 151/156. Valid Sudoku units together: 149/156. Median record latency: 353.93 seconds. Reused outcome rows: 45.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| digits_ordinary | 13/15 | 86.7 | 0 | 2 | 0 | 0 | 538.91 |
+| digits_permuted | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 425.90 |
+| nonce_neutral | 14/15 | 93.3 | 1 | 0 | 0 | 0 | 523.15 |
+| number_words_conflicting | 9/15 | 60.0 | 4 | 2 | 0 | 0 | 509.01 |
+| number_words_ordinary | 12/15 | 80.0 | 0 | 2 | 1 | 0 | 624.82 |
+| uppercase_random_1 | 12/15 | 80.0 | 2 | 1 | 0 | 0 | 440.48 |
+| uppercase_random_2 | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 331.69 |
+| uppercase_random_3 | 13/15 | 86.7 | 1 | 1 | 0 | 0 | 611.53 |
+| uppercase_random_4 | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 356.10 |
+| uppercase_random_5 | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 489.27 |
+| uppercase_standard | 14/15 | 93.3 | 1 | 0 | 0 | 0 | 402.41 |
+
+### Condition by difficulty
+
+| Condition | Easy | Medium | Hard |
+| --- | --- | --- | --- |
+| digits_ordinary | 5/5 | 5/5 | 3/5 |
+| digits_permuted | 5/5 | 5/5 | 5/5 |
+| nonce_neutral | 4/5 | 5/5 | 5/5 |
+| number_words_conflicting | 2/5 | 4/5 | 3/5 |
+| number_words_ordinary | 5/5 | 4/5 | 3/5 |
+| uppercase_random_1 | 5/5 | 4/5 | 3/5 |
+| uppercase_random_2 | 5/5 | 5/5 | 5/5 |
+| uppercase_random_3 | 5/5 | 4/5 | 4/5 |
+| uppercase_random_4 | 5/5 | 5/5 | 5/5 |
+| uppercase_random_5 | 5/5 | 5/5 | 5/5 |
+| uppercase_standard | 4/5 | 5/5 | 5/5 |
+
+## Qwen exp9
+
+Evidence path: `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp9`. Saved 171 of 171. Complete: True.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| All | 130/171 | 76.0 | 25 | 4 | 12 | 0 | 558.25 |
+| easy | 51/57 | 89.5 | 3 | 0 | 3 | 0 | 210.69 |
+| medium | 43/57 | 75.4 | 7 | 0 | 7 | 0 | 606.72 |
+| hard | 36/57 | 63.2 | 15 | 4 | 2 | 0 | 857.33 |
+
+Parseable Sudoku grids: 155/171. Clues preserved among parseable grids: 137/155. Valid Sudoku units together: 147/155. Median record latency: 517.43 seconds. Reused outcome rows: 0.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| empty_dot | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 549.77 |
+| empty_underscore | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 502.99 |
+| empty_word | 8/9 | 88.9 | 1 | 0 | 0 | 0 | 478.71 |
+| empty_zero | 6/9 | 66.7 | 3 | 0 | 0 | 0 | 410.06 |
+| latin_lowercase | 7/9 | 77.8 | 1 | 1 | 0 | 0 | 644.03 |
+| latin_uppercase | 8/9 | 88.9 | 1 | 0 | 0 | 0 | 415.45 |
+| mapping_alphabet_only | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 548.86 |
+| mapping_to_abstract | 4/9 | 44.4 | 3 | 0 | 2 | 0 | 635.56 |
+| mapping_to_digits | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 487.84 |
+| nonce_lowercase | 8/9 | 88.9 | 1 | 0 | 0 | 0 | 580.09 |
+| nonce_uppercase | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 589.55 |
+| output_compact | 2/9 | 22.2 | 0 | 1 | 6 | 0 | 773.64 |
+| output_json | 7/9 | 77.8 | 1 | 1 | 0 | 0 | 643.48 |
+| output_spaced | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 548.80 |
+| output_string81 | 4/9 | 44.4 | 1 | 1 | 3 | 0 | 839.71 |
+| rules_constraints_alphabet | 7/9 | 77.8 | 1 | 0 | 1 | 0 | 573.50 |
+| rules_explicit_constraints | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 424.07 |
+| rules_fully_explicit | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 552.24 |
+| rules_minimal | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 408.32 |
+
+### Condition by difficulty
+
+| Condition | Easy | Medium | Hard |
+| --- | --- | --- | --- |
+| empty_dot | 3/3 | 3/3 | 1/3 |
+| empty_underscore | 3/3 | 2/3 | 2/3 |
+| empty_word | 3/3 | 2/3 | 3/3 |
+| empty_zero | 3/3 | 2/3 | 1/3 |
+| latin_lowercase | 3/3 | 2/3 | 2/3 |
+| latin_uppercase | 2/3 | 3/3 | 3/3 |
+| mapping_alphabet_only | 3/3 | 3/3 | 1/3 |
+| mapping_to_abstract | 3/3 | 0/3 | 1/3 |
+| mapping_to_digits | 3/3 | 3/3 | 3/3 |
+| nonce_lowercase | 3/3 | 2/3 | 3/3 |
+| nonce_uppercase | 3/3 | 3/3 | 3/3 |
+| output_compact | 1/3 | 0/3 | 1/3 |
+| output_json | 3/3 | 3/3 | 1/3 |
+| output_spaced | 3/3 | 3/3 | 1/3 |
+| output_string81 | 1/3 | 2/3 | 1/3 |
+| rules_constraints_alphabet | 2/3 | 2/3 | 3/3 |
+| rules_explicit_constraints | 3/3 | 2/3 | 2/3 |
+| rules_fully_explicit | 3/3 | 3/3 | 1/3 |
+| rules_minimal | 3/3 | 3/3 | 3/3 |
+
+## Qwen exp10
+
+Evidence path: `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp10`. Saved 108 of 108. Complete: True.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| All | 98/108 | 90.7 | 7 | 3 | 0 | 0 | 323.74 |
+| easy | 36/36 | 100.0 | 0 | 0 | 0 | 0 | 87.06 |
+| medium | 35/36 | 97.2 | 1 | 0 | 0 | 0 | 260.44 |
+| hard | 27/36 | 75.0 | 6 | 3 | 0 | 0 | 623.71 |
+
+Parseable Sudoku grids: 105/108. Clues preserved among parseable grids: 101/105. Valid Sudoku units together: 102/105. Median record latency: 104.28 seconds. Reused outcome rows: 0.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| arabic_digits:checker_guided_revision | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 421.80 |
+| arabic_digits:one_pass | 7/9 | 77.8 | 0 | 2 | 0 | 0 | 719.65 |
+| arabic_digits:one_self_revision | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 236.80 |
+| arabic_digits:two_self_revisions | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 33.47 |
+| emoji:checker_guided_revision | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 405.79 |
+| emoji:one_pass | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 405.79 |
+| emoji:one_self_revision | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 70.66 |
+| emoji:two_self_revisions | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 92.31 |
+| greek_letters:checker_guided_revision | 8/9 | 88.9 | 0 | 1 | 0 | 0 | 692.37 |
+| greek_letters:one_pass | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 558.38 |
+| greek_letters:one_self_revision | 8/9 | 88.9 | 1 | 0 | 0 | 0 | 185.92 |
+| greek_letters:two_self_revisions | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 61.93 |
+
+### Condition by difficulty
+
+| Condition | Easy | Medium | Hard |
+| --- | --- | --- | --- |
+| arabic_digits:checker_guided_revision | 3/3 | 3/3 | 3/3 |
+| arabic_digits:one_pass | 3/3 | 3/3 | 1/3 |
+| arabic_digits:one_self_revision | 3/3 | 3/3 | 3/3 |
+| arabic_digits:two_self_revisions | 3/3 | 3/3 | 3/3 |
+| emoji:checker_guided_revision | 3/3 | 3/3 | 3/3 |
+| emoji:one_pass | 3/3 | 3/3 | 3/3 |
+| emoji:one_self_revision | 3/3 | 3/3 | 3/3 |
+| emoji:two_self_revisions | 3/3 | 2/3 | 2/3 |
+| greek_letters:checker_guided_revision | 3/3 | 3/3 | 2/3 |
+| greek_letters:one_pass | 3/3 | 3/3 | 1/3 |
+| greek_letters:one_self_revision | 3/3 | 3/3 | 2/3 |
+| greek_letters:two_self_revisions | 3/3 | 3/3 | 1/3 |
+
+### Shared-initial revision transitions and compute
+
+| Arm | Correct | Fixed | Regressed | New calls | Extra seconds | Mean end-to-end seconds | All-stage truncations |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| checker_guided_revision | 26 | 3 | 0 | 4 | 4252.98 | 718.79 | 3 |
+| one_pass | 23 | 0 | 0 | 0 | 0.00 | 561.28 | 2 |
+| one_self_revision | 26 | 3 | 0 | 27 | 4440.47 | 725.74 | 2 |
+| two_self_revisions | 23 | 2 | 2 | 54 | 6123.53 | 788.07 | 2 |
+
 ## Historical diagnostics and all available outputs
 
 These are inventory counts, not a combined accuracy estimate. A missing marker or incomplete request digest prevents a completion claim.
@@ -542,8 +764,13 @@ These are inventory counts, not a combined accuracy estimate. A missing marker o
 | qwen-3.8-27b-local-natural-timing-v2-easy/qwen-3.8-27b-local/timing-diagnostic | 1/1 | 1 | 0 | 0 | True |
 | qwen-3.8-27b-local-natural-timing-v2-hard/qwen-3.8-27b-local/timing-diagnostic | 1/1 | 0 | 1 | 0 | True |
 | qwen-3.8-27b-local-natural-timing-v2-medium/qwen-3.8-27b-local/timing-diagnostic | 1/1 | 0 | 1 | 0 | True |
+| qwen-3.8-27b-v2/qwen-3.8-27b-local/exp10 | 108/108 | 98 | 3 | 0 | True |
 | qwen-3.8-27b-v2/qwen-3.8-27b-local/exp2 | 60/60 | 54 | 2 | 0 | True |
 | qwen-3.8-27b-v2/qwen-3.8-27b-local/exp4 | 540/540 | 472 | 24 | 0 | True |
+| qwen-3.8-27b-v2/qwen-3.8-27b-local/exp6 | 135/135 | 120 | 6 | 0 | True |
+| qwen-3.8-27b-v2/qwen-3.8-27b-local/exp7 | 45/45 | 37 | 2 | 0 | True |
+| qwen-3.8-27b-v2/qwen-3.8-27b-local/exp8 | 165/165 | 147 | 8 | 0 | True |
+| qwen-3.8-27b-v2/qwen-3.8-27b-local/exp9 | 171/171 | 130 | 4 | 0 | True |
 | qwen-3.8-27b-v2/qwen-3.8-27b-local/qualification | 5/5 | 5 | 0 | 0 | True |
 | qwen-3.8-27b-v2-natural-timing-v3-medium/qwen-3.8-27b-local/timing-diagnostic | 1/1 | 1 | 0 | 0 | True |
 | qwen-natural-timing-v1-easy/qwen-local/timing-diagnostic | 1/1 | 1 | 0 | 0 | True |

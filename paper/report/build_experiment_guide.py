@@ -13,7 +13,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-SNAPSHOT = ROOT / "evidence/snapshots/2026-09-30-report"
+SNAPSHOT = ROOT / "evidence/snapshots/2026-10-03-complete"
 MODELS = {
     "GPT-OSS": "local-models-v1/gpt-oss-120b-local",
     "Qwen": "qwen-3.8-27b-v2/qwen-3.8-27b-local",
@@ -154,12 +154,12 @@ def detailed_diagnostics(value):
     return output
 
 
-def prompt_inventory(step):
-    rows = rows_for("GPT-OSS", step)
+def prompt_inventory(step, model="GPT-OSS"):
+    rows = rows_for(model, step)
     representatives = {}
     for row in sorted(rows, key=lambda row: (row["request"]["puzzle_id"], row["request"]["condition"])):
         representatives.setdefault(row["request"]["condition"], row["request"])
-    output = "\n\n### Exact recorded treatments and prompt examples\n\n"
+    output = f"\n\n### {model}: exact recorded treatments and prompt examples\n\n"
     output += "Ordered labels below map abstract values 1 through 9 to the visible symbols. These are saved request messages, not reconstructed reasoning or illustrative invented prompts. Request identifiers locate the full raw record.\n\n"
     output += table(["Condition", "Ordered input labels", "Ordered output labels", "Format / empty"],
                     [(condition, " ".join(r["metadata"].get("input_symbols", [])) or "supplied-grid control",
@@ -190,9 +190,9 @@ def prompt_inventory(step):
 def verification(letter, audit):
     output = "\n\n### Verify this experiment locally, without inference\n\n"
     output += "Run from the repository root. This checks preserved bytes and re-scores saved final grids. It does not start SSH, download weights, load a model, or submit a job.\n\n```bash\n"
-    output += "python3 paper/report/prepare_snapshot.py tmp/research-report/snapshot \\\n  evidence/snapshots/2026-09-30-report --verify\n"
-    output += "python3 paper/report/analyze_evidence.py \\\n  --snapshot evidence/snapshots/2026-09-30-report \\\n  --output tmp/research-report/recheck\n```\n\n"
-    output += "Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-09-30-report/experiment_outputs/`.\n\n"
+    output += "python3 paper/report/prepare_snapshot.py tmp/research-report/snapshot \\\n  evidence/snapshots/2026-10-03-complete --verify\n"
+    output += "python3 paper/report/analyze_evidence.py \\\n  --snapshot evidence/snapshots/2026-10-03-complete \\\n  --output tmp/research-report/recheck\n```\n\n"
+    output += "Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-10-03-complete/experiment_outputs/`.\n\n"
     for model, prefix in MODELS.items():
         for step in STEPS.get(letter, ()):
             key = prefix + "/" + step
@@ -205,11 +205,11 @@ def verification(letter, audit):
     return output
 
 
-def registry_results():
-    path = ROOT / "evidence/snapshots/2026-09-30-gptoss-step13/experiment_outputs/local-models-v1/gpt-oss-120b-local/exp3/representation-registry.jsonl.gz"
+def registry_results(model="GPT-OSS"):
+    path = SNAPSHOT / "experiment_outputs" / MODELS[model] / "exp3/representation-registry.jsonl.gz"
     with gzip.open(path, "rt", encoding="utf-8") as stream:
         rows = [json.loads(line) for line in stream if line.strip()]
-    output = "\n\n### Completed GPT-OSS token diagnostics: exact scope and summary\n\n"
+    output = f"\n\n### Completed {model} token diagnostics: exact scope and summary\n\n"
     output += "The registry has 81 symbol records (nine alphabets times nine labels) plus 2,700 prompt records (all 300 certified puzzles times nine alphabets), totaling 2,781. The 2,700 prompts are tokenizer diagnostics, not additional model solves. Symbol rows store exact Unicode code points, UTF-8 bytes, code points, graphemes, isolated and leading-space token IDs/counts, full-label-row token count, and tokenizer identity. Prompt rows store puzzle/tier/alphabet, clue count, visible clue tokens, mean clue tokens and total prompt tokens. The total-prompt measure tokenizes the user prompt, not the model's complete chat-template conversation.\n\n"
     symbols = []
     prompts = []
@@ -228,7 +228,7 @@ def registry_results():
                         max(r["total_prompt_tokens"] for r in texts)))
     output += table(["Alphabet", "Mean isolated tokens", "Mean after-space tokens", "Label-row tokens", "Mean bytes", "Mean code points"], symbols)
     output += "\n\n" + table(["Alphabet", "Prompt records", "Mean user-prompt tokens", "Min", "Max"], prompts)
-    output += "\n\nThese descriptive token costs do not identify their causal contribution to accuracy. They span all 300 puzzles, not only the main 60. Do not regress main correctness against these aggregate means and call that the registered token-length experiment. Qwen's corresponding completed registry is not present in this evidence capture.\n"
+    output += "\n\nThese descriptive token costs do not identify their causal contribution to accuracy. They span all 300 puzzles, not only the main 60. Do not regress main correctness against these aggregate means and call that the registered token-length experiment. Each selected model has a completed registry and saved final analysis in this capture.\n"
     return output
 
 
@@ -263,7 +263,8 @@ def build_guide():
             methods += "\n\n#### Exact puzzle IDs for this block\n\nBoth selected models use these same sample IDs.\n\n"
             methods += "\n\n".join(line for line in first.splitlines() if line.startswith(relevant))
         if letter in "DEFG":
-            methods += prompt_inventory(STEPS[letter][0])
+            for model in MODELS:
+                methods += prompt_inventory(STEPS[letter][0], model)
         if letter == "H":
             methods += "\n\n#### Exact revision instructions and conversation procedure\n\n"
             methods += "Generic revision instruction:\n\n```text\nCheck your answer and return a revised answer. Verify that it has exactly 81 cells, keeps every given clue unchanged, and satisfies every row, column, and 3x3 box. Return only 9 lines of 9 space-separated symbols.\n```\n\n"
@@ -305,7 +306,8 @@ def build_guide():
         if letter == "H":
             discussion += "\n\n![Revision accuracy versus cumulative generation cost from the common initial answers.](generated/revision_cost.png)\n"
         if letter == "I":
-            discussion += registry_results()
+            for model in MODELS:
+                discussion += registry_results(model)
         output += block.rstrip() + discussion + verification(letter, audit) + "\n\n"
     return output
 

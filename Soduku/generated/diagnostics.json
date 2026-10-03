@@ -1,0 +1,240 @@
+{
+  "GPT-OSS": {
+    "arabic_digits": {
+      "correct": 45,
+      "unparseable": 1,
+      "length_stopped_incorrect": 1,
+      "mean_prompt_tokens": 287.23333333333335,
+      "mean_generation_tokens": 49941.96666666667,
+      "tokenizer": {
+        "isolation_range": "1",
+        "leading_space_range": "2",
+        "alphabet_row_tokens": 17,
+        "mean_user_prompt_tokens": 220.23333333333332
+      }
+    },
+    "devanagari_numerals": {
+      "correct": 39,
+      "unparseable": 8,
+      "length_stopped_incorrect": 1,
+      "mean_prompt_tokens": 287.23333333333335,
+      "mean_generation_tokens": 45393.35,
+      "tokenizer": {
+        "isolation_range": "1",
+        "leading_space_range": "2",
+        "alphabet_row_tokens": 17,
+        "mean_user_prompt_tokens": 220.23333333333332
+      }
+    },
+    "bengali_numerals": {
+      "correct": 43,
+      "unparseable": 9,
+      "length_stopped_incorrect": 2,
+      "mean_prompt_tokens": 287.23333333333335,
+      "mean_generation_tokens": 51686.3,
+      "tokenizer": {
+        "isolation_range": "1",
+        "leading_space_range": "2",
+        "alphabet_row_tokens": 17,
+        "mean_user_prompt_tokens": 220.23333333333332
+      }
+    },
+    "uppercase_latin": {
+      "correct": 45,
+      "unparseable": 3,
+      "length_stopped_incorrect": 2,
+      "mean_prompt_tokens": 251.5,
+      "mean_generation_tokens": 49451.73333333333,
+      "tokenizer": {
+        "isolation_range": "1",
+        "leading_space_range": "1",
+        "alphabet_row_tokens": 9,
+        "mean_user_prompt_tokens": 184.5
+      }
+    },
+    "lowercase_latin": {
+      "correct": 44,
+      "unparseable": 5,
+      "length_stopped_incorrect": 2,
+      "mean_prompt_tokens": 251.5,
+      "mean_generation_tokens": 49481.23333333333,
+      "tokenizer": {
+        "isolation_range": "1",
+        "leading_space_range": "1",
+        "alphabet_row_tokens": 9,
+        "mean_user_prompt_tokens": 184.5
+      }
+    },
+    "greek_letters": {
+      "correct": 37,
+      "unparseable": 8,
+      "length_stopped_incorrect": 3,
+      "mean_prompt_tokens": 255.46666666666667,
+      "mean_generation_tokens": 57254.7,
+      "tokenizer": {
+        "isolation_range": "1",
+        "leading_space_range": "1--2",
+        "alphabet_row_tokens": 10,
+        "mean_user_prompt_tokens": 188.46666666666667
+      }
+    },
+    "abstract_symbols": {
+      "correct": 38,
+      "unparseable": 16,
+      "length_stopped_incorrect": 7,
+      "mean_prompt_tokens": 255.58333333333334,
+      "mean_generation_tokens": 66629.51666666666,
+      "tokenizer": {
+        "isolation_range": "1",
+        "leading_space_range": "1--2",
+        "alphabet_row_tokens": 10,
+        "mean_user_prompt_tokens": 188.58333333333334
+      }
+    },
+    "emoji": {
+      "correct": 38,
+      "unparseable": 13,
+      "length_stopped_incorrect": 3,
+      "mean_prompt_tokens": 314.51666666666665,
+      "mean_generation_tokens": 60442.23333333333,
+      "tokenizer": {
+        "isolation_range": "2--3",
+        "leading_space_range": "2--3",
+        "alphabet_row_tokens": 23,
+        "mean_user_prompt_tokens": 247.51666666666668
+      }
+    },
+    "nonce_labels": {
+      "correct": 43,
+      "unparseable": 9,
+      "length_stopped_incorrect": 3,
+      "mean_prompt_tokens": 291.81666666666666,
+      "mean_generation_tokens": 62523.566666666666,
+      "tokenizer": {
+        "isolation_range": "2",
+        "leading_space_range": "2",
+        "alphabet_row_tokens": 18,
+        "mean_user_prompt_tokens": 224.81666666666666
+      }
+    }
+  },
+  "Qwen": {
+    "arabic_digits": {
+      "correct": 53,
+      "unparseable": 4,
+      "length_stopped_incorrect": 4,
+      "mean_prompt_tokens": 288.73333333333335,
+      "mean_generation_tokens": 38180.166666666664,
+      "tokenizer": {
+        "isolation_range": "1",
+        "leading_space_range": "2",
+        "alphabet_row_tokens": 17,
+        "mean_user_prompt_tokens": 236.73333333333332
+      }
+    },
+    "devanagari_numerals": {
+      "correct": 56,
+      "unparseable": 3,
+      "length_stopped_incorrect": 2,
+      "mean_prompt_tokens": 329.05,
+      "mean_generation_tokens": 33723.65,
+      "tokenizer": {
+        "isolation_range": "2",
+        "leading_space_range": "3",
+        "alphabet_row_tokens": 26,
+        "mean_user_prompt_tokens": 277.05
+      }
+    },
+    "bengali_numerals": {
+      "correct": 53,
+      "unparseable": 5,
+      "length_stopped_incorrect": 4,
+      "mean_prompt_tokens": 329.05,
+      "mean_generation_tokens": 40795.316666666666,
+      "tokenizer": {
+        "isolation_range": "2",
+        "leading_space_range": "3",
+        "alphabet_row_tokens": 26,
+        "mean_user_prompt_tokens": 277.05
+      }
+    },
+    "uppercase_latin": {
+      "correct": 55,
+      "unparseable": 2,
+      "length_stopped_incorrect": 2,
+      "mean_prompt_tokens": 253,
+      "mean_generation_tokens": 37524.51666666667,
+      "tokenizer": {
+        "isolation_range": "1",
+        "leading_space_range": "1",
+        "alphabet_row_tokens": 9,
+        "mean_user_prompt_tokens": 201
+      }
+    },
+    "lowercase_latin": {
+      "correct": 51,
+      "unparseable": 3,
+      "length_stopped_incorrect": 2,
+      "mean_prompt_tokens": 253,
+      "mean_generation_tokens": 42832.53333333333,
+      "tokenizer": {
+        "isolation_range": "1",
+        "leading_space_range": "1",
+        "alphabet_row_tokens": 9,
+        "mean_user_prompt_tokens": 201
+      }
+    },
+    "greek_letters": {
+      "correct": 51,
+      "unparseable": 1,
+      "length_stopped_incorrect": 1,
+      "mean_prompt_tokens": 253,
+      "mean_generation_tokens": 41039.45,
+      "tokenizer": {
+        "isolation_range": "1",
+        "leading_space_range": "1",
+        "alphabet_row_tokens": 9,
+        "mean_user_prompt_tokens": 201
+      }
+    },
+    "abstract_symbols": {
+      "correct": 51,
+      "unparseable": 5,
+      "length_stopped_incorrect": 0,
+      "mean_prompt_tokens": 261.73333333333335,
+      "mean_generation_tokens": 40748.316666666666,
+      "tokenizer": {
+        "isolation_range": "1--2",
+        "leading_space_range": "1--2",
+        "alphabet_row_tokens": 11,
+        "mean_user_prompt_tokens": 209.73333333333332
+      }
+    },
+    "emoji": {
+      "correct": 54,
+      "unparseable": 4,
+      "length_stopped_incorrect": 2,
+      "mean_prompt_tokens": 326.56666666666666,
+      "mean_generation_tokens": 40810.28333333333,
+      "tokenizer": {
+        "isolation_range": "3",
+        "leading_space_range": "2--3",
+        "alphabet_row_tokens": 26,
+        "mean_user_prompt_tokens": 274.56666666666666
+      }
+    },
+    "nonce_labels": {
+      "correct": 48,
+      "unparseable": 8,
+      "length_stopped_incorrect": 7,
+      "mean_prompt_tokens": 293.31666666666666,
+      "mean_generation_tokens": 49520.683333333334,
+      "tokenizer": {
+        "isolation_range": "2",
+        "leading_space_range": "2",
+        "alphabet_row_tokens": 18,
+        "mean_user_prompt_tokens": 241.31666666666666
+      }
+    }
+  }
+}

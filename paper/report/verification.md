@@ -1,5 +1,62 @@
 # Final report verification
 
+## Complete two-model refresh (3 October 2026)
+
+This section supersedes the completion status below. Earlier verification
+entries are preserved as dated history, not current queue claims.
+
+- A fresh read-only SSH transfer captured all Qwen follow-up outputs, markers,
+  registries, final summaries, generated job scripts, and logs. Exact-ID
+  accounting confirms jobs 373543--373547 and 373551 completed with exit `0:0`.
+- `evidence/snapshots/2026-10-03-complete/` contains 599 evidence files plus
+  its manifest, with 69,814,796 stored bytes. All stored/raw SHA-256 pairs pass.
+  Both older snapshots remain unchanged. Credentials, weights, and environments
+  are excluded; no Hugging Face/API token or private-key patterns were found.
+- The local audit validates 300 puzzles and 2,650 selected/historical outcomes,
+  with no request/dataset mismatch, re-scoring disagreement, independent-grid
+  disagreement, content-hash error, shard error, or completion/digest error.
+  Both models' main benchmarks and Steps 8--12 are complete.
+- Local registered re-analysis exactly matches both server summaries, apart
+  from the documented added GPT-OSS `min_correct: 5` field. Each analysis
+  summarizes 1,229 rows and each registry contains 81 symbols and 2,700 prompts.
+  All 75 reused cross/binding generations per model match their original main
+  generations. Qwen's four identical-default-prompt binary success sets match.
+- The full suite passes 104 tests, including new registered-summary, reuse,
+  registry-scope, and prompt-agreement checks. The skill's installed and versioned
+  instruction files match. Ruby's YAML parser validates their metadata.
+  The bundled validator remains unavailable because PyYAML is not installed;
+  no package installation was performed.
+- The 195-page writing report preserves separate sections and all twelve
+  lenses, and embeds complete methods, model-specific saved prompts/labels,
+  condition/tier/error tables, transitions, cost, interpretation, and verification
+  per experiment. The main paper is updated in `Soduku/paper.tex`, not the older
+  `paper/draft.tex`, and its compiled PDF has 17 pages.
+- All PDF pages were rendered and reviewed in contact sheets, with full-size
+  checks of tokenizer, prompt-inventory, revision, and complete condition tables.
+  Both builds have no LaTeX warnings, unresolved references, or missing glyphs.
+  Extracted text has no replacement characters. Emoji remain explicit code-point
+  notation in the PDF and exact Unicode in the Markdown/raw evidence.
+- Frozen experiment code, configurations, datasets, and source artifacts are
+  unchanged. No inference, download, install, job submission, or cancellation
+  occurred during this update. All analysis and PDF compilation ran on the Mac.
+
+Current reproduction commands, from the repository root:
+
+```bash
+python3 paper/report/prepare_snapshot.py tmp/research-report/unused \
+  evidence/snapshots/2026-10-03-complete --verify
+python3 paper/report/analyze_evidence.py \
+  --snapshot evidence/snapshots/2026-10-03-complete \
+  --output tmp/research-report/recheck
+diff paper/report/generated/results_tables.md \
+  tmp/research-report/recheck/results_tables.md
+make -C Soduku
+cd src
+python3 -m unittest discover -s tests -q
+```
+
+## Historical verification (30 September 2026)
+
 Verified locally on 30 September 2026. The final read-only Sharanga capture
 was taken at 19:31 IST, after Qwen job `366222` completed at 19:29:44 IST
 with its expected thesis job name and exit `0:0`.

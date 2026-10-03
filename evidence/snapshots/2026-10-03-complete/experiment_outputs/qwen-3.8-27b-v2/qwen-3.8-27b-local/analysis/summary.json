@@ -1,0 +1,3468 @@
+{
+  "experiment_10": [
+    {
+      "condition": "arabic_digits:checker_guided_revision",
+      "correct_answers_regressed": 0,
+      "final_correct": 9,
+      "initial_correct": 7,
+      "model_calls": 2,
+      "requests": 9,
+      "total_latency_seconds": 866.1683485489339,
+      "total_tokens": 68438,
+      "wrong_answers_fixed": 2
+    },
+    {
+      "condition": "arabic_digits:one_pass",
+      "correct_answers_regressed": 0,
+      "final_correct": 7,
+      "initial_correct": 7,
+      "model_calls": 0,
+      "requests": 9,
+      "total_latency_seconds": 0.0,
+      "total_tokens": 0,
+      "wrong_answers_fixed": 0
+    },
+    {
+      "condition": "arabic_digits:one_self_revision",
+      "correct_answers_regressed": 0,
+      "final_correct": 9,
+      "initial_correct": 7,
+      "model_calls": 9,
+      "requests": 9,
+      "total_latency_seconds": 2131.2028814591467,
+      "total_tokens": 159821,
+      "wrong_answers_fixed": 2
+    },
+    {
+      "condition": "arabic_digits:two_self_revisions",
+      "correct_answers_regressed": 0,
+      "final_correct": 9,
+      "initial_correct": 7,
+      "model_calls": 18,
+      "requests": 9,
+      "total_latency_seconds": 2387.2464292752557,
+      "total_tokens": 190060,
+      "wrong_answers_fixed": 2
+    },
+    {
+      "condition": "emoji:checker_guided_revision",
+      "correct_answers_regressed": 0,
+      "final_correct": 9,
+      "initial_correct": 9,
+      "model_calls": 0,
+      "requests": 9,
+      "total_latency_seconds": 0.0,
+      "total_tokens": 0,
+      "wrong_answers_fixed": 0
+    },
+    {
+      "condition": "emoji:one_pass",
+      "correct_answers_regressed": 0,
+      "final_correct": 9,
+      "initial_correct": 9,
+      "model_calls": 0,
+      "requests": 9,
+      "total_latency_seconds": 0.0,
+      "total_tokens": 0,
+      "wrong_answers_fixed": 0
+    },
+    {
+      "condition": "emoji:one_self_revision",
+      "correct_answers_regressed": 0,
+      "final_correct": 9,
+      "initial_correct": 9,
+      "model_calls": 9,
+      "requests": 9,
+      "total_latency_seconds": 635.9562228503637,
+      "total_tokens": 54761,
+      "wrong_answers_fixed": 0
+    },
+    {
+      "condition": "emoji:two_self_revisions",
+      "correct_answers_regressed": 2,
+      "final_correct": 7,
+      "initial_correct": 9,
+      "model_calls": 18,
+      "requests": 9,
+      "total_latency_seconds": 1503.4316012640484,
+      "total_tokens": 128013,
+      "wrong_answers_fixed": 0
+    },
+    {
+      "condition": "greek_letters:checker_guided_revision",
+      "correct_answers_regressed": 0,
+      "final_correct": 8,
+      "initial_correct": 7,
+      "model_calls": 2,
+      "requests": 9,
+      "total_latency_seconds": 3386.8077934072353,
+      "total_tokens": 247444,
+      "wrong_answers_fixed": 1
+    },
+    {
+      "condition": "greek_letters:one_pass",
+      "correct_answers_regressed": 0,
+      "final_correct": 7,
+      "initial_correct": 7,
+      "model_calls": 0,
+      "requests": 9,
+      "total_latency_seconds": 0.0,
+      "total_tokens": 0,
+      "wrong_answers_fixed": 0
+    },
+    {
+      "condition": "greek_letters:one_self_revision",
+      "correct_answers_regressed": 0,
+      "final_correct": 8,
+      "initial_correct": 7,
+      "model_calls": 9,
+      "requests": 9,
+      "total_latency_seconds": 1673.3140281117521,
+      "total_tokens": 135902,
+      "wrong_answers_fixed": 1
+    },
+    {
+      "condition": "greek_letters:two_self_revisions",
+      "correct_answers_regressed": 0,
+      "final_correct": 7,
+      "initial_correct": 7,
+      "model_calls": 18,
+      "requests": 9,
+      "total_latency_seconds": 2232.8538270900026,
+      "total_tokens": 185730,
+      "wrong_answers_fixed": 0
+    }
+  ],
+  "experiment_5": [
+    {
+      "arabic_correct": 53,
+      "condition": "abstract_symbols",
+      "difficulty": "all",
+      "failure_rate": 0.16981132075471694,
+      "mcnemar_arabic_correct_only": 9,
+      "mcnemar_condition_correct_only": 7,
+      "mcnemar_exact_two_sided_p": 0.803619384765625,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 44,
+      "retention_rate": 0.8301886792452831
+    },
+    {
+      "arabic_correct": 20,
+      "condition": "abstract_symbols",
+      "difficulty": "easy",
+      "failure_rate": 0.050000000000000044,
+      "mcnemar_arabic_correct_only": 1,
+      "mcnemar_condition_correct_only": 0,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 19,
+      "retention_rate": 0.95
+    },
+    {
+      "arabic_correct": 19,
+      "condition": "abstract_symbols",
+      "difficulty": "medium",
+      "failure_rate": 0.1578947368421053,
+      "mcnemar_arabic_correct_only": 3,
+      "mcnemar_condition_correct_only": 1,
+      "mcnemar_exact_two_sided_p": 0.625,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 16,
+      "retention_rate": 0.8421052631578947
+    },
+    {
+      "arabic_correct": 14,
+      "condition": "abstract_symbols",
+      "difficulty": "hard",
+      "failure_rate": 0.3571428571428571,
+      "mcnemar_arabic_correct_only": 5,
+      "mcnemar_condition_correct_only": 6,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 9,
+      "retention_rate": 0.6428571428571429
+    },
+    {
+      "arabic_correct": 53,
+      "condition": "bengali_numerals",
+      "difficulty": "all",
+      "failure_rate": 0.09433962264150941,
+      "mcnemar_arabic_correct_only": 5,
+      "mcnemar_condition_correct_only": 5,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 48,
+      "retention_rate": 0.9056603773584906
+    },
+    {
+      "arabic_correct": 20,
+      "condition": "bengali_numerals",
+      "difficulty": "easy",
+      "failure_rate": 0.050000000000000044,
+      "mcnemar_arabic_correct_only": 1,
+      "mcnemar_condition_correct_only": 0,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 19,
+      "retention_rate": 0.95
+    },
+    {
+      "arabic_correct": 19,
+      "condition": "bengali_numerals",
+      "difficulty": "medium",
+      "failure_rate": 0.052631578947368474,
+      "mcnemar_arabic_correct_only": 1,
+      "mcnemar_condition_correct_only": 1,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 18,
+      "retention_rate": 0.9473684210526315
+    },
+    {
+      "arabic_correct": 14,
+      "condition": "bengali_numerals",
+      "difficulty": "hard",
+      "failure_rate": 0.2142857142857143,
+      "mcnemar_arabic_correct_only": 3,
+      "mcnemar_condition_correct_only": 4,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 11,
+      "retention_rate": 0.7857142857142857
+    },
+    {
+      "arabic_correct": 53,
+      "condition": "devanagari_numerals",
+      "difficulty": "all",
+      "failure_rate": 0.037735849056603765,
+      "mcnemar_arabic_correct_only": 2,
+      "mcnemar_condition_correct_only": 5,
+      "mcnemar_exact_two_sided_p": 0.453125,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 51,
+      "retention_rate": 0.9622641509433962
+    },
+    {
+      "arabic_correct": 20,
+      "condition": "devanagari_numerals",
+      "difficulty": "easy",
+      "failure_rate": 0.0,
+      "mcnemar_arabic_correct_only": 0,
+      "mcnemar_condition_correct_only": 0,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 20,
+      "retention_rate": 1.0
+    },
+    {
+      "arabic_correct": 19,
+      "condition": "devanagari_numerals",
+      "difficulty": "medium",
+      "failure_rate": 0.052631578947368474,
+      "mcnemar_arabic_correct_only": 1,
+      "mcnemar_condition_correct_only": 1,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 18,
+      "retention_rate": 0.9473684210526315
+    },
+    {
+      "arabic_correct": 14,
+      "condition": "devanagari_numerals",
+      "difficulty": "hard",
+      "failure_rate": 0.0714285714285714,
+      "mcnemar_arabic_correct_only": 1,
+      "mcnemar_condition_correct_only": 4,
+      "mcnemar_exact_two_sided_p": 0.375,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 13,
+      "retention_rate": 0.9285714285714286
+    },
+    {
+      "arabic_correct": 53,
+      "condition": "emoji",
+      "difficulty": "all",
+      "failure_rate": 0.09433962264150941,
+      "mcnemar_arabic_correct_only": 5,
+      "mcnemar_condition_correct_only": 6,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 48,
+      "retention_rate": 0.9056603773584906
+    },
+    {
+      "arabic_correct": 20,
+      "condition": "emoji",
+      "difficulty": "easy",
+      "failure_rate": 0.050000000000000044,
+      "mcnemar_arabic_correct_only": 1,
+      "mcnemar_condition_correct_only": 0,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 19,
+      "retention_rate": 0.95
+    },
+    {
+      "arabic_correct": 19,
+      "condition": "emoji",
+      "difficulty": "medium",
+      "failure_rate": 0.0,
+      "mcnemar_arabic_correct_only": 0,
+      "mcnemar_condition_correct_only": 1,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 19,
+      "retention_rate": 1.0
+    },
+    {
+      "arabic_correct": 14,
+      "condition": "emoji",
+      "difficulty": "hard",
+      "failure_rate": 0.2857142857142857,
+      "mcnemar_arabic_correct_only": 4,
+      "mcnemar_condition_correct_only": 5,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 10,
+      "retention_rate": 0.7142857142857143
+    },
+    {
+      "arabic_correct": 53,
+      "condition": "greek_letters",
+      "difficulty": "all",
+      "failure_rate": 0.13207547169811318,
+      "mcnemar_arabic_correct_only": 7,
+      "mcnemar_condition_correct_only": 5,
+      "mcnemar_exact_two_sided_p": 0.7744140625,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 46,
+      "retention_rate": 0.8679245283018868
+    },
+    {
+      "arabic_correct": 20,
+      "condition": "greek_letters",
+      "difficulty": "easy",
+      "failure_rate": 0.0,
+      "mcnemar_arabic_correct_only": 0,
+      "mcnemar_condition_correct_only": 0,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 20,
+      "retention_rate": 1.0
+    },
+    {
+      "arabic_correct": 19,
+      "condition": "greek_letters",
+      "difficulty": "medium",
+      "failure_rate": 0.10526315789473684,
+      "mcnemar_arabic_correct_only": 2,
+      "mcnemar_condition_correct_only": 0,
+      "mcnemar_exact_two_sided_p": 0.5,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 17,
+      "retention_rate": 0.8947368421052632
+    },
+    {
+      "arabic_correct": 14,
+      "condition": "greek_letters",
+      "difficulty": "hard",
+      "failure_rate": 0.3571428571428571,
+      "mcnemar_arabic_correct_only": 5,
+      "mcnemar_condition_correct_only": 5,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 9,
+      "retention_rate": 0.6428571428571429
+    },
+    {
+      "arabic_correct": 53,
+      "condition": "lowercase_latin",
+      "difficulty": "all",
+      "failure_rate": 0.13207547169811318,
+      "mcnemar_arabic_correct_only": 7,
+      "mcnemar_condition_correct_only": 5,
+      "mcnemar_exact_two_sided_p": 0.7744140625,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 46,
+      "retention_rate": 0.8679245283018868
+    },
+    {
+      "arabic_correct": 20,
+      "condition": "lowercase_latin",
+      "difficulty": "easy",
+      "failure_rate": 0.050000000000000044,
+      "mcnemar_arabic_correct_only": 1,
+      "mcnemar_condition_correct_only": 0,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 19,
+      "retention_rate": 0.95
+    },
+    {
+      "arabic_correct": 19,
+      "condition": "lowercase_latin",
+      "difficulty": "medium",
+      "failure_rate": 0.26315789473684215,
+      "mcnemar_arabic_correct_only": 5,
+      "mcnemar_condition_correct_only": 1,
+      "mcnemar_exact_two_sided_p": 0.21875,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 14,
+      "retention_rate": 0.7368421052631579
+    },
+    {
+      "arabic_correct": 14,
+      "condition": "lowercase_latin",
+      "difficulty": "hard",
+      "failure_rate": 0.0714285714285714,
+      "mcnemar_arabic_correct_only": 1,
+      "mcnemar_condition_correct_only": 4,
+      "mcnemar_exact_two_sided_p": 0.375,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 13,
+      "retention_rate": 0.9285714285714286
+    },
+    {
+      "arabic_correct": 53,
+      "condition": "nonce_labels",
+      "difficulty": "all",
+      "failure_rate": 0.18867924528301883,
+      "mcnemar_arabic_correct_only": 10,
+      "mcnemar_condition_correct_only": 5,
+      "mcnemar_exact_two_sided_p": 0.3017578125,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 43,
+      "retention_rate": 0.8113207547169812
+    },
+    {
+      "arabic_correct": 20,
+      "condition": "nonce_labels",
+      "difficulty": "easy",
+      "failure_rate": 0.050000000000000044,
+      "mcnemar_arabic_correct_only": 1,
+      "mcnemar_condition_correct_only": 0,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 19,
+      "retention_rate": 0.95
+    },
+    {
+      "arabic_correct": 19,
+      "condition": "nonce_labels",
+      "difficulty": "medium",
+      "failure_rate": 0.21052631578947367,
+      "mcnemar_arabic_correct_only": 4,
+      "mcnemar_condition_correct_only": 1,
+      "mcnemar_exact_two_sided_p": 0.375,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 15,
+      "retention_rate": 0.7894736842105263
+    },
+    {
+      "arabic_correct": 14,
+      "condition": "nonce_labels",
+      "difficulty": "hard",
+      "failure_rate": 0.3571428571428571,
+      "mcnemar_arabic_correct_only": 5,
+      "mcnemar_condition_correct_only": 4,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 9,
+      "retention_rate": 0.6428571428571429
+    },
+    {
+      "arabic_correct": 53,
+      "condition": "uppercase_latin",
+      "difficulty": "all",
+      "failure_rate": 0.07547169811320753,
+      "mcnemar_arabic_correct_only": 4,
+      "mcnemar_condition_correct_only": 6,
+      "mcnemar_exact_two_sided_p": 0.75390625,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 49,
+      "retention_rate": 0.9245283018867925
+    },
+    {
+      "arabic_correct": 20,
+      "condition": "uppercase_latin",
+      "difficulty": "easy",
+      "failure_rate": 0.050000000000000044,
+      "mcnemar_arabic_correct_only": 1,
+      "mcnemar_condition_correct_only": 0,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 19,
+      "retention_rate": 0.95
+    },
+    {
+      "arabic_correct": 19,
+      "condition": "uppercase_latin",
+      "difficulty": "medium",
+      "failure_rate": 0.10526315789473684,
+      "mcnemar_arabic_correct_only": 2,
+      "mcnemar_condition_correct_only": 1,
+      "mcnemar_exact_two_sided_p": 1.0,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 17,
+      "retention_rate": 0.8947368421052632
+    },
+    {
+      "arabic_correct": 14,
+      "condition": "uppercase_latin",
+      "difficulty": "hard",
+      "failure_rate": 0.0714285714285714,
+      "mcnemar_arabic_correct_only": 1,
+      "mcnemar_condition_correct_only": 5,
+      "mcnemar_exact_two_sided_p": 0.21875,
+      "operational_failures_within_baseline": 0,
+      "retained_correct": 13,
+      "retention_rate": 0.9285714285714286
+    }
+  ],
+  "experiment_7_regression": {
+    "error": "singular information matrix",
+    "observations": 45
+  },
+  "failure_labels": {
+    "BOX_CONSTRAINT_ERROR": 103,
+    "COLUMN_CONSTRAINT_ERROR": 49,
+    "FORMAT_ERROR": 27,
+    "GIVEN_MODIFIED": 94,
+    "INVALID_SYMBOL": 188,
+    "LOCAL_MAPPING_ERROR": 89,
+    "NO_FINAL_ANSWER": 45,
+    "ROW_CONSTRAINT_ERROR": 4,
+    "TRUNCATED_OUTPUT": 49,
+    "WRONG_CELL_COUNT": 18,
+    "WRONG_ROW_COUNT": 11
+  },
+  "groups": [
+    {
+      "accuracy": 1.0,
+      "condition": "arabic_digits:checker_guided_revision",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "arabic_digits:checker_guided_revision",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "arabic_digits:checker_guided_revision",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "arabic_digits:one_pass",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.3333333333333333,
+      "condition": "arabic_digits:one_pass",
+      "correct": 1,
+      "difficulty": "hard",
+      "experiment": "exp10",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.06149194472039621,
+        0.7923403991979522
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "arabic_digits:one_pass",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "arabic_digits:one_self_revision",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "arabic_digits:one_self_revision",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "arabic_digits:one_self_revision",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "arabic_digits:two_self_revisions",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "arabic_digits:two_self_revisions",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "arabic_digits:two_self_revisions",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "emoji:checker_guided_revision",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "emoji:checker_guided_revision",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "emoji:checker_guided_revision",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "emoji:one_pass",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "emoji:one_pass",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "emoji:one_pass",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "emoji:one_self_revision",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "emoji:one_self_revision",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "emoji:one_self_revision",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "emoji:two_self_revisions",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "condition": "emoji:two_self_revisions",
+      "correct": 2,
+      "difficulty": "hard",
+      "experiment": "exp10",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ]
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "condition": "emoji:two_self_revisions",
+      "correct": 2,
+      "difficulty": "medium",
+      "experiment": "exp10",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "greek_letters:checker_guided_revision",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "condition": "greek_letters:checker_guided_revision",
+      "correct": 2,
+      "difficulty": "hard",
+      "experiment": "exp10",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "greek_letters:checker_guided_revision",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "greek_letters:one_pass",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.3333333333333333,
+      "condition": "greek_letters:one_pass",
+      "correct": 1,
+      "difficulty": "hard",
+      "experiment": "exp10",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.06149194472039621,
+        0.7923403991979522
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "greek_letters:one_pass",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "greek_letters:one_self_revision",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "condition": "greek_letters:one_self_revision",
+      "correct": 2,
+      "difficulty": "hard",
+      "experiment": "exp10",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "greek_letters:one_self_revision",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "greek_letters:two_self_revisions",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.3333333333333333,
+      "condition": "greek_letters:two_self_revisions",
+      "correct": 1,
+      "difficulty": "hard",
+      "experiment": "exp10",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.06149194472039621,
+        0.7923403991979522
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "greek_letters:two_self_revisions",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp10",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "arabic_digits",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp2",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.8,
+      "condition": "arabic_digits",
+      "correct": 4,
+      "difficulty": "hard",
+      "experiment": "exp2",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "accuracy": 0.8,
+      "condition": "arabic_digits",
+      "correct": 4,
+      "difficulty": "medium",
+      "experiment": "exp2",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "emoji",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp2",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.8,
+      "condition": "emoji",
+      "correct": 4,
+      "difficulty": "hard",
+      "experiment": "exp2",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "accuracy": 0.8,
+      "condition": "emoji",
+      "correct": 4,
+      "difficulty": "medium",
+      "experiment": "exp2",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "greek_letters",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp2",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "greek_letters",
+      "correct": 5,
+      "difficulty": "hard",
+      "experiment": "exp2",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.6,
+      "condition": "greek_letters",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp2",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.2307242812760128,
+        0.882379225767352
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "uppercase_latin",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp2",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "uppercase_latin",
+      "correct": 5,
+      "difficulty": "hard",
+      "experiment": "exp2",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "uppercase_latin",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp2",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.95,
+      "condition": "abstract_symbols",
+      "correct": 19,
+      "difficulty": "easy",
+      "experiment": "exp4",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.763868806553258,
+        0.9911185511992047
+      ]
+    },
+    {
+      "accuracy": 0.75,
+      "condition": "abstract_symbols",
+      "correct": 15,
+      "difficulty": "hard",
+      "experiment": "exp4",
+      "incorrect": 5,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.531299122381256,
+        0.8881382985923343
+      ]
+    },
+    {
+      "accuracy": 0.85,
+      "condition": "abstract_symbols",
+      "correct": 17,
+      "difficulty": "medium",
+      "experiment": "exp4",
+      "incorrect": 3,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.6395811352592431,
+        0.9476312541037835
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "arabic_digits",
+      "correct": 20,
+      "difficulty": "easy",
+      "experiment": "exp4",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.8388748419471806,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.7,
+      "condition": "arabic_digits",
+      "correct": 14,
+      "difficulty": "hard",
+      "experiment": "exp4",
+      "incorrect": 6,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.4810271816464765,
+        0.8545227551323956
+      ]
+    },
+    {
+      "accuracy": 0.95,
+      "condition": "arabic_digits",
+      "correct": 19,
+      "difficulty": "medium",
+      "experiment": "exp4",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.763868806553258,
+        0.9911185511992047
+      ]
+    },
+    {
+      "accuracy": 0.95,
+      "condition": "bengali_numerals",
+      "correct": 19,
+      "difficulty": "easy",
+      "experiment": "exp4",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.763868806553258,
+        0.9911185511992047
+      ]
+    },
+    {
+      "accuracy": 0.75,
+      "condition": "bengali_numerals",
+      "correct": 15,
+      "difficulty": "hard",
+      "experiment": "exp4",
+      "incorrect": 5,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.531299122381256,
+        0.8881382985923343
+      ]
+    },
+    {
+      "accuracy": 0.95,
+      "condition": "bengali_numerals",
+      "correct": 19,
+      "difficulty": "medium",
+      "experiment": "exp4",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.763868806553258,
+        0.9911185511992047
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "devanagari_numerals",
+      "correct": 20,
+      "difficulty": "easy",
+      "experiment": "exp4",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.8388748419471806,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.85,
+      "condition": "devanagari_numerals",
+      "correct": 17,
+      "difficulty": "hard",
+      "experiment": "exp4",
+      "incorrect": 3,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.6395811352592431,
+        0.9476312541037835
+      ]
+    },
+    {
+      "accuracy": 0.95,
+      "condition": "devanagari_numerals",
+      "correct": 19,
+      "difficulty": "medium",
+      "experiment": "exp4",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.763868806553258,
+        0.9911185511992047
+      ]
+    },
+    {
+      "accuracy": 0.95,
+      "condition": "emoji",
+      "correct": 19,
+      "difficulty": "easy",
+      "experiment": "exp4",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.763868806553258,
+        0.9911185511992047
+      ]
+    },
+    {
+      "accuracy": 0.75,
+      "condition": "emoji",
+      "correct": 15,
+      "difficulty": "hard",
+      "experiment": "exp4",
+      "incorrect": 5,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.531299122381256,
+        0.8881382985923343
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "emoji",
+      "correct": 20,
+      "difficulty": "medium",
+      "experiment": "exp4",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.8388748419471806,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "greek_letters",
+      "correct": 20,
+      "difficulty": "easy",
+      "experiment": "exp4",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.8388748419471806,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.7,
+      "condition": "greek_letters",
+      "correct": 14,
+      "difficulty": "hard",
+      "experiment": "exp4",
+      "incorrect": 6,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.4810271816464765,
+        0.8545227551323956
+      ]
+    },
+    {
+      "accuracy": 0.85,
+      "condition": "greek_letters",
+      "correct": 17,
+      "difficulty": "medium",
+      "experiment": "exp4",
+      "incorrect": 3,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.6395811352592431,
+        0.9476312541037835
+      ]
+    },
+    {
+      "accuracy": 0.95,
+      "condition": "lowercase_latin",
+      "correct": 19,
+      "difficulty": "easy",
+      "experiment": "exp4",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.763868806553258,
+        0.9911185511992047
+      ]
+    },
+    {
+      "accuracy": 0.85,
+      "condition": "lowercase_latin",
+      "correct": 17,
+      "difficulty": "hard",
+      "experiment": "exp4",
+      "incorrect": 3,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.6395811352592431,
+        0.9476312541037835
+      ]
+    },
+    {
+      "accuracy": 0.75,
+      "condition": "lowercase_latin",
+      "correct": 15,
+      "difficulty": "medium",
+      "experiment": "exp4",
+      "incorrect": 5,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.531299122381256,
+        0.8881382985923343
+      ]
+    },
+    {
+      "accuracy": 0.95,
+      "condition": "nonce_labels",
+      "correct": 19,
+      "difficulty": "easy",
+      "experiment": "exp4",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.763868806553258,
+        0.9911185511992047
+      ]
+    },
+    {
+      "accuracy": 0.65,
+      "condition": "nonce_labels",
+      "correct": 13,
+      "difficulty": "hard",
+      "experiment": "exp4",
+      "incorrect": 7,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.43285427668523624,
+        0.818808175898918
+      ]
+    },
+    {
+      "accuracy": 0.8,
+      "condition": "nonce_labels",
+      "correct": 16,
+      "difficulty": "medium",
+      "experiment": "exp4",
+      "incorrect": 4,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.5839825677481064,
+        0.919342337420202
+      ]
+    },
+    {
+      "accuracy": 0.95,
+      "condition": "uppercase_latin",
+      "correct": 19,
+      "difficulty": "easy",
+      "experiment": "exp4",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.763868806553258,
+        0.9911185511992047
+      ]
+    },
+    {
+      "accuracy": 0.9,
+      "condition": "uppercase_latin",
+      "correct": 18,
+      "difficulty": "hard",
+      "experiment": "exp4",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.6989663547715128,
+        0.9721335187862319
+      ]
+    },
+    {
+      "accuracy": 0.9,
+      "condition": "uppercase_latin",
+      "correct": 18,
+      "difficulty": "medium",
+      "experiment": "exp4",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 20,
+      "wilson_95": [
+        0.6989663547715128,
+        0.9721335187862319
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "A_arabic_to_arabic",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.6,
+      "condition": "A_arabic_to_arabic",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp6",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.2307242812760128,
+        0.882379225767352
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "A_arabic_to_arabic",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "B_greek_to_greek",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.2,
+      "condition": "B_greek_to_greek",
+      "correct": 1,
+      "difficulty": "hard",
+      "experiment": "exp6",
+      "incorrect": 4,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.03622410863243014,
+        0.6244653702374747
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "B_greek_to_greek",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "C_greek_to_arabic",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.4,
+      "condition": "C_greek_to_arabic",
+      "correct": 2,
+      "difficulty": "hard",
+      "experiment": "exp6",
+      "incorrect": 3,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.11762077423264783,
+        0.769275718723987
+      ]
+    },
+    {
+      "accuracy": 0.8,
+      "condition": "C_greek_to_arabic",
+      "correct": 4,
+      "difficulty": "medium",
+      "experiment": "exp6",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "accuracy": 0.8,
+      "condition": "D_arabic_to_greek",
+      "correct": 4,
+      "difficulty": "easy",
+      "experiment": "exp6",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "accuracy": 0.4,
+      "condition": "D_arabic_to_greek",
+      "correct": 2,
+      "difficulty": "hard",
+      "experiment": "exp6",
+      "incorrect": 3,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.11762077423264783,
+        0.769275718723987
+      ]
+    },
+    {
+      "accuracy": 0.8,
+      "condition": "D_arabic_to_greek",
+      "correct": 4,
+      "difficulty": "medium",
+      "experiment": "exp6",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "control_coordinate_retrieval",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "control_coordinate_retrieval",
+      "correct": 5,
+      "difficulty": "hard",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "control_coordinate_retrieval",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "control_copy",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "control_copy",
+      "correct": 5,
+      "difficulty": "hard",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "control_copy",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "control_grid_conversion",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "control_grid_conversion",
+      "correct": 5,
+      "difficulty": "hard",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "control_grid_conversion",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "control_mapping_translation",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "control_mapping_translation",
+      "correct": 5,
+      "difficulty": "hard",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "control_mapping_translation",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "control_occurrence_count",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "control_occurrence_count",
+      "correct": 5,
+      "difficulty": "hard",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "control_occurrence_count",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp6",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "neutral_1_tokens",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp7",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.4,
+      "condition": "neutral_1_tokens",
+      "correct": 2,
+      "difficulty": "hard",
+      "experiment": "exp7",
+      "incorrect": 3,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.11762077423264783,
+        0.769275718723987
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "neutral_1_tokens",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp7",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.8,
+      "condition": "neutral_2_tokens",
+      "correct": 4,
+      "difficulty": "easy",
+      "experiment": "exp7",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "accuracy": 0.4,
+      "condition": "neutral_2_tokens",
+      "correct": 2,
+      "difficulty": "hard",
+      "experiment": "exp7",
+      "incorrect": 3,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.11762077423264783,
+        0.769275718723987
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "neutral_2_tokens",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp7",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "neutral_3_tokens",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp7",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.8,
+      "condition": "neutral_3_tokens",
+      "correct": 4,
+      "difficulty": "hard",
+      "experiment": "exp7",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "neutral_3_tokens",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp7",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "digits_ordinary",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.6,
+      "condition": "digits_ordinary",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp8",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.2307242812760128,
+        0.882379225767352
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "digits_ordinary",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "digits_permuted",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "digits_permuted",
+      "correct": 5,
+      "difficulty": "hard",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "digits_permuted",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.8,
+      "condition": "nonce_neutral",
+      "correct": 4,
+      "difficulty": "easy",
+      "experiment": "exp8",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "nonce_neutral",
+      "correct": 5,
+      "difficulty": "hard",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "nonce_neutral",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.4,
+      "condition": "number_words_conflicting",
+      "correct": 2,
+      "difficulty": "easy",
+      "experiment": "exp8",
+      "incorrect": 3,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.11762077423264783,
+        0.769275718723987
+      ]
+    },
+    {
+      "accuracy": 0.6,
+      "condition": "number_words_conflicting",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp8",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.2307242812760128,
+        0.882379225767352
+      ]
+    },
+    {
+      "accuracy": 0.8,
+      "condition": "number_words_conflicting",
+      "correct": 4,
+      "difficulty": "medium",
+      "experiment": "exp8",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "number_words_ordinary",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.6,
+      "condition": "number_words_ordinary",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp8",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.2307242812760128,
+        0.882379225767352
+      ]
+    },
+    {
+      "accuracy": 0.8,
+      "condition": "number_words_ordinary",
+      "correct": 4,
+      "difficulty": "medium",
+      "experiment": "exp8",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "uppercase_random_1",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.6,
+      "condition": "uppercase_random_1",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp8",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.2307242812760128,
+        0.882379225767352
+      ]
+    },
+    {
+      "accuracy": 0.8,
+      "condition": "uppercase_random_1",
+      "correct": 4,
+      "difficulty": "medium",
+      "experiment": "exp8",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "uppercase_random_2",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "uppercase_random_2",
+      "correct": 5,
+      "difficulty": "hard",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "uppercase_random_2",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "uppercase_random_3",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.8,
+      "condition": "uppercase_random_3",
+      "correct": 4,
+      "difficulty": "hard",
+      "experiment": "exp8",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "accuracy": 0.8,
+      "condition": "uppercase_random_3",
+      "correct": 4,
+      "difficulty": "medium",
+      "experiment": "exp8",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "uppercase_random_4",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "uppercase_random_4",
+      "correct": 5,
+      "difficulty": "hard",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "uppercase_random_4",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "uppercase_random_5",
+      "correct": 5,
+      "difficulty": "easy",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "uppercase_random_5",
+      "correct": 5,
+      "difficulty": "hard",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "uppercase_random_5",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.8,
+      "condition": "uppercase_standard",
+      "correct": 4,
+      "difficulty": "easy",
+      "experiment": "exp8",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "uppercase_standard",
+      "correct": 5,
+      "difficulty": "hard",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "uppercase_standard",
+      "correct": 5,
+      "difficulty": "medium",
+      "experiment": "exp8",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 5,
+      "wilson_95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "empty_dot",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.3333333333333333,
+      "condition": "empty_dot",
+      "correct": 1,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.06149194472039621,
+        0.7923403991979522
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "empty_dot",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "empty_underscore",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "condition": "empty_underscore",
+      "correct": 2,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ]
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "condition": "empty_underscore",
+      "correct": 2,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "empty_word",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "empty_word",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "condition": "empty_word",
+      "correct": 2,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "empty_zero",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.3333333333333333,
+      "condition": "empty_zero",
+      "correct": 1,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.06149194472039621,
+        0.7923403991979522
+      ]
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "condition": "empty_zero",
+      "correct": 2,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "latin_lowercase",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "condition": "latin_lowercase",
+      "correct": 2,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ]
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "condition": "latin_lowercase",
+      "correct": 2,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ]
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "condition": "latin_uppercase",
+      "correct": 2,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "latin_uppercase",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "latin_uppercase",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "mapping_alphabet_only",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.3333333333333333,
+      "condition": "mapping_alphabet_only",
+      "correct": 1,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.06149194472039621,
+        0.7923403991979522
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "mapping_alphabet_only",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "mapping_to_abstract",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.3333333333333333,
+      "condition": "mapping_to_abstract",
+      "correct": 1,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.06149194472039621,
+        0.7923403991979522
+      ]
+    },
+    {
+      "accuracy": 0.0,
+      "condition": "mapping_to_abstract",
+      "correct": 0,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 3,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        5.551115123125783e-17,
+        0.5614970317550454
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "mapping_to_digits",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "mapping_to_digits",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "mapping_to_digits",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "nonce_lowercase",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "nonce_lowercase",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "condition": "nonce_lowercase",
+      "correct": 2,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "nonce_uppercase",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "nonce_uppercase",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "nonce_uppercase",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.3333333333333333,
+      "condition": "output_compact",
+      "correct": 1,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.06149194472039621,
+        0.7923403991979522
+      ]
+    },
+    {
+      "accuracy": 0.3333333333333333,
+      "condition": "output_compact",
+      "correct": 1,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.06149194472039621,
+        0.7923403991979522
+      ]
+    },
+    {
+      "accuracy": 0.0,
+      "condition": "output_compact",
+      "correct": 0,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 3,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        5.551115123125783e-17,
+        0.5614970317550454
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "output_json",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.3333333333333333,
+      "condition": "output_json",
+      "correct": 1,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.06149194472039621,
+        0.7923403991979522
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "output_json",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "output_spaced",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.3333333333333333,
+      "condition": "output_spaced",
+      "correct": 1,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.06149194472039621,
+        0.7923403991979522
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "output_spaced",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.3333333333333333,
+      "condition": "output_string81",
+      "correct": 1,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.06149194472039621,
+        0.7923403991979522
+      ]
+    },
+    {
+      "accuracy": 0.3333333333333333,
+      "condition": "output_string81",
+      "correct": 1,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.06149194472039621,
+        0.7923403991979522
+      ]
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "condition": "output_string81",
+      "correct": 2,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ]
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "condition": "rules_constraints_alphabet",
+      "correct": 2,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "rules_constraints_alphabet",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "condition": "rules_constraints_alphabet",
+      "correct": 2,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "rules_explicit_constraints",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "condition": "rules_explicit_constraints",
+      "correct": 2,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ]
+    },
+    {
+      "accuracy": 0.6666666666666666,
+      "condition": "rules_explicit_constraints",
+      "correct": 2,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 1,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.2076596008020477,
+        0.9385080552796037
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "rules_fully_explicit",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 0.3333333333333333,
+      "condition": "rules_fully_explicit",
+      "correct": 1,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 2,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.06149194472039621,
+        0.7923403991979522
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "rules_fully_explicit",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "rules_minimal",
+      "correct": 3,
+      "difficulty": "easy",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "rules_minimal",
+      "correct": 3,
+      "difficulty": "hard",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "rules_minimal",
+      "correct": 3,
+      "difficulty": "medium",
+      "experiment": "exp9",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 3,
+      "wilson_95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "arabic_digits",
+      "correct": 1,
+      "difficulty": "easy",
+      "experiment": "qualification",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 1,
+      "wilson_95": [
+        0.20654931437723745,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "devanagari_numerals",
+      "correct": 1,
+      "difficulty": "easy",
+      "experiment": "qualification",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 1,
+      "wilson_95": [
+        0.20654931437723745,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "emoji",
+      "correct": 1,
+      "difficulty": "easy",
+      "experiment": "qualification",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 1,
+      "wilson_95": [
+        0.20654931437723745,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "greek_letters",
+      "correct": 1,
+      "difficulty": "easy",
+      "experiment": "qualification",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 1,
+      "wilson_95": [
+        0.20654931437723745,
+        1.0
+      ]
+    },
+    {
+      "accuracy": 1.0,
+      "condition": "nonce_labels",
+      "correct": 1,
+      "difficulty": "easy",
+      "experiment": "qualification",
+      "incorrect": 0,
+      "not_evaluated": 0,
+      "total": 1,
+      "wilson_95": [
+        0.20654931437723745,
+        1.0
+      ]
+    }
+  ],
+  "pilot": {
+    "easy": {
+      "accuracy": 1.0,
+      "correct": 5,
+      "evaluated": 5,
+      "not_evaluated": 0,
+      "target_range": [
+        0.8,
+        0.95
+      ],
+      "within_target": false
+    },
+    "hard": {
+      "accuracy": 0.8,
+      "correct": 4,
+      "evaluated": 5,
+      "not_evaluated": 0,
+      "target_range": [
+        0.1,
+        0.4
+      ],
+      "within_target": false
+    },
+    "medium": {
+      "accuracy": 0.8,
+      "correct": 4,
+      "evaluated": 5,
+      "not_evaluated": 0,
+      "target_range": [
+        0.4,
+        0.7
+      ],
+      "within_target": false
+    }
+  },
+  "qualification": {
+    "correct": 5,
+    "min_correct": 3,
+    "operational_failures": 0,
+    "passed": true,
+    "requests": 5
+  },
+  "record_count": 1229
+}

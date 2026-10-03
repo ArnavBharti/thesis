@@ -1,0 +1,14 @@
+\begin{tabular}{llrrrrr}
+\toprule
+Model & Arm & Correct & Fixed & Regressed & New calls & Mean total (s)\\
+\midrule
+GPT-OSS & one pass & 18/27 & 0 & 0 & 0 & 312.25\\
+GPT-OSS & one self revision & 19/27 & 1 & 0 & 27 & 482.60\\
+GPT-OSS & two self revisions & 23/27 & 5 & 0 & 54 & 610.69\\
+GPT-OSS & checker guided revision & 22/27 & 4 & 0 & 9 & 476.68\\
+Qwen & one pass & 23/27 & 0 & 0 & 0 & 561.28\\
+Qwen & one self revision & 26/27 & 3 & 0 & 27 & 725.74\\
+Qwen & two self revisions & 23/27 & 2 & 2 & 54 & 788.07\\
+Qwen & checker guided revision & 26/27 & 3 & 0 & 4 & 718.79\\
+\bottomrule
+\end{tabular}

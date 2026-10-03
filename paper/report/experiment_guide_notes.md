@@ -2,7 +2,7 @@
 
 This is the self-contained experiment-centered route through the dossier. Each block includes the applicable exact procedures, sample identities, settings, saved prompts or label inventories, complete available results, interpretation, alternatives, limitations, and local verification steps. You do not need to consult the separate Methodology, Results, or Discussion sections to write an experiment account. Those original sections and all twelve discussion lenses remain preserved for another reading route. The repeated material here is deliberate. No missing experiment result is inferred from a submission or a different experiment.
 
-**Evidence boundary.** Main and mechanism numbers below come from the verified `2026-09-30-report` snapshot. GPT-OSS Step 13 subsequently completed in job `373562`, with a separate verified local backup. Qwen Steps 8--12 and dependent Step 13 were subsequently queued. Their submission is not a result: this guide contains no completed Qwen follow-up outcomes. “Not available” below means unavailable in the verified evidence used here, not a fresh claim about the live queue. Refresh and audit those outputs before replacing these entries. Do not pool new follow-ups into main accuracy.
+**Evidence boundary.** The verified `2026-10-03-complete` snapshot contains both models' qualification, pilot, main, Steps 8--12, and completed Step 13 artifacts. Its 599 files have matching stored/raw checksums. All selected-model outcome runs have complete markers and request digests. The audit covers 2,650 selected and historical outcome records, with no re-scoring or independent-grid disagreement. Earlier snapshots remain unchanged. Do not pool follow-ups into main accuracy or mistake reused outcomes for new calls.
 
 ## A. Dataset construction and difficulty certification
 
@@ -98,11 +98,11 @@ All 135 records are complete. Same-alphabet Sudoku conditions score 12/15 each; 
 
 ### Qwen results
 
-No completed Step 8 evidence is included here. Job `373543` was submitted for the same design with model-specific baseline reuse. Do not fill its cells from Qwen's main Greek/Arabic aggregate scores: the cross prompts require new calls and the mechanism subset has different denominators.
+Job `373543` completed all 135 records with exit `0:0`. Arabic-to-Arabic scores 13/15, Greek-to-Greek 11/15, Greek-to-Arabic 11/15, and Arabic-to-Greek 10/15. All 75 controls pass. Sudoku-only correctness is 45/60, with 19/20 easy, 18/20 medium, and 8/20 hard. Six responses truncate, nine are nontruncated incorrect grids, and none has an operational failure. The mixed total is 120/135. The 54 parseable Sudoku grids include 48 preserving clues and 51 satisfying all units.
 
 ### Discussion and writing decision
 
-Basic control success narrows simple symbol-handling explanations, while full solving still fails. Baseline equality on this subset does not support a deterministic universal Greek-output penalty. Lower cross scores are consistent with extra mapping burden but do not isolate its cause. Use **Lens 8**, with **Lenses 2, 3, and 7** as alternatives. Once verified Qwen outcomes exist, compare condition patterns, not just mixed totals, before claiming replication.
+Both models pass all simple controls and solve 45/60 Sudoku conditions, despite different main accuracy and condition-level outcomes. This supports basic handling competence under the tested controls, not unrestricted symbol competence during solving. GPT-OSS has equal same-alphabet baselines; Qwen has 13/15 Arabic and 11/15 Greek, but Greek-to-Arabic remains 11/15. Changing Qwen's output to Arabic therefore does not improve this aggregate score. Cross prompts also add mapping burden, and five puzzles per tier cannot localize a causal mechanism. Use **Lens 8**, with **Lenses 2, 3, and 7** as alternatives.
 
 ## E. Token-length labels: Step 9, experiment exp7
 
@@ -120,11 +120,11 @@ One-, two-, and three-token conditions score 9/15, 13/15, and 10/15. Difficulty 
 
 ### Qwen results
 
-No completed Step 9 evidence is included. Job `373544` was submitted. Verify its constructed label inventory, tokenizer identity, 45-request completion, and fit status before adding a comparison. Do not assume its fitted regression will be identifiable merely because Qwen's main accuracy is higher.
+Job `373544` completed 45/45 records. One-, two-, and three-token labels score 12/15, 11/15, and 14/15. Easy, medium, and hard totals are 14/15, 15/15, and 8/15. There are three incorrect grids, two truncations, three other output errors, and zero operational failures. Its registered regression also reports a singular information matrix. The exact model-specific labels and saved prompt examples are included in this block, rather than assuming the GPT-OSS label sets apply to Qwen.
 
 ### Discussion and writing decision
 
-GPT-OSS's pattern is non-monotonic and does not identify an independent token-length coefficient. State both facts, rather than hiding the failed fit or claiming two tokens are inherently optimal. Specific labels and correlated prompt properties remain explanations. Use **Lens 6**, supported by **Lenses 5 and 12**. Multiple alphabets per bin and matched repeated sampling would strengthen a future design, but were not performed here.
+Both patterns are non-monotonic: GPT-OSS's highest observed bin has two tokens, while Qwen's has three. Neither registered fit identifies an independent coefficient. These outcomes do not support a universal shorter-label advantage or a universal optimal bin. Different model-specific label sets prevent a pure matched-tokenizer comparison. Specific labels and correlated prompt properties remain explanations. Use **Lens 6**, supported by **Lenses 5 and 12**. Multiple alphabets per bin and repeated sampling would strengthen a future design, but were not performed here.
 
 ## F. Binding and label assignment: Step 10, experiment exp8
 
@@ -142,11 +142,11 @@ All 165 records are complete, with 124 correct. Easy is 55/55, medium 50/55, har
 
 ### Qwen results
 
-No completed Step 10 evidence is included. Job `373545` was submitted. Its reused baseline cells must match the saved Qwen main answers. Its new permutations and number-word conditions must be evaluated before any statement about cross-model semantic interference.
+Job `373545` completed 165/165 records with 147 correct. Easy, medium, and hard totals are 50/55, 51/55, and 46/55. Ordinary digits score 13/15 and permuted digits 15/15. Ordinary number words score 12/15 and permuted number words 9/15. Nonce labels score 14/15. Six uppercase assignments range from 12/15 to 15/15. Failures are nine incorrect grids, eight truncations, and one other output error, with zero operational failures. Of 156 parseable grids, 151 preserve clues and 149 satisfy all units.
 
 ### Discussion and writing decision
 
-The GPT-OSS pattern is consistent with assignment-related sensitivity, but small differences and familiar-label contrasts do not identify an internal binding mechanism. Do not claim neutral nonce labels eliminate all semantics. Use **Lens 7**, with **Lenses 1, 6, and 9** for competing explanations. A useful two-model discussion would ask whether paired losses recur under matched assignments after both runs are verified, not assume the same mechanism from aggregate main accuracy.
+Both models score lower for permuted number words than ordinary words, by two and three answers. The digit direction differs: GPT-OSS decreases from 12/15 to 10/15, while Qwen increases from 13/15 to 15/15. This contradicts a universal penalty for permuting familiar labels. Small fixed-assignment samples do not identify an internal binding mechanism. Qwen also has five easy failures across assignments despite its strong main easy performance. Inspect condition/tier categories rather than assuming all binding failures are hard puzzles. Use **Lens 7**, with **Lenses 1, 6, and 9** for alternatives.
 
 ## G. Prompt and output ablations: Step 11, experiment exp9
 
@@ -164,11 +164,11 @@ All 171 records and the completion marker exist, despite the scheduler killing t
 
 ### Qwen results
 
-No completed Step 11 evidence is included. Job `373546` was submitted. Require all 171 request IDs and the marker, then inspect own-format compliance, tier counts, and identical-prompt outcomes. A scheduler timeout must be interpreted alongside saved artifact completeness, not automatically counted as 171 failed requests.
+Job `373546` completed in 26:44:02 with exit `0:0`, all 171 records, and a valid marker. Correctness is 130/171: easy 51/57, medium 43/57, hard 36/57. There are 25 incorrect grids, four truncations, 12 other output errors, and zero operational failures. Digit mapping, uppercase nonce, and minimal rules each score 9/9. Compact rows score 2/9 and string81 4/9. The four identical default conditions each score 7/9. Of 155 parseable outputs, 137 preserve clues and 147 satisfy all units, so mathematical validity alone remains insufficient.
 
 ### Discussion and writing decision
 
-The identical-prompt variation cautions against attributing a small difference to wording. No variant establishes a universally superior main prompt. A high score can motivate a separately documented repeat experiment, not a retrospective change to the frozen benchmark. Use **Lens 9**, with **Lenses 3 and 12**. Preserve the full condition table in an appendix to avoid highlighting only favorable variants.
+Digit mapping and uppercase nonce have high scores in both models, while compact rows are weak in both. This motivates repeat testing, not an optimized prompt claim. GPT-OSS's identical-prompt totals vary. Qwen's four conditions share the same seven correct puzzle IDs: E012, E021, E087, H028, M078, M085, and M087. Binary agreement in this capture does not prove identical erroneous grids or deterministic future inference. Qwen's 18 clue-changing outputs also caution against using its 147 unit-valid outputs as its correct count. Use **Lens 9**, with **Lenses 3 and 12**. Preserve every condition.
 
 ## H. Shared-initial self-revision and checker feedback: Step 12, experiment exp10
 
@@ -188,11 +188,11 @@ Final counts are one pass 18/27, one self-revision 19/27, two self-revisions 23/
 
 ### Qwen results
 
-No completed Step 12 evidence is included. Job `373547` was submitted. Calculate its own 27-cell initial-correct count before interpreting revisions. Do not reuse GPT-OSS's nine-failure checker denominator: Qwen's initial answers may have a different number of errors. Report ceilings for improvement and the number of errors actually eligible for repair.
+Job `373547` completed 108/108 records. One pass scores 23/27, one self-revision 26/27, two self-revisions 23/27, and checker-guided revision 26/27. One revision fixes three of four initial failures with no regression. Two revisions fix two initial failures but regress two initial successes, giving no net improvement. Checker feedback fixes three of four failures and makes only four new calls. The arm new-call counts are 0, 27, 54, and 4. Mean cumulative generation times are 561.28, 725.74, 788.07, and 718.79 seconds. Final-row truncations total three, with zero operational failures. Stage-level copies are not unique inference failures.
 
 ### Discussion and writing decision
 
-Two generic revisions and conditional checker feedback improve realized GPT-OSS correctness on this subset. That supports a practical observed trade-off, not a universal revision benefit. One answer changes an arm by 3.7 percentage points. If Qwen starts nearer ceiling, fewer fixes may reflect fewer opportunities rather than inferior correction ability. Compare wrong-to-right and right-to-wrong transitions, denominators, and added time. Use **Lens 10**, supported by **Lenses 5, 11, and 12**.
+The models do not support a universal benefit from more revision. GPT-OSS's two-revision branch has the highest score, but Qwen's one-revision branch improves by three answers and its two-revision branch loses that net gain. Against the common initial baseline, Qwen has two fixes and two regressions after two revisions. Do not call those regressions a measured internal reasoning failure. Checker feedback repairs 4/9 GPT-OSS and 3/4 Qwen initial failures, with different eligible denominators and a stopping rule that protects initial successes. One answer changes an arm by 3.7 points. Compare transitions and cumulative cost, not final-stage time or raw improvement alone. Use **Lens 10**, supported by **Lenses 5, 11, and 12**.
 
 ## I. Final analysis and reproducibility: Step 13
 
@@ -212,7 +212,7 @@ The frozen source passed 82 historical tests. The earlier evidence audit passed 
 
 ### Qwen results and artifacts
 
-Job `373551` was queued for CPU finalization after successful completion of all five follow-up jobs. No completed Qwen Step 13 artifact is used here. Do not substitute the already completed offline main comparison for evidence that every Qwen mechanism prerequisite has finished.
+Job `373551` completed in 7:40 with exit `0:0` after all five follow-ups. It wrote 2,781 token-diagnostic rows and analyzed 1,229 saved outcome records. Its token-length fit is singular. Both final summaries and registries are included in `evidence/snapshots/2026-10-03-complete/`. These tokenization diagnostics are not additional model solves. The original GPT-OSS final-analysis snapshot is preserved separately as well.
 
 ### Discussion and writing decision
 

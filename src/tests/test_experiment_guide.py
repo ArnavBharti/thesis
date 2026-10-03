@@ -38,11 +38,21 @@ class ExperimentGuideTests(unittest.TestCase):
                     self.assertIn("Full condition-by-difficulty failure", block)
                     self.assertIn("Clues kept / parsed", block)
 
-    def test_missing_qwen_followups_are_not_fabricated(self):
+    def test_completed_qwen_followups_have_verified_evidence(self):
         for step in ("exp6", "exp7", "exp8", "exp9", "exp10"):
-            self.assertNotIn(f"#### Qwen {step}", self.guide)
-        self.assertIn("No completed Step 12 evidence", self.guide)
+            evidence = self.audit["steps"][MODELS["Qwen"] + "/" + step]
+            self.assertTrue(evidence["audit"]["complete"])
+            self.assertTrue(evidence["audit"]["request_digest_matches"])
+            self.assertIn(f"#### Qwen {step}", self.guide)
+        self.assertNotIn("No completed Step 12 evidence", self.guide)
+        self.assertIn("two regressions", self.guide)
         self.assertIn("Shared-initial revision transitions and compute", self.guide)
+
+    def test_model_specific_labels_and_both_registries_are_included(self):
+        self.assertIn("Qwen: exact recorded treatments", self.guide)
+        self.assertIn("Completed Qwen token diagnostics", self.guide)
+        self.assertIn("Completed GPT-OSS token diagnostics", self.guide)
+        self.assertIn("2026-10-03-complete", self.guide)
 
     def test_original_methods_lenses_and_saved_prompts_are_embedded(self):
         for letter in "ABCDEFGHI":

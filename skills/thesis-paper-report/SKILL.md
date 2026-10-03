@@ -5,11 +5,11 @@ description: Prepare or use Arnav Bharti's Sudoku-thesis paper-writing dossier, 
 
 # Thesis paper report
 
-Support the user writing their own research paper. Do not replace their manuscript or rewrite `paper/draft.tex` unless asked. The maintained dossier is in `/Users/arnavbharti/Developer/arnavbharti/thesis/paper/report/`.
+Support the user writing their research paper. Do not replace their manuscript unless asked. The active main paper is `Soduku/paper.tex`; preserve the older `paper/draft.tex`. The maintained dossier is in `/Users/arnavbharti/Developer/arnavbharti/thesis/paper/report/`. Build the active paper with `make -C Soduku`.
 
 ## Read the relevant evidence first
 
-Read the repository's `AGENTS.md` for current authorization and server rules. Read `paper/report/writing_report.md` for the section being written and the methodological corrections. Use `paper/report/generated/results_tables.md`, `detailed_appendix.md`, and `audit.json` for exact numbers and completion status. The lossless raw snapshot is under `evidence/snapshots/2026-09-30-report/`; its manifest contains compressed and raw-content checksums. Do not treat this dated snapshot as live scheduler state.
+Read the repository's `AGENTS.md` for current authorization and server rules. Read `paper/report/writing_report.md` for section guidance and corrections. The self-contained `experiment_guide.md` includes procedures, rationale, both models' results, discussion, and verification per experiment; maintain its notes and builder, not generated prose directly. Use `paper/report/generated/results_tables.md`, `detailed_appendix.md`, and `audit.json` for exact numbers and completion status. The complete snapshot is `evidence/snapshots/2026-10-03-complete/`, with 599 stored/raw checksum pairs and completed two-model follow-ups and final analyses. Earlier snapshots remain immutable. A dated capture is not live scheduler state.
 
 For writing structure and submission checks, read [references/writing-guidance.md](references/writing-guidance.md). For report refresh, use the offline scripts documented below. For literature, use the dossier's canonical links, recheck changed publication metadata, and verify authors/title/year/venue before final citation. Do not call the report an exhaustive systematic review.
 
@@ -23,7 +23,8 @@ For writing structure and submission checks, read [references/writing-guidance.m
 - Error labels overlap. Use exclusive outcome categories for stacked tables and plots. Evaluate clue preservation only when the final grid can be parsed. Valid Sudoku units do not imply original clues were preserved.
 - Reused mechanism baselines and shared revision initials are not fresh independent calls. Revision cost includes the initial generation plus every new stage, not just the final stage latency.
 - Difficulty is relative to the registered technique procedure, not human validation or a proof that all methods require search.
-- Token-length results are non-monotonic and the registered regression is singular. Small binding/ablation differences do not establish causality. Identical ablation prompts yielded different sampled scores.
+- Both token-length patterns are non-monotonic and both registered regressions are singular. Labels are tokenizer-specific. Small binding/ablation differences do not establish causality. GPT-OSS's identical ablation prompts yield differing scores; Qwen's observed binary success sets match, without proving deterministic inference.
+- More revision is not universally better: Qwen's two-revision branch has two fixes and two regressions against its initial answer. Compare transitions, eligible failures, and cumulative cost, not net score alone.
 - Do not claim Qwen mechanism replication without completed corresponding evidence. Do not infer a universal model reasoning limitation from historical budget-limited screens.
 - Only the extracted final Sudoku grid is scored. Do not analyze or quote reasoning traces to explain cognition.
 
@@ -32,10 +33,10 @@ For writing structure and submission checks, read [references/writing-guidance.m
 From the repository root, run:
 
 ```bash
-python3 paper/report/prepare_snapshot.py tmp/research-report/snapshot \
-  evidence/snapshots/2026-09-30-report --verify
+python3 paper/report/prepare_snapshot.py tmp/research-report/unused \
+  evidence/snapshots/2026-10-03-complete --verify
 python3 paper/report/analyze_evidence.py \
-  --snapshot evidence/snapshots/2026-09-30-report \
+  --snapshot evidence/snapshots/2026-10-03-complete \
   --output tmp/research-report/recheck
 ```
 

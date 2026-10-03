@@ -1,0 +1,51 @@
+{
+  "backend": "vllm",
+  "dataset_sha256": "43a1ef3a4dfe22fa6cd8939021a80ef3cc812c5916ab62ef6b11501b45b58cc2",
+  "dtype": "bfloat16",
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "0",
+    "SLURM_JOB_ID": "337704",
+    "SLURM_JOB_NODELIST": "gpunode5"
+  },
+  "git_commit": "4af9788e4c5acb9bd885548df5a7b8eec44b13d6",
+  "gpu": [
+    {
+      "driver_version": "580.126.20",
+      "index": "0",
+      "memory_total_mib": "81559",
+      "name": "NVIDIA H100 80GB HBM3",
+      "uuid": "GPU-f7d06494-c4a5-8992-114e-4b03db3fc2a8"
+    }
+  ],
+  "hostname": "gpunode5.hpc.bits-hyderabad.ac.in",
+  "model": "qwen-local",
+  "model_id": "Qwen/Qwen3.8-27B",
+  "packages": {
+    "accelerate": "1.14.0",
+    "torch": "2.13.0",
+    "transformers": "5.16.1",
+    "vllm": "0.28.0"
+  },
+  "platform": "Linux-4.18.0-553.42.1.el8_10.x86_64-x86_64-with-glibc2.28",
+  "python": "3.11.5 (main, Sep 11 2023, 13:54:46) [GCC 11.2.0]",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "run_id": "configuration-calibration-v1-qwen-bounded-final",
+  "runtime_options": {
+    "gdn_prefill_backend": "triton",
+    "gpu_memory_utilization": 0.9,
+    "max_model_len": 32768,
+    "max_num_seqs": 1
+  },
+  "sampling_options": {
+    "max_tokens": 16384,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "repetition_penalty": 1.0,
+    "seed": 20260826,
+    "temperature": 1.0,
+    "top_k": 20,
+    "top_p": 0.95
+  },
+  "tensor_parallel_size": 1,
+  "tokenizer_id": "Qwen/Qwen3.8-27B"
+}

@@ -6,18 +6,24 @@ modification. Protocol files, sample plans, provenance, request manifests,
 completion markers, summaries, and Slurm submission files retain their original
 relative layout.
 
-The backup currently contains the completed GPT-OSS qualification, pilot, all six
-main-benchmark shards, input/output cross, token length, binding, and prompt/output
-ablations. Add each later experiment only after its completion marker and Slurm
-terminal state have been verified. The ablation results and completion marker were
-written before Slurm terminated the job during backend teardown at its wall-time.
+The complete capture is `snapshots/2026-10-03-complete/`: 599 files with
+stored-file and raw-content SHA-256 checksums. It includes both models'
+qualification, pilot, main, input/output cross, token length, binding, ablations,
+revision, final analyses, tokenizer registries, and relevant job metadata. Its
+offline audit checks 2,650 selected/historical outcome records without errors.
+Earlier snapshots remain unchanged. GPT-OSS's ablation marker was written before
+the teardown timeout; Qwen's follow-up jobs all completed with exit `0:0`.
 
 The following scratch-only material is intentionally excluded because it is
 reproducible or secret: model weights, Hugging Face and package caches, virtual
 environments, compiled files, and `.env` credentials.
 
-To read a compressed result file without extracting it:
+To verify this capture locally without inference:
 
 ```bash
-gzip -cd evidence/experiment_outputs/local-models-v1/gpt-oss-120b-local/exp4/shard-000-of-006.jsonl.gz | head
+python3 paper/report/prepare_snapshot.py tmp/research-report/unused \
+  evidence/snapshots/2026-10-03-complete --verify
+python3 paper/report/analyze_evidence.py \
+  --snapshot evidence/snapshots/2026-10-03-complete \
+  --output tmp/research-report/recheck
 ```

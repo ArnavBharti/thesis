@@ -1,34 +1,44 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="375" viewBox="0 0 960 375">
 <rect width="100%" height="100%" fill="white"/>
-<text x="24" y="30" font-family="Arial, sans-serif" font-size="23" fill="#182635" font-weight="bold" text-anchor="start">GPT-OSS revision: accuracy and generation-time cost</text>
-<text x="24" y="53" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">27 shared initial answers: nine puzzles in three representations. No equal-compute baseline.</text>
-<line x1="90" y1="295" x2="870" y2="295" stroke="#93a1ad"/>
-<line x1="90" y1="295" x2="90" y2="85" stroke="#93a1ad"/>
-<line x1="176.66666666666669" y1="295" x2="176.66666666666669" y2="300" stroke="#93a1ad"/>
-<text x="176.66666666666669" y="319" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="middle">300</text>
-<line x1="350.0" y1="295" x2="350.0" y2="300" stroke="#93a1ad"/>
-<text x="350.0" y="319" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="middle">400</text>
-<line x1="523.3333333333333" y1="295" x2="523.3333333333333" y2="300" stroke="#93a1ad"/>
-<text x="523.3333333333333" y="319" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="middle">500</text>
-<line x1="696.6666666666666" y1="295" x2="696.6666666666666" y2="300" stroke="#93a1ad"/>
-<text x="696.6666666666666" y="319" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="middle">600</text>
-<line x1="870.0" y1="295" x2="870.0" y2="300" stroke="#93a1ad"/>
-<text x="870.0" y="319" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="middle">700</text>
-<line x1="90" y1="295.0" x2="870" y2="295.0" stroke="#e1e6eb"/>
-<text x="76" y="300.0" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="end">60%</text>
-<line x1="90" y1="235.0" x2="870" y2="235.0" stroke="#e1e6eb"/>
-<text x="76" y="240.0" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="end">70%</text>
-<line x1="90" y1="175.0" x2="870" y2="175.0" stroke="#e1e6eb"/>
-<text x="76" y="180.0" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="end">80%</text>
-<line x1="90" y1="115.0" x2="870" y2="115.0" stroke="#e1e6eb"/>
-<text x="76" y="120.0" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="end">90%</text>
-<rect x="477.9096482681429" y="161.11111111111111" width="10" height="10" rx="3" fill="#245f86" stroke="none"/>
-<text x="493.9096482681429" y="157.11111111111111" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">checker guided revision: 22/27</text>
-<rect x="192.90727977510173" y="249.99999999999997" width="10" height="10" rx="3" fill="#245f86" stroke="none"/>
-<text x="208.90727977510173" y="245.99999999999997" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">one pass: 18/27</text>
-<rect x="488.16857507537287" y="227.7777777777778" width="10" height="10" rx="3" fill="#245f86" stroke="none"/>
-<text x="504.16857507537287" y="223.7777777777778" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">one self revision: 19/27</text>
-<rect x="710.1885817771724" y="138.88888888888886" width="10" height="10" rx="3" fill="#245f86" stroke="none"/>
-<text x="726.1885817771724" y="134.88888888888886" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">two self revisions: 23/27</text>
-<text x="465" y="354" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="middle">Mean total generation seconds, including the reused initial answer</text>
+<text x="24" y="30" font-family="Arial, sans-serif" font-size="23" fill="#182635" font-weight="bold" text-anchor="start">Revision outcomes and cumulative generation cost</text>
+<text x="24" y="53" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">Per model: 27 shared initials, nine puzzles, three alphabets. Checker calls only on initial failures.</text>
+<text x="24" y="88" font-family="Arial, sans-serif" font-size="19" fill="#182635" font-weight="bold" text-anchor="start">GPT-OSS</text>
+<text x="444" y="88" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="end">Correct</text>
+<text x="24" y="136" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">One pass</text>
+<rect x="144" y="118" width="86.73727774173639" height="26" rx="3" fill="#245f86" stroke="none"/>
+<text x="149" y="136" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="start">312s</text>
+<text x="444" y="136" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="end">18/27</text>
+<text x="24" y="176" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">One revision</text>
+<rect x="144" y="158" width="134.05479301421576" height="26" rx="3" fill="#245f86" stroke="none"/>
+<text x="149" y="176" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="start">483s</text>
+<text x="444" y="176" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="end">19/27</text>
+<text x="24" y="216" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">Two revisions</text>
+<rect x="144" y="198" width="169.6349222933503" height="26" rx="3" fill="#245f86" stroke="none"/>
+<text x="149" y="216" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="start">611s</text>
+<text x="444" y="216" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="end">23/27</text>
+<text x="24" y="256" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">Checker-guided</text>
+<rect x="144" y="238" width="132.4107342310058" height="26" rx="3" fill="#245f86" stroke="none"/>
+<text x="149" y="256" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="start">477s</text>
+<text x="444" y="256" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="end">22/27</text>
+<text x="24" y="308" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">Includes reused initial time and all new stages.</text>
+<text x="499" y="88" font-family="Arial, sans-serif" font-size="19" fill="#182635" font-weight="bold" text-anchor="start">Qwen</text>
+<text x="919" y="88" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="end">Correct</text>
+<text x="499" y="136" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">One pass</text>
+<rect x="619" y="118" width="155.91029250759098" height="26" rx="3" fill="#287b67" stroke="none"/>
+<text x="624" y="136" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="start">561s</text>
+<text x="919" y="136" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="end">23/27</text>
+<text x="499" y="176" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">One revision</text>
+<rect x="619" y="158" width="201.5941724707727" height="26" rx="3" fill="#287b67" stroke="none"/>
+<text x="624" y="176" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="start">726s</text>
+<text x="919" y="176" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="end">26/27</text>
+<text x="499" y="216" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">Two revisions</text>
+<rect x="619" y="198" width="218.90959145439456" height="26" rx="3" fill="#287b67" stroke="none"/>
+<text x="624" y="216" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="start">788s</text>
+<text x="919" y="216" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="end">23/27</text>
+<text x="499" y="256" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">Checker-guided</text>
+<rect x="619" y="238" width="199.66519108738694" height="26" rx="3" fill="#287b67" stroke="none"/>
+<text x="624" y="256" font-family="Arial, sans-serif" font-size="13" fill="white" font-weight="normal" text-anchor="start">719s</text>
+<text x="919" y="256" font-family="Arial, sans-serif" font-size="14" fill="#182635" font-weight="normal" text-anchor="end">26/27</text>
+<text x="499" y="308" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">Includes reused initial time and all new stages.</text>
+<text x="24" y="352" font-family="Arial, sans-serif" font-size="13" fill="#182635" font-weight="normal" text-anchor="start">Qwen&#x27;s second revision adds cost without net gain; two initially correct answers regress. No equal-compute control.</text>
 </svg>

@@ -88,26 +88,25 @@ def errors(audit, output):
 
 def revisions(audit, output):
     svg = SVG(960, 375)
-    svg.text(24, 30, "GPT-OSS revision: accuracy and generation-time cost", 23, weight="bold")
-    svg.text(24, 53, "27 shared initial answers: nine puzzles in three representations. No equal-compute baseline.", 13)
-    arms = audit["steps"][MODELS["GPT-OSS"] + "/exp10"]["revisions"]
-    svg.line(90, 295, 870, 295)
-    svg.line(90, 295, 90, 85)
-    for t in (300, 400, 500, 600, 700):
-        x = 90 + (t - 250) * 780 / 450
-        svg.line(x, 295, x, 300)
-        svg.text(x, 319, t, 13, anchor="middle")
-    for value in (60, 70, 80, 90):
-        y = 295 - (value - 60) * 210 / 35
-        svg.line(90, y, 870, y, "#e1e6eb")
-        svg.text(76, y + 5, f"{value}%", 13, anchor="end")
-    for r in arms:
-        x = 90 + (r["mean_end_to_end_seconds"] - 250) * 780 / 450
-        y = 295 - (100 * r["correct"] / 27 - 60) * 210 / 35
-        svg.rect(x - 5, y - 5, 10, 10, "#245f86")
-        name = r["arm"].replace("_", " ")
-        svg.text(x + 11, y - 9, f"{name}: {r['correct']}/27", 13)
-    svg.text(465, 354, "Mean total generation seconds, including the reused initial answer", 14, anchor="middle")
+    svg.text(24, 30, "Revision outcomes and cumulative generation cost", 23, weight="bold")
+    svg.text(24, 53, "Per model: 27 shared initials, nine puzzles, three alphabets. Checker calls only on initial failures.", 13)
+    names = {"one_pass": "One pass", "one_self_revision": "One revision",
+             "two_self_revisions": "Two revisions", "checker_guided_revision": "Checker-guided"}
+    for index, (model, prefix) in enumerate(MODELS.items()):
+        x = 24 + index * 475
+        svg.text(x, 88, model, 19, weight="bold")
+        svg.text(x + 420, 88, "Correct", 13, anchor="end")
+        arms = {r["arm"]: r for r in audit["steps"][prefix + "/exp10"]["revisions"]}
+        for j, (arm, label) in enumerate(names.items()):
+            r = arms[arm]
+            y = 118 + j * 40
+            svg.text(x, y + 18, label, 13)
+            svg.rect(x + 120, y, r["mean_end_to_end_seconds"] * 250 / 900, 26,
+                     "#245f86" if index == 0 else "#287b67")
+            svg.text(x + 125, y + 18, f'{r["mean_end_to_end_seconds"]:.0f}s', 13, "white")
+            svg.text(x + 420, y + 18, f'{r["correct"]}/27', 14, anchor="end")
+        svg.text(x, 308, "Includes reused initial time and all new stages.", 13)
+    svg.text(24, 352, "Qwen's second revision adds cost without net gain; two initially correct answers regress. No equal-compute control.", 13)
     svg.save(output / "revision_cost.svg")
 
 

@@ -274,8 +274,50 @@ The numbered script wrote 2,781 registry rows and analyzed 1,229 saved records.
 The additional local backup is
 `evidence/snapshots/2026-09-30-gptoss-step13/`; the earlier report snapshot
 remains unchanged. GPT-OSS Step 13 is now complete.
-The report and dated snapshot remain an immutable capture preceding these
-new runs. Update them only from verified completed follow-up evidence.
+The September snapshots remain immutable captures preceding these runs.
+The report now uses the verified complete October capture below.
+
+## Completed follow-ups and local backup (3 October 2026)
+
+Qwen jobs `373543`--`373547` and CPU analysis `373551` all completed with
+their expected names and exit `0:0`. The captured exact-ID accounting is in
+`evidence/snapshots/2026-10-03-complete/scheduler/qwen-followups.tsv`.
+Steps 8--12 have 135, 45, 165, 171, and 108 records with valid completion
+markers and matching request digests. No new inference is needed to finish
+these authorized experiments.
+
+- Input/output: 120/135 mixed outcomes; all 75 controls correct. Sudoku
+  conditions score 13/15, 11/15, 11/15, and 10/15, totaling 45/60.
+- Token length: 37/45, with one/two/three-token counts 12/15, 11/15, 14/15.
+  Qwen's registered fit is singular, as is GPT-OSS's.
+- Binding: 147/165. Ordinary/permuted digits score 13/15 and 15/15;
+  ordinary/permuted words 12/15 and 9/15. Do not claim every permutation hurts.
+- Ablations: 130/171, with tier counts 51/57, 43/57, 36/57. Digit mapping,
+  uppercase nonce, and minimal rules score 9/9. Compact rows score 2/9.
+  The four identical default prompts have the same binary success set, 7/9.
+  This observed agreement does not establish deterministic generation.
+- Revision: one pass 23/27, one revision 26/27, two revisions 23/27,
+  checker-guided 26/27. Two revisions fix two initial failures but regress
+  two initial successes. Checker eligibility is four failures, not nine.
+  Cumulative means are 561.28, 725.74, 788.07, and 718.79 seconds.
+- Final analysis: 1,229 outcome rows and 2,781 registry rows per model.
+  Local registered re-analysis matches both server summaries, allowing only
+  the previously documented added GPT-OSS `min_correct: 5` field.
+
+The new complete backup contains 599 files with verified stored/raw SHA-256
+checksums. It combines the earlier evidence with both completed final analyses
+and all Qwen follow-up outputs/logs. Earlier snapshots remain unchanged.
+Local audit covers 2,650 selected/historical outcome rows without errors or
+scoring/grid disagreements. Credentials, weights, and environments are excluded.
+Main scores remain GPT-OSS 372/540 and Qwen 472/540; never pool follow-ups.
+There are zero request-level operational failures in the selected follow-ups.
+
+The writing dossier, self-contained experiment guide, and main paper now use
+this capture. The active main paper is `Soduku/paper.tex`, with build command
+`make -C Soduku` and PDF `output/pdf/thesis-main-paper.pdf`. Do not edit the
+older `paper/draft.tex` in response to main-paper requests. Both paper generators
+run locally and derive tokenizer, complete condition/tier, error, and revision
+tables from verified evidence. No experiment source or frozen protocol changed.
 
 ## Recorded main job state (2026-09-30 19:31 IST)
 
@@ -326,9 +368,8 @@ The paired matrix has 338 both correct, 34 GPT-OSS only, 134 Qwen only, and
 34 neither. The exploratory stratified puzzle bootstrap gives a Qwen-minus-
 GPT-OSS difference of 18.52 points, 95% interval 13.70--23.52. Neither model's
 eight Arabic-baseline comparisons survives Holm adjustment at 0.05.
-Qwen mechanism experiments are not represented by completed outputs; do not
-claim a two-model mechanism replication or submit those jobs from a report
-request alone. Query current state for any later authorized submissions.
+This September capture preceded the Qwen follow-ups. The completed October
+evidence is documented above. Never submit new inference from a report request.
 Qwen result files and markers are under
 `experiment_outputs/qwen-3.8-27b-v2/qwen-3.8-27b-local/exp4/`.
 Part `N` uses `shard-(N-1)-of-012.jsonl` and `part-N-of-012.complete.json`,
@@ -385,6 +426,10 @@ Never use destructive Git commands to discard user work.
 
 ## Paper draft
 
+The active main thesis manuscript is in `Soduku/`, specifically `paper.tex`.
+Use that folder for main-paper work. The sources under `paper/` listed below
+are older drafts and reporting helpers, not a replacement for that manuscript.
+
 The paper sources are local under `paper/`:
 
 - `paper/draft.tex`
@@ -410,7 +455,7 @@ The added `paper/report/experiment_guide.md` groups methodology/rationale,
 alternatives, limitations, GPT-OSS results, Qwen results, and discussion by
 experiment. The builder inserts it before the verification section without
 replacing the original separate sections or twelve discussion lenses.
-Its Qwen follow-up blocks are evidence placeholders, not live queue status.
+Its Qwen follow-up blocks now contain verified completed October results.
 The experiment-centered guide is self-contained. Edit its manually maintained
 `experiment_guide_notes.md` and `build_experiment_guide.py`, not the generated
 `experiment_guide.md` directly. `build_report.py` rebuilds it from those notes,
@@ -425,9 +470,9 @@ Offline verification is documented in the report and `src/README.md`. Run
 clue/unit checks, request content hashes, shard/marker integrity, and tables.
 These scripts run locally without model loading. The added Holm comparisons
 and puzzle-cluster bootstrap are exploratory report analyses, not frozen
-preregistration amendments. No saved completed server Step 13 analysis or
-Qwen mechanism outputs were found in this capture; do not infer execution
-from the existence of their scripts. The report's local analysis reproduces
+preregistration amendments. The October capture includes both completed server
+Step 13 analyses and Qwen mechanism outputs. Do not infer execution from scripts
+alone. The report's local analysis reproduces
 the implemented retention and token-length procedures and adds explicitly
 exploratory paired analyses.
 
@@ -440,7 +485,10 @@ Nemotron diagnostics established that formatting constraints alone did not creat
 - Reasoning-off sampled: 0/15.
 - Reasoning-off constrained greedy: 0/15; correct format but invalid grids and changed clues.
 
-These results are useful methodological context, but the completed main benchmark and active mechanism experiments use GPT-OSS. Do not restart Nemotron, Mistral, or OpenRouter work without explicit user direction. Qwen3.8-27B-FP8 screening is now explicitly authorized under its isolated configuration. Older Qwen job `347025` was previously cancelled safely while pending.
+These results are methodological context. The completed selected-model main
+and mechanism studies use GPT-OSS and Qwen3.8-27B-FP8. Do not restart Nemotron,
+Mistral, or OpenRouter without explicit direction. Older Qwen job `347025`
+was safely cancelled while pending and must not be operated on now.
 
 ## Interpretation rules
 

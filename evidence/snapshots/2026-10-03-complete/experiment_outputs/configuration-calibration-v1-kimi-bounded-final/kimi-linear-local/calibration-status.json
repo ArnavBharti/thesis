@@ -1,0 +1,9 @@
+{
+  "easy_correct": 0,
+  "easy_total": 5,
+  "hard_correct": 0,
+  "hard_total": 10,
+  "operational_failures": 0,
+  "ready": false,
+  "requests": 15
+}

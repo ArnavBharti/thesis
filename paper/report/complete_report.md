@@ -2,7 +2,7 @@
 title: "Symbolic Representation and LLM Sudoku Performance"
 subtitle: "Evidence dossier and section-by-section research-paper writing guide"
 author: "Prepared for Arnav Bharti"
-date: "30 September 2026"
+date: "3 October 2026"
 ---
 
 # Purpose, scope, and how to use this report
@@ -11,13 +11,13 @@ This is a writing dossier, not a replacement manuscript. You will write the pape
 
 Read this narrative together with `generated/results_tables.md`. The latter contains every selected-model condition, its difficulty breakdown, error categories, latency, and completion checks. `generated/audit.json` is the machine-readable audit. `generated/observations.csv` contains one row per saved result and can be opened in a spreadsheet. Historical diagnostics are included separately. Do not combine them into one model accuracy figure.
 
-The raw backup is under `evidence/snapshots/2026-09-30-report/`. JSONL results and job logs are losslessly gzip-compressed. A snapshot manifest records both compressed-file and uncompressed-content SHA-256 checksums. The transfer includes result records, frozen protocols, sample plans, provenance, generated Slurm scripts, and logs. It excludes model weights, virtual environments, and credentials. The uncompressed working copy is under the ignored `tmp/research-report/snapshot/` directory.
+The complete raw backup is under `evidence/snapshots/2026-10-03-complete/`. Its 599 files occupy 69,814,796 stored bytes, excluding the manifest. JSONL results and job logs are losslessly gzip-compressed. The manifest records stored-file and raw-content SHA-256 checksums. The transfer includes outcomes, frozen protocols, sample plans, provenance, generated Slurm scripts, logs, both final analyses and token registries, and a fresh exact-ID scheduler capture. It excludes weights, environments, and credentials. The uncompressed working copy is under ignored `tmp/research-report/2026-10-03-capture/`. Both September snapshots remain unchanged.
 
 ## Evidence status and the central writing decision
 
-Both selected models have complete qualification, pilot, and main evidence. Each main benchmark contains 540/540 saved records with its exact frozen request digest and all valid completion markers. GPT-OSS also has complete outcome records for Steps 8 through 12. Qwen's final part, job 366222, completed at 19:29:44 IST on 30 September 2026 in 8:18:28 with exit code `0:0`. The final read-only capture followed at 19:31 IST. The local audit covers 2,026 records across the selected and historical runs. It finds no request-content hash, shard, scoring, independent-grid, or dataset-identity disagreement. The generated audit states the status of every included run. Historical incomplete diagnostic trials remain incomplete and must not be described as completed merely because the selected main benchmarks are complete.
+Both selected models have complete qualification, pilot, main, Steps 8--12, and final-analysis evidence. Each main contains 540/540 saved records with matching frozen request digests and valid markers. Qwen follow-ups contain 135, 45, 165, 171, and 108 records, all complete with matching digests. Jobs 373543--373547 and CPU analysis 373551 completed with exit `0:0`; final analysis ended at 13:04:25 IST on 3 October. The fresh read-only capture followed that evening. The local audit covers 2,650 outcome records across selected and historical runs with no content-hash, shard, re-scoring, independent-grid, or dataset-identity disagreement. Historical partial diagnostics remain partial.
 
-No Qwen mechanism experiment is represented in this snapshot. Code exists for those experiments, but implemented code is not completed evidence. Do not write that input/output cross, token length, binding, ablations, or revision replicated across both models. Do not write that the whole project is finished merely because GPT-OSS inference is finished.
+Both models now have completed corresponding follow-up evidence, but their patterns are not identical. Both pass 75/75 simple controls and have singular token-length regressions. Permuted number words score lower in both, while permuted digits decrease GPT-OSS's score and increase Qwen's. Two revisions improve GPT-OSS's score but produce no net Qwen gain, with two Qwen regressions. Describe this as a completed two-model comparison, not universal replication of every effect. Step 13 analyzes 1,229 outcome rows and writes 2,781 token-diagnostic rows per model; neither count represents fresh independent solves.
 
 This dossier does not label completed manuscript results as “preliminary.” It distinguishes completed evidence, incomplete evidence, and untested explanations for your use as the author. Only completed, verified evidence belongs in final-paper results prose.
 
@@ -58,7 +58,7 @@ Use the authentic template for your chosen venue. The supplied guidance mentions
 
 **Contribution, one or two sentences.** Say you evaluate a controlled symbolic-representation benchmark with unique-solution Sudoku puzzles and deterministic answer checks. Identify the study as evaluation and diagnosis, not a new training algorithm, tokenizer, neural architecture, or Sudoku solver.
 
-**Method, one or two sentences.** Mention three technique-defined difficulty tiers, nine alphabets, the same 60 main puzzles across representations, and final-grid-only scoring. Name GPT-OSS-120B and Qwen3.8-27B-FP8. Their complete main evidence is verified. Distinguish the paired main benchmark from smaller GPT-OSS diagnostic experiments.
+**Method, one or two sentences.** Mention three technique-defined difficulty tiers, nine alphabets, the same 60 main puzzles across representations, and final-grid-only scoring. Name GPT-OSS-120B and Qwen3.8-27B-FP8. Distinguish the paired main benchmark from the smaller completed diagnostics for both models.
 
 **Results, one or two sentences.** Select the strongest complete findings. GPT-OSS solved 372/540 requests, or 68.9%, and Qwen solved 472/540, or 87.4%. The paired difference is 18.5 percentage points, with an exploratory stratified puzzle-bootstrap 95% interval of 13.7 to 23.5 points. Both models decline with difficulty. Alphabet accuracies range from 61.7% to 75.0% for GPT-OSS and 80.0% to 93.3% for Qwen, but neither model's eight Arabic-baseline comparisons survives Holm adjustment at 0.05. Do not pack all of these numbers into the abstract. A compact option is the two overall accuracies, a qualitative difficulty trend, and a bounded statement that numerical representation variation was not statistically resolved by these baseline comparisons.
 
@@ -67,7 +67,7 @@ Use the authentic template for your chosen venue. The supplied guidance mentions
 ## Decisions to make before writing the abstract
 
 - Decide whether the main message is representation sensitivity, the model comparison, or the separation of failure types. Give one of these priority.
-- If the abstract mentions revision, note that the result is a small GPT-OSS subset. Do not let a 27-cell arm dominate the 540-request main study.
+- If the abstract mentions revision, state its small shared-initial subset and model-dependent result: two revisions help GPT-OSS but give no net Qwen improvement. Do not let a 27-cell arm dominate the main study.
 - Use “percentage points” for accuracy differences. A change from 75.0% to 61.7% is 13.3 percentage points, not a 13.3% relative reduction.
 - Do not call the main input set “540 puzzles.” State 60 puzzles represented nine ways.
 - Avoid putting raw Slurm job IDs, framework versions, historical rejected models, or context-ceiling details in the abstract.
@@ -107,7 +107,7 @@ State that the study uses pinned model revisions and frozen sample plans. Do not
 
 ## Paragraph 5: experimental setup in one paragraph
 
-The dataset has 300 puzzles, 100 per tier. The frozen main sample has 20 per tier. Each model receives 540 main requests. The pilot uses different underlying puzzles. GPT-OSS mechanisms use nested 15-puzzle and nine-puzzle subsets of the main set. Hidden reasoning is permitted, but only the extracted final answer is scored.
+The dataset has 300 puzzles, 100 per tier. The frozen main sample has 20 per tier. Each model receives 540 main requests. The pilot uses different underlying puzzles. Both models' mechanisms use the same nested 15-puzzle and nine-puzzle subsets. Hidden reasoning is permitted, but only the extracted final answer is scored.
 
 Name the two selected checkpoints and state that the experiments run locally on Sharanga H100 compute nodes. “Local” means locally hosted open-weight inference on the university cluster, not inference on your laptop. Do not introduce Nemotron and Mistral as main-study models.
 
@@ -124,7 +124,7 @@ Candidate contributions, stated in full sentences, are as follows.
 1. A reproducible paired evaluation of the same unique-solution Sudoku puzzles under nine symbolic alphabets and three solver-defined difficulty tiers.
 2. A final-answer evaluation procedure that separates logical errors, clue changes, output-format failures, and truncation from operational failures.
 3. A comparison of the selected open-weight reasoning models under matched puzzle sets, sampling settings, and context ceilings, with model-specific reasoning interfaces disclosed.
-4. Targeted GPT-OSS experiments testing input/output remapping, token-length constructions, label assignments, prompt/output choices, and final-answer revision.
+4. Corresponding experiments for both models testing input/output remapping, model-specific token-length constructions, label assignments, prompt/output choices, and final-answer revision.
 
 Do not describe the dataset as the largest Sudoku benchmark or the models as the strongest possible models. Do not present small mechanism differences as causal discoveries. The distinctive contribution is the controlled combination and auditability, not a claim that every component is new.
 
@@ -132,7 +132,7 @@ Do not describe the dataset as the largest Sudoku benchmark or the models as the
 
 RQ1 asks whether realized final-grid accuracy differs across equivalent symbolic alphabets on the same puzzles. RQ2 asks how that pattern changes with solver-defined difficulty and model. RQ3 asks how much failure is attributable to invalid grids versus output errors and truncation. RQ4 asks whether simple Greek-symbol handling or cross-mapping alone explains failures. RQ5 asks what the token-length, binding, and prompt experiments establish or fail to establish. RQ6 asks whether revising a shared initial answer improves correctness, and at what additional cost.
 
-Keep the paper's RQs limited enough that each has a substantive answer. RQ4 through RQ6 currently have GPT-OSS evidence only. The report's discussion later gives alternative organizations if you want a shorter paper.
+Keep the paper's RQs limited enough that each has a substantive answer. All six now have completed evidence for both models. Shared and differing patterns must both appear. The later discussion offers shorter-paper organizations.
 
 # Background and related work
 
@@ -417,7 +417,7 @@ The 15 mechanism puzzles each have four Sudoku conditions. Arabic-to-Arabic and 
 
 Each puzzle also has five controls. Copy a Greek row exactly. Translate the fixed sequence `ε γ η` to `5 3 7`. Retrieve the symbol at row 1, column 5 of a complete Greek grid. Count occurrences of one symbol in a complete grid. Convert a supplied complete Greek grid to Arabic digits. These tasks use a supplied completed solution and do not require solving Sudoku.
 
-Total records are (15(4+5)=135). Thirty Sudoku baselines are reused, 30 Sudoku cross calls are new, and 75 controls are new. All 75 control outcomes are correct. Some controls repeat a fixed answer such as `9` or `5 3 7`. They are limited checks, not exhaustive proofs of arbitrary Greek understanding or general grid manipulation.
+Total records are (15(4+5)=135) per model. Thirty Sudoku baselines are reused, 30 cross calls are new, and 75 controls are new. Both models pass all 75 controls. Some controls repeat a fixed answer such as `9` or `5 3 7`. These limited checks do not prove arbitrary Greek understanding or general grid manipulation.
 
 **Purpose.** Separate simple symbol handling from integrated constraint solving and cross-representation output. A successful control excludes some narrow explanations under that prompt, but not every possible parsing, memory, reasoning, or binding problem in the full task.
 
@@ -427,7 +427,7 @@ Use the selected model's exact tokenizer to search deterministic candidate label
 
 Record nominal token length, mean clue tokens, mean symbol UTF-8 bytes, mean code-point count, and prompt tokens. Full-row and contextual tokenization can differ from isolation, so do not describe a label's isolated length as the whole prompt cost.
 
-The registered logistic fit predicts correctness using prompt tokens, mean clue tokens, mean bytes, and mean code points. It returned a singular information matrix. These predictors co-vary in the available construction. There is no independently identified coefficient to interpret. Do not omit this failure and present a clean token-length explanation.
+The registered logistic fit predicts correctness using prompt tokens, mean clue tokens, mean bytes, and mean code points. It returned a singular information matrix for both models. Predictors co-vary in each construction. No independent coefficient is identified. Do not omit these failures or present a clean token-length explanation.
 
 **Purpose and limitation.** This is a diagnostic comparison of constructed label sets, not a randomized causal experiment isolating token count. Label identity also changes between bins. The non-monotonic descriptive results directly contradict a simple “fewer tokens always improves solving” summary on this sample.
 
@@ -537,17 +537,17 @@ Under the recorded deployed configurations, Qwen has higher realized accuracy an
 
 ## Step 8: input/output cross and controls
 
-All 135 records are saved with a valid marker. The four Sudoku conditions solve 12/15, 12/15, 10/15, and 11/15 for Arabic-to-Arabic, Greek-to-Greek, Greek-to-Arabic, and Arabic-to-Greek. The Sudoku-only total is 45/60. The 75 controls all pass. The combined 120/135 figure mixes solving with simpler controls and should not be presented as the model's Sudoku accuracy.
+GPT-OSS saves all 135 records with a valid marker. Its four Sudoku conditions score 12/15, 12/15, 10/15, and 11/15 in Arabic-to-Arabic, Greek-to-Greek, Greek-to-Arabic, and Arabic-to-Greek order. Qwen scores 13/15, 11/15, 11/15, and 10/15. Each model solves 45/60 Sudoku outcomes and passes all 75 controls. Their equal mixed 120/135 totals conceal different condition outcomes and are not Sudoku-only accuracy.
 
-Sudoku-only easy, medium, and hard correctness is 19/20, 18/20, and 8/20. All four Sudoku conditions score 2/5 on hard. Two hard responses truncate. There are zero request-level operational failures.
+Sudoku-only easy, medium, and hard correctness is 19/20, 18/20, and 8/20 for both models. GPT-OSS has two truncations, nine incorrect grids, and four other output errors. Qwen has six truncations and nine incorrect grids. Both have zero operational failures. Equal tier totals do not establish identical cells.
 
-The baseline equality of Arabic-to-Arabic and Greek-to-Greek, plus perfect simple controls, does not support a simple universal Greek-output penalty. The cross conditions are lower in aggregate, but their extra instructions and mapping burden confound pure input/output attribution. They also have only 15 puzzles per condition.
+GPT-OSS's equal baselines do not support a universal Greek-output penalty. Qwen's Greek-to-Arabic score remains 11/15, equal to Greek-to-Greek, so Arabic output does not improve this aggregate. Cross prompts add instructions and mapping burden, confounding pure input/output attribution. Each condition has only 15 puzzles.
 
 ## Step 9: token-length construction
 
 All 45 requests are complete. One-token labels solve 9/15, two-token labels 13/15, and three-token labels 10/15. Easy is 15/15, medium 13/15, and hard 4/15 across the three conditions. There are five truncations, four other output errors, four incorrect grids, and zero operational failures.
 
-The best observed condition is the two-token alphabet. Hard correctness is 0/5, 3/5, and 1/5 across the bins. This is non-monotonic. The registered regression reports a singular information matrix for 45 observations. Report the construction and descriptive result without assigning an independently estimated token-length effect.
+GPT-OSS's highest bin has two tokens, with hard counts 0/5, 3/5, and 1/5. Qwen solves 37/45: bins 12/15, 11/15, and 14/15; tiers 14/15 easy, 15/15 medium, and 8/15 hard. Its failures are three incorrect grids, two truncations, three other output errors, and zero operational failures. Both patterns are non-monotonic and both 45-observation fits are singular. Labels are model-specific. Report descriptive constructions, not an identified token-length effect.
 
 ## Step 10: binding conditions
 
@@ -555,7 +555,9 @@ All 165 records are complete. Overall correctness is 124/165. Easy, medium, and 
 
 Ordinary digits, ordinary number words, and nonce labels each solve 12/15. Permuted digits and permuted number words each solve 10/15. Six uppercase assignments range from 10/15 to 13/15. The complete condition table supplies exact results and latency.
 
-Possible interpretation is sensitivity to assignment or familiar-label semantics. However, the smaller permutations are not established causal effects. Five fixed uppercase permutations also vary by up to three outcomes, showing that assignment choice can interact with the selected puzzle sample and sampled generation. Do not state that “semantic conflict causes a 13.3-point loss” as an identified general mechanism.
+Qwen solves 147/165: easy 50/55, medium 51/55, hard 46/55. Ordinary and permuted digits score 13/15 and 15/15; ordinary and permuted number words 12/15 and 9/15; nonce 14/15. Uppercase assignments span 12/15--15/15. Its failures are nine incorrect grids, eight truncations, one other output error, and zero operational failures.
+
+Both models score lower on permuted words, but the digit direction differs. This rules out summarizing every permutation as harmful. Assignment sensitivity or familiar-label semantics are candidate explanations, not identified mechanisms. Fixed permutations and sampling remain alternatives. Do not state that semantic conflict causes a general percentage loss.
 
 ## Step 11: ablation outcomes and generation variability
 
@@ -565,7 +567,9 @@ The overall result is 103/171. Difficulty counts are 55/57 easy, 37/57 medium, a
 
 The four identical-default-prompt conditions score 5/9, 6/9, 5/9, and 7/9. This demonstrates that a two-answer difference can arise without changing the prompt. Consequently an observed 8/9 condition is a candidate for further evaluation, not sufficient evidence to replace the frozen benchmark prompt.
 
-The alternate formats are evaluated under their own parsing rules. A low score can include substantive grid errors as well as formatting failures. Do not claim their entire performance change is an output-format compliance effect without the category breakdown.
+Qwen completes all 171 records and marker, with job 373546 exiting `0:0` in 26:44:02. It solves 130/171: easy 51/57, medium 43/57, hard 36/57. Its failures are 25 incorrect grids, four truncations, and 12 other output errors, with zero operational failures. Digit mapping, uppercase nonce, and minimal rules score 9/9; compact rows 2/9 and string81 4/9. The four identical-default-prompt conditions have the same binary success set, 7/9. This verified agreement does not prove identical erroneous grids or deterministic future inference.
+
+Alternate formats use their own parsing rules. A low score can include grid errors as well as formatting failures. Qwen has 18 clue-changing outputs among 155 parseable grids, despite 147 unit-valid grids. Do not claim every format difference is compliance alone or select the highest nine-puzzle score as a validated new protocol.
 
 ## Step 12: revision results and costs
 
@@ -577,7 +581,13 @@ New-call counts are zero, 27, 54, and nine. Additional generation time totals ar
 
 The table's final-record truncation count is three across the four branches, while all-stage counts are larger because shared initial truncated answers appear in each arm and revisions can truncate. Do not sum shared initial stages and report them as independent truncation events. Use unique source request IDs or explicitly state branch-stage accounting.
 
-The strongest bounded statement is that two generic revisions and one conditional checker revision improve realized final correctness on this nine-puzzle, three-representation subset. Extra compute, branch selection, and feedback are not independently isolated. Qwen revision behavior is not measured in this snapshot.
+Qwen's 108 records are complete. Its arms score 23/27, 26/27, 23/27, and 26/27 in one-pass, one-revision, two-revision, and checker order. One revision fixes three of four initial failures with no regression. Two revisions fix two initial failures and regress two initially correct answers. Checker feedback fixes three of four failures and makes four calls, not GPT-OSS's nine. Qwen's new-call counts are 0, 27, 54, and 4; added times 0, 4,440.47, 6,123.53, and 4,252.98 seconds; mean cumulative times 561.28, 725.74, 788.07, and 718.79 seconds. It has three final-row truncations and zero operational errors.
+
+The bounded comparison is model-dependent. Two generic revisions help GPT-OSS but produce no net Qwen gain, including two regressions. Checker feedback improves both recorded subsets but uses selective intervention. Extra compute, selection, and feedback are not independently isolated. Do not generalize more revisions as consistently beneficial.
+
+## Step 13: completed analysis and token registries
+
+Both CPU analyses complete: GPT-OSS job 373562 in 3:44 and Qwen job 373551 in 7:40, exit `0:0`. Each analyzes 1,229 rows and produces 2,781 registry rows: 81 symbols and 2,700 user prompts across all 300 puzzles and nine alphabets. These are tokenizer measurements, not additional Sudoku solves. The experiment-centered block includes both full registry summaries and verification paths. The stored server retention, regression, and revision analyses must agree with their local registered re-analysis. Report-only Holm adjustment and the cluster bootstrap remain exploratory additions.
 
 ## Historical model-screening evidence
 
@@ -603,7 +613,7 @@ The companion historical inventory lists all available runs and completion check
 
 This is the self-contained experiment-centered route through the dossier. Each block includes the applicable exact procedures, sample identities, settings, saved prompts or label inventories, complete available results, interpretation, alternatives, limitations, and local verification steps. You do not need to consult the separate Methodology, Results, or Discussion sections to write an experiment account. Those original sections and all twelve discussion lenses remain preserved for another reading route. The repeated material here is deliberate. No missing experiment result is inferred from a submission or a different experiment.
 
-**Evidence boundary.** Main and mechanism numbers below come from the verified `2026-09-30-report` snapshot. GPT-OSS Step 13 subsequently completed in job `373562`, with a separate verified local backup. Qwen Steps 8--12 and dependent Step 13 were subsequently queued. Their submission is not a result: this guide contains no completed Qwen follow-up outcomes. “Not available” below means unavailable in the verified evidence used here, not a fresh claim about the live queue. Refresh and audit those outputs before replacing these entries. Do not pool new follow-ups into main accuracy.
+**Evidence boundary.** The verified `2026-10-03-complete` snapshot contains both models' qualification, pilot, main, Steps 8--12, and completed Step 13 artifacts. Its 599 files have matching stored/raw checksums. All selected-model outcome runs have complete markers and request digests. The audit covers 2,650 selected and historical outcome records, with no re-scoring or independent-grid disagreement. Earlier snapshots remain unchanged. Do not pool follow-ups into main accuracy or mistake reused outcomes for new calls.
 
 ## A. Dataset construction and difficulty certification
 
@@ -726,13 +736,13 @@ Run from the repository root. This checks preserved bytes and re-scores saved fi
 
 ```bash
 python3 paper/report/prepare_snapshot.py tmp/research-report/snapshot \
-  evidence/snapshots/2026-09-30-report --verify
+  evidence/snapshots/2026-10-03-complete --verify
 python3 paper/report/analyze_evidence.py \
-  --snapshot evidence/snapshots/2026-09-30-report \
+  --snapshot evidence/snapshots/2026-10-03-complete \
   --output tmp/research-report/recheck
 ```
 
-Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-09-30-report/experiment_outputs/`.
+Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-10-03-complete/experiment_outputs/`.
 
 
 Compare the named experiment's entry in `tmp/research-report/recheck/audit.json` with the tables in this block. Check request messages, ordered symbols, tier and puzzle IDs for any disputed cell. Clue checks apply only after parsing. For reused conditions, also match the original main request and saved generation. For revisions, inspect stage costs and called-stage flags instead of summing duplicated final-row latency.
@@ -1861,13 +1871,13 @@ Run from the repository root. This checks preserved bytes and re-scores saved fi
 
 ```bash
 python3 paper/report/prepare_snapshot.py tmp/research-report/snapshot \
-  evidence/snapshots/2026-09-30-report --verify
+  evidence/snapshots/2026-10-03-complete --verify
 python3 paper/report/analyze_evidence.py \
-  --snapshot evidence/snapshots/2026-09-30-report \
+  --snapshot evidence/snapshots/2026-10-03-complete \
   --output tmp/research-report/recheck
 ```
 
-Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-09-30-report/experiment_outputs/`.
+Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-10-03-complete/experiment_outputs/`.
 
 - `local-models-v1/gpt-oss-120b-local/qualification`: saved 5/5, complete `True`, matching request digest `True`. Inspect `shard-*.jsonl.gz`, `request-manifest.json`, and every `part-*.complete.json`.
 - `local-models-v1/gpt-oss-120b-local/exp2`: saved 60/60, complete `True`, matching request digest `True`. Inspect `shard-*.jsonl.gz`, `request-manifest.json`, and every `part-*.complete.json`.
@@ -2447,7 +2457,7 @@ The same token ceiling does not imply the same time budget. Throughput and token
 
 The main alphabets differ in tokenizer segmentation as well as label identity, familiarity, and Unicode form. Their accuracy ranking does not isolate token count. The dedicated label-length experiment is non-monotonic, and its regression is singular. That evidence blocks a simple causal token-length story rather than confirming one.
 
-The two-token condition may benefit from its specific labels, stochastic variation, or other correlated prompt properties. There is only one constructed alphabet per bin. A stronger experiment would use multiple matched label sets and independent repeats, but that has not been completed. Do not present such a design as part of the existing method.
+GPT-OSS's two-token and Qwen's three-token conditions have the highest observed scores. Their different specific labels, sampling, and correlated properties remain explanations. There is one constructed alphabet per bin per model. Multiple matched label sets and independent repeats remain future work.
 
 #### Lens 11: model comparison and efficiency
 
@@ -2727,13 +2737,13 @@ Run from the repository root. This checks preserved bytes and re-scores saved fi
 
 ```bash
 python3 paper/report/prepare_snapshot.py tmp/research-report/snapshot \
-  evidence/snapshots/2026-09-30-report --verify
+  evidence/snapshots/2026-10-03-complete --verify
 python3 paper/report/analyze_evidence.py \
-  --snapshot evidence/snapshots/2026-09-30-report \
+  --snapshot evidence/snapshots/2026-10-03-complete \
   --output tmp/research-report/recheck
 ```
 
-Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-09-30-report/experiment_outputs/`.
+Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-10-03-complete/experiment_outputs/`.
 
 - `local-models-v1/gpt-oss-120b-local/exp4`: saved 540/540, complete `True`, matching request digest `True`. Inspect `shard-*.jsonl.gz`, `request-manifest.json`, and every `part-*.complete.json`.
 - `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp4`: saved 540/540, complete `True`, matching request digest `True`. Inspect `shard-*.jsonl.gz`, `request-manifest.json`, and every `part-*.complete.json`.
@@ -2842,7 +2852,7 @@ The 15 mechanism puzzles each have four Sudoku conditions. Arabic-to-Arabic and 
 
 Each puzzle also has five controls. Copy a Greek row exactly. Translate the fixed sequence `ε γ η` to `5 3 7`. Retrieve the symbol at row 1, column 5 of a complete Greek grid. Count occurrences of one symbol in a complete grid. Convert a supplied complete Greek grid to Arabic digits. These tasks use a supplied completed solution and do not require solving Sudoku.
 
-Total records are (15(4+5)=135). Thirty Sudoku baselines are reused, 30 Sudoku cross calls are new, and 75 controls are new. All 75 control outcomes are correct. Some controls repeat a fixed answer such as `9` or `5 3 7`. They are limited checks, not exhaustive proofs of arbitrary Greek understanding or general grid manipulation.
+Total records are (15(4+5)=135) per model. Thirty Sudoku baselines are reused, 30 cross calls are new, and 75 controls are new. Both models pass all 75 controls. Some controls repeat a fixed answer such as `9` or `5 3 7`. These limited checks do not prove arbitrary Greek understanding or general grid manipulation.
 
 **Purpose.** Separate simple symbol handling from integrated constraint solving and cross-representation output. A successful control excludes some narrow explanations under that prompt, but not every possible parsing, memory, reasoning, or binding problem in the full task.
 
@@ -2852,7 +2862,7 @@ Both selected models use these same sample IDs.
 
 Mechanism (15 puzzles): E030, E087, E021, E007, E012, M087, M064, M053, M078, M085, H079, H028, H018, H060, H050.
 
-### Exact recorded treatments and prompt examples
+### GPT-OSS: exact recorded treatments and prompt examples
 
 Ordered labels below map abstract values 1 through 9 to the visible symbols. These are saved request messages, not reconstructed reasoning or illustrative invented prompts. Request identifiers locate the full raw record.
 
@@ -3112,6 +3122,266 @@ Count occurrences of α in this completed grid. Return only the integer.
 ```
 
 
+### Qwen: exact recorded treatments and prompt examples
+
+Ordered labels below map abstract values 1 through 9 to the visible symbols. These are saved request messages, not reconstructed reasoning or illustrative invented prompts. Request identifiers locate the full raw record.
+
+| Condition | Ordered input labels | Ordered output labels | Format / empty |
+| --- | --- | --- | --- |
+| A_arabic_to_arabic | 1 2 3 4 5 6 7 8 9 | 1 2 3 4 5 6 7 8 9 | spaced / . |
+| B_greek_to_greek | α β γ δ ε ζ η θ ι | α β γ δ ε ζ η θ ι | spaced / . |
+| C_greek_to_arabic | α β γ δ ε ζ η θ ι | 1 2 3 4 5 6 7 8 9 | spaced / . |
+| D_arabic_to_greek | 1 2 3 4 5 6 7 8 9 | α β γ δ ε ζ η θ ι | spaced / . |
+| control_coordinate_retrieval | supplied-grid control | exact text | exact_text / N/A |
+| control_copy | supplied-grid control | exact text | exact_text / N/A |
+| control_grid_conversion | supplied-grid control | exact text | exact_text / N/A |
+| control_mapping_translation | supplied-grid control | exact text | exact_text / N/A |
+| control_occurrence_count | supplied-grid control | exact text | exact_text / N/A |
+
+#### Saved prompt: A_arabic_to_arabic / E007
+
+Request ID: `exp6:qwen-3.8-27b-local:E007:6157be50dbca8488405c`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+1 2 3 4 5 6 7 8 9
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+. . 9 1 3 . 7 . 6
+. 6 4 . . . . . 8
+. 7 1 2 8 6 . . 4
+7 . . . 2 . 3 6 5
+. . . 6 . 1 . . .
+4 5 . 3 . . . 1 .
+6 4 2 8 . . . . .
+9 . 7 5 . 2 8 4 .
+1 8 5 . 4 3 . . 2
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+#### Saved prompt: B_greek_to_greek / E007
+
+Request ID: `exp6:qwen-3.8-27b-local:E007:32cfb65720d16fa2a2b0`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+α β γ δ ε ζ η θ ι
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+. . ι α γ . η . ζ
+. ζ δ . . . . . θ
+. η α β θ ζ . . δ
+η . . . β . γ ζ ε
+. . . ζ . α . . .
+δ ε . γ . . . α .
+ζ δ β θ . . . . .
+ι . η ε . β θ δ .
+α θ ε . δ γ . . β
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+#### Saved prompt: C_greek_to_arabic / E007
+
+Request ID: `exp6:qwen-3.8-27b-local:E007:32909e7e2fe1067b6ff3`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+α β γ δ ε ζ η θ ι
+
+Valid output symbols:
+1 2 3 4 5 6 7 8 9
+
+Symbol mapping:
+α=1 β=2 γ=3 δ=4 ε=5 ζ=6 η=7 θ=8 ι=9
+
+Input-to-output mapping:
+α=1 β=2 γ=3 δ=4 ε=5 ζ=6 η=7 θ=8 ι=9
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+. . ι α γ . η . ζ
+. ζ δ . . . . . θ
+. η α β θ ζ . . δ
+η . . . β . γ ζ ε
+. . . ζ . α . . .
+δ ε . γ . . . α .
+ζ δ β θ . . . . .
+ι . η ε . β θ δ .
+α θ ε . δ γ . . β
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+#### Saved prompt: D_arabic_to_greek / E007
+
+Request ID: `exp6:qwen-3.8-27b-local:E007:1770896b45c48e6f245d`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+1 2 3 4 5 6 7 8 9
+
+Valid output symbols:
+α β γ δ ε ζ η θ ι
+
+Symbol mapping:
+1=1 2=2 3=3 4=4 5=5 6=6 7=7 8=8 9=9
+
+Input-to-output mapping:
+1=α 2=β 3=γ 4=δ 5=ε 6=ζ 7=η 8=θ 9=ι
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+. . 9 1 3 . 7 . 6
+. 6 4 . . . . . 8
+. 7 1 2 8 6 . . 4
+7 . . . 2 . 3 6 5
+. . . 6 . 1 . . .
+4 5 . 3 . . . 1 .
+6 4 2 8 . . . . .
+9 . 7 5 . 2 8 4 .
+1 8 5 . 4 3 . . 2
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+#### Saved prompt: control_coordinate_retrieval / E007
+
+Request ID: `exp6:qwen-3.8-27b-local:E007:e11196d8a140f77d5d72`.
+
+user message:
+
+```text
+Grid:
+θ β ι α γ δ η ε ζ
+γ ζ δ η ι ε α β θ
+ε η α β θ ζ ι γ δ
+η α θ δ β ι γ ζ ε
+β ι γ ζ ε α δ θ η
+δ ε ζ γ η θ β α ι
+ζ δ β θ α η ε ι γ
+ι γ η ε ζ β θ δ α
+α θ ε ι δ γ ζ η β
+
+Which symbol is in row 1, column 5? Return only that symbol.
+```
+
+
+#### Saved prompt: control_copy / E007
+
+Request ID: `exp6:qwen-3.8-27b-local:E007:0ec467e6f500a6f263d1`.
+
+user message:
+
+```text
+Copy the following row exactly. Return only the copied row.
+
+θ β ι α γ δ η ε ζ
+```
+
+
+#### Saved prompt: control_grid_conversion / E007
+
+Request ID: `exp6:qwen-3.8-27b-local:E007:bea78b65c8b2820b5eb6`.
+
+user message:
+
+```text
+Convert the supplied completed Greek grid to Arabic digits using α=1 through ι=9. Return only 9 lines of 9 space-separated digits.
+
+θ β ι α γ δ η ε ζ
+γ ζ δ η ι ε α β θ
+ε η α β θ ζ ι γ δ
+η α θ δ β ι γ ζ ε
+β ι γ ζ ε α δ θ η
+δ ε ζ γ η θ β α ι
+ζ δ β θ α η ε ι γ
+ι γ η ε ζ β θ δ α
+α θ ε ι δ γ ζ η β
+```
+
+
+#### Saved prompt: control_mapping_translation / E007
+
+Request ID: `exp6:qwen-3.8-27b-local:E007:af4f1a76d0e2d6bff0f6`.
+
+user message:
+
+```text
+Using α=1, β=2, γ=3, δ=4, ε=5, ζ=6, η=7, θ=8, ι=9, translate this sequence. Return only the translated space-separated sequence.
+
+ε γ η
+```
+
+
+#### Saved prompt: control_occurrence_count / E007
+
+Request ID: `exp6:qwen-3.8-27b-local:E007:87e00caaced0379bb09e`.
+
+user message:
+
+```text
+Count occurrences of α in this completed grid. Return only the integer.
+
+θ β ι α γ δ η ε ζ
+γ ζ δ η ι ε α β θ
+ε η α β θ ζ ι γ δ
+η α θ δ β ι γ ζ ε
+β ι γ ζ ε α δ θ η
+δ ε ζ γ η θ β α ι
+ζ δ β θ α η ε ι γ
+ι γ η ε ζ β θ δ α
+α θ ε ι δ γ ζ η β
+```
+
+
 ### GPT-OSS results
 
 All 135 records are complete. Same-alphabet Sudoku conditions score 12/15 each; Greek-to-Arabic scores 10/15 and Arabic-to-Greek 11/15. Sudoku-only total is 45/60, with easy 19/20, medium 18/20, hard 8/20. Each Sudoku condition scores 2/5 hard. All 75 controls pass. Two responses truncate, with zero operational failures. The mixed 120/135 total is not a Sudoku-only accuracy measure.
@@ -3231,11 +3501,118 @@ These labels overlap. Do not add them to obtain a failure count.
 
 ### Qwen results
 
-No completed Step 8 evidence is included here. Job `373543` was submitted for the same design with model-specific baseline reuse. Do not fill its cells from Qwen's main Greek/Arabic aggregate scores: the cross prompts require new calls and the mechanism subset has different denominators.
+Job `373543` completed all 135 records with exit `0:0`. Arabic-to-Arabic scores 13/15, Greek-to-Greek 11/15, Greek-to-Arabic 11/15, and Arabic-to-Greek 10/15. All 75 controls pass. Sudoku-only correctness is 45/60, with 19/20 easy, 18/20 medium, and 8/20 hard. Six responses truncate, nine are nontruncated incorrect grids, and none has an operational failure. The mixed total is 120/135. The 54 parseable Sudoku grids include 48 preserving clues and 51 satisfying all units.
+
+#### Qwen exp6
+
+Evidence path: `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp6`. Saved 135 of 135. Complete: True.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| All | 120/135 | 88.9 | 9 | 6 | 0 | 0 | 257.18 |
+| easy | 44/45 | 97.8 | 1 | 0 | 0 | 0 | 52.43 |
+| medium | 43/45 | 95.6 | 2 | 0 | 0 | 0 | 246.05 |
+| hard | 33/45 | 73.3 | 6 | 6 | 0 | 0 | 473.07 |
+
+Parseable Sudoku grids: 54/60. Clues preserved among parseable grids: 48/54. Valid Sudoku units together: 51/54. Median record latency: 9.65 seconds. Reused outcome rows: 30.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| A_arabic_to_arabic | 13/15 | 86.7 | 0 | 2 | 0 | 0 | 538.91 |
+| B_greek_to_greek | 11/15 | 73.3 | 3 | 1 | 0 | 0 | 584.72 |
+| C_greek_to_arabic | 11/15 | 73.3 | 4 | 0 | 0 | 0 | 531.30 |
+| D_arabic_to_greek | 10/15 | 66.7 | 2 | 3 | 0 | 0 | 642.79 |
+| control_coordinate_retrieval | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 1.60 |
+| control_copy | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 1.63 |
+| control_grid_conversion | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 9.09 |
+| control_mapping_translation | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 1.41 |
+| control_occurrence_count | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 3.18 |
+
+##### Condition by difficulty
+
+| Condition | Easy | Medium | Hard |
+| --- | --- | --- | --- |
+| A_arabic_to_arabic | 5/5 | 5/5 | 3/5 |
+| B_greek_to_greek | 5/5 | 5/5 | 1/5 |
+| C_greek_to_arabic | 5/5 | 4/5 | 2/5 |
+| D_arabic_to_greek | 4/5 | 4/5 | 2/5 |
+| control_coordinate_retrieval | 5/5 | 5/5 | 5/5 |
+| control_copy | 5/5 | 5/5 | 5/5 |
+| control_grid_conversion | 5/5 | 5/5 | 5/5 |
+| control_mapping_translation | 5/5 | 5/5 | 5/5 |
+| control_occurrence_count | 5/5 | 5/5 | 5/5 |
+
+#### Parsing and mathematical checks for every group
+
+Clues and Sudoku-unit denominators are parseable grids, not all requests. N/A controls do not require Sudoku scoring. Counts of changed cells differ from counts of affected requests.
+
+| Group | Parsed / Sudoku | Clues kept / parsed | All units valid / parsed | Clue-changing grids | Changed clue cells |
+| --- | --- | --- | --- | --- | --- |
+| All | 54/60 | 48/54 | 51/54 | 6 | 11 |
+| easy | 20/20 | 20/20 | 19/20 | 0 | 0 |
+| medium | 20/20 | 19/20 | 19/20 | 1 | 3 |
+| hard | 14/20 | 9/14 | 13/14 | 5 | 8 |
+| A_arabic_to_arabic | 13/15 | 13/13 | 13/13 | 0 | 0 |
+| B_greek_to_greek | 14/15 | 12/14 | 13/14 | 2 | 2 |
+| C_greek_to_arabic | 15/15 | 11/15 | 15/15 | 4 | 9 |
+| D_arabic_to_greek | 12/15 | 12/12 | 10/12 | 0 | 0 |
+| control_coordinate_retrieval | N/A: control | N/A | N/A | N/A | N/A |
+| control_copy | N/A: control | N/A | N/A | N/A | N/A |
+| control_grid_conversion | N/A: control | N/A | N/A | N/A | N/A |
+| control_mapping_translation | N/A: control | N/A | N/A | N/A | N/A |
+| control_occurrence_count | N/A: control | N/A | N/A | N/A | N/A |
+
+#### Full condition-by-difficulty failure and latency breakdown
+
+Grid, length, other, and operational columns are mutually exclusive failures. They sum with correct to N. Mean seconds describes the stored outcome's generation, not end-to-end revision cost or new-call-only cost.
+
+| Condition | Tier | Correct/N | Grid | Length | Other | Oper. | Mean s |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| A_arabic_to_arabic | easy | 5/5 | 0 | 0 | 0 | 0 | 79.43 |
+| A_arabic_to_arabic | medium | 5/5 | 0 | 0 | 0 | 0 | 308.92 |
+| A_arabic_to_arabic | hard | 3/5 | 0 | 2 | 0 | 0 | 1228.37 |
+| B_greek_to_greek | easy | 5/5 | 0 | 0 | 0 | 0 | 163.52 |
+| B_greek_to_greek | medium | 5/5 | 0 | 0 | 0 | 0 | 569.70 |
+| B_greek_to_greek | hard | 1/5 | 3 | 1 | 0 | 0 | 1020.94 |
+| C_greek_to_arabic | easy | 5/5 | 0 | 0 | 0 | 0 | 119.87 |
+| C_greek_to_arabic | medium | 4/5 | 1 | 0 | 0 | 0 | 670.41 |
+| C_greek_to_arabic | hard | 2/5 | 3 | 0 | 0 | 0 | 803.62 |
+| D_arabic_to_greek | easy | 4/5 | 1 | 0 | 0 | 0 | 92.85 |
+| D_arabic_to_greek | medium | 4/5 | 1 | 0 | 0 | 0 | 648.18 |
+| D_arabic_to_greek | hard | 2/5 | 0 | 3 | 0 | 0 | 1187.35 |
+| control_coordinate_retrieval | easy | 5/5 | 0 | 0 | 0 | 0 | 1.51 |
+| control_coordinate_retrieval | medium | 5/5 | 0 | 0 | 0 | 0 | 1.53 |
+| control_coordinate_retrieval | hard | 5/5 | 0 | 0 | 0 | 0 | 1.74 |
+| control_copy | easy | 5/5 | 0 | 0 | 0 | 0 | 1.19 |
+| control_copy | medium | 5/5 | 0 | 0 | 0 | 0 | 1.98 |
+| control_copy | hard | 5/5 | 0 | 0 | 0 | 0 | 1.73 |
+| control_grid_conversion | easy | 5/5 | 0 | 0 | 0 | 0 | 8.72 |
+| control_grid_conversion | medium | 5/5 | 0 | 0 | 0 | 0 | 9.39 |
+| control_grid_conversion | hard | 5/5 | 0 | 0 | 0 | 0 | 9.17 |
+| control_mapping_translation | easy | 5/5 | 0 | 0 | 0 | 0 | 1.43 |
+| control_mapping_translation | medium | 5/5 | 0 | 0 | 0 | 0 | 1.41 |
+| control_mapping_translation | hard | 5/5 | 0 | 0 | 0 | 0 | 1.39 |
+| control_occurrence_count | easy | 5/5 | 0 | 0 | 0 | 0 | 3.30 |
+| control_occurrence_count | medium | 5/5 | 0 | 0 | 0 | 0 | 2.95 |
+| control_occurrence_count | hard | 5/5 | 0 | 0 | 0 | 0 | 3.30 |
+
+#### Overlapping final-output diagnostic incidences
+
+These labels overlap. Do not add them to obtain a failure count.
+
+| Label | Requests |
+| --- | --- |
+| BOX_CONSTRAINT_ERROR | 2 |
+| COLUMN_CONSTRAINT_ERROR | 1 |
+| CORRECT | 120 |
+| GIVEN_MODIFIED | 6 |
+| LOCAL_MAPPING_ERROR | 9 |
+| NO_FINAL_ANSWER | 6 |
+| TRUNCATED_OUTPUT | 6 |
 
 ### Discussion and writing decision
 
-Basic control success narrows simple symbol-handling explanations, while full solving still fails. Baseline equality on this subset does not support a deterministic universal Greek-output penalty. Lower cross scores are consistent with extra mapping burden but do not isolate its cause. Use **Lens 8**, with **Lenses 2, 3, and 7** as alternatives. Once verified Qwen outcomes exist, compare condition patterns, not just mixed totals, before claiming replication.
+Both models pass all simple controls and solve 45/60 Sudoku conditions, despite different main accuracy and condition-level outcomes. This supports basic handling competence under the tested controls, not unrestricted symbol competence during solving. GPT-OSS has equal same-alphabet baselines; Qwen has 13/15 Arabic and 11/15 Greek, but Greek-to-Arabic remains 11/15. Changing Qwen's output to Arabic therefore does not improve this aggregate score. Cross prompts also add mapping burden, and five puzzles per tier cannot localize a causal mechanism. Use **Lens 8**, with **Lenses 2, 3, and 7** as alternatives.
 
 #### Expanded interpretation, alternative explanations, and inference limits
 
@@ -3255,13 +3632,13 @@ A label set with many output errors may look worse under unconditional scoring e
 
 The ordinary versus permuted conditions suggest an assignment-related difference on the selected sample. Sudoku needs consistent equality relationships, so natural numeric meanings are unnecessary. A model could nevertheless rely on familiar templates or label associations. This is a plausible behavioral explanation.
 
-But the observed two-answer differences also fit sampling variation at this scale. The prompt does not explicitly impose a conflicting word-to-number definition. Internal activation evidence is absent. Use “consistent with” or “suggests a candidate explanation,” not “proves a binding mechanism” or “isolates semantic interference.”
+Both models lose answers under permuted number words, but Qwen gains answers under permuted digits while GPT-OSS loses them. Small differences also fit sampling variation. The prompt does not impose a conflicting arithmetic definition. Internal evidence is absent. Use bounded candidate explanations, not a proven binding mechanism.
 
 #### Lens 8: input/output asymmetry
 
 All simple controls succeed, while full Sudoku solving fails. This narrows explanations involving basic symbol copying or the fixed translation task. It does not prove all input processing is flawless during long solving. Cross-mapping adds instructions and an additional conversion requirement, so a weaker cross condition can reflect combined burden rather than output script alone.
 
-The two same-alphabet baselines both score 12/15 on the mechanism subset. That result is incompatible with a deterministic universal Greek penalty. It is compatible with sample-specific difficulty, prompt interactions, and stochastic variability. Do not generalize a mechanism-subset equality to the full main sample.
+GPT-OSS's same-alphabet baselines both score 12/15. Qwen's Arabic and Greek baselines score 13/15 and 11/15, while its Greek-to-Arabic cross remains 11/15. Neither pattern establishes a deterministic Greek-output cause. Sample-specific difficulty, extra mapping instructions, and variability remain alternatives.
 
 Write the observed finding first, then its narrow interpretation, competing explanations, and the limit on generalization. An unrun control or suggested redesign is future work, never a completed result. Do not analyze hidden reasoning or infer a cognitive mechanism from final-grid errors alone.
 
@@ -3272,15 +3649,16 @@ Run from the repository root. This checks preserved bytes and re-scores saved fi
 
 ```bash
 python3 paper/report/prepare_snapshot.py tmp/research-report/snapshot \
-  evidence/snapshots/2026-09-30-report --verify
+  evidence/snapshots/2026-10-03-complete --verify
 python3 paper/report/analyze_evidence.py \
-  --snapshot evidence/snapshots/2026-09-30-report \
+  --snapshot evidence/snapshots/2026-10-03-complete \
   --output tmp/research-report/recheck
 ```
 
-Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-09-30-report/experiment_outputs/`.
+Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-10-03-complete/experiment_outputs/`.
 
 - `local-models-v1/gpt-oss-120b-local/exp6`: saved 135/135, complete `True`, matching request digest `True`. Inspect `shard-*.jsonl.gz`, `request-manifest.json`, and every `part-*.complete.json`.
+- `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp6`: saved 135/135, complete `True`, matching request digest `True`. Inspect `shard-*.jsonl.gz`, `request-manifest.json`, and every `part-*.complete.json`.
 
 Compare the named experiment's entry in `tmp/research-report/recheck/audit.json` with the tables in this block. Check request messages, ordered symbols, tier and puzzle IDs for any disputed cell. Clue checks apply only after parsing. For reused conditions, also match the original main request and saved generation. For revisions, inspect stage costs and called-stage flags instead of summing duplicated final-row latency.
 
@@ -3364,7 +3742,7 @@ Use the selected model's exact tokenizer to search deterministic candidate label
 
 Record nominal token length, mean clue tokens, mean symbol UTF-8 bytes, mean code-point count, and prompt tokens. Full-row and contextual tokenization can differ from isolation, so do not describe a label's isolated length as the whole prompt cost.
 
-The registered logistic fit predicts correctness using prompt tokens, mean clue tokens, mean bytes, and mean code points. It returned a singular information matrix. These predictors co-vary in the available construction. There is no independently identified coefficient to interpret. Do not omit this failure and present a clean token-length explanation.
+The registered logistic fit predicts correctness using prompt tokens, mean clue tokens, mean bytes, and mean code points. It returned a singular information matrix for both models. Predictors co-vary in each construction. No independent coefficient is identified. Do not omit these failures or present a clean token-length explanation.
 
 **Purpose and limitation.** This is a diagnostic comparison of constructed label sets, not a randomized causal experiment isolating token count. Label identity also changes between bins. The non-monotonic descriptive results directly contradict a simple “fewer tokens always improves solving” summary on this sample.
 
@@ -3374,7 +3752,7 @@ Both selected models use these same sample IDs.
 
 Mechanism (15 puzzles): E030, E087, E021, E007, E012, M087, M064, M053, M078, M085, H079, H028, H018, H060, H050.
 
-### Exact recorded treatments and prompt examples
+### GPT-OSS: exact recorded treatments and prompt examples
 
 Ordered labels below map abstract values 1 through 9 to the visible symbols. These are saved request messages, not reconstructed reasoning or illustrative invented prompts. Request identifiers locate the full raw record.
 
@@ -3413,6 +3791,53 @@ BTN UIL . WI . . . REL .
 NT BTN AUT JL . . . . .
 BX . JE UIL . AUT JL BTN .
 REL JL UIL . BTN WI . . AUT
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+Candidate construction uses a model/tokenizer-specific derived seed, shuffles uppercase candidate strings, scans at most 100,000 candidates, and retains the first nine suitable distinct labels per token-count bin. Candidates enumerate uppercase strings of length 1--4 and longer alternating consonant/vowel constructions. The constructor rejects bins with fewer than nine labels. The saved metadata gives nominal length and observed mean clue, byte, and code-point measures. The label sets are one realized construction per bin, not repeated alphabet sampling.
+
+
+### Qwen: exact recorded treatments and prompt examples
+
+Ordered labels below map abstract values 1 through 9 to the visible symbols. These are saved request messages, not reconstructed reasoning or illustrative invented prompts. Request identifiers locate the full raw record.
+
+| Condition | Ordered input labels | Ordered output labels | Format / empty |
+| --- | --- | --- | --- |
+| neutral_1_tokens | SET ESS NAM COM POP VG DA UIS DIST | SET ESS NAM COM POP VG DA UIS DIST | spaced / . |
+| neutral_2_tokens | XDAH GOMP WNWC ISYW WNR IDEE CXII FDUR RUUA | XDAH GOMP WNWC ISYW WNR IDEE CXII FDUR RUUA | spaced / . |
+| neutral_3_tokens | XAKH AFRZ RBLF BTUJ LHTX SIAV JMCX BIVX TUKR | XAKH AFRZ RBLF BTUJ LHTX SIAV JMCX BIVX TUKR | spaced / . |
+
+#### Saved prompt: neutral_1_tokens / E007
+
+Request ID: `exp7:qwen-3.8-27b-local:E007:18b2ee3d0d244a6892a1`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+SET ESS NAM COM POP VG DA UIS DIST
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+. . DIST SET NAM . DA . VG
+. VG COM . . . . . UIS
+. DA SET ESS UIS VG . . COM
+DA . . . ESS . NAM VG POP
+. . . VG . SET . . .
+COM POP . NAM . . . SET .
+VG COM ESS UIS . . . . .
+DIST . DA POP . ESS UIS COM .
+SET UIS POP . COM NAM . . ESS
 
 Return only 9 lines of 9 space-separated output symbols.
 ```
@@ -3501,11 +3926,84 @@ These labels overlap. Do not add them to obtain a failure count.
 
 ### Qwen results
 
-No completed Step 9 evidence is included. Job `373544` was submitted. Verify its constructed label inventory, tokenizer identity, 45-request completion, and fit status before adding a comparison. Do not assume its fitted regression will be identifiable merely because Qwen's main accuracy is higher.
+Job `373544` completed 45/45 records. One-, two-, and three-token labels score 12/15, 11/15, and 14/15. Easy, medium, and hard totals are 14/15, 15/15, and 8/15. There are three incorrect grids, two truncations, three other output errors, and zero operational failures. Its registered regression also reports a singular information matrix. The exact model-specific labels and saved prompt examples are included in this block, rather than assuming the GPT-OSS label sets apply to Qwen.
+
+#### Qwen exp7
+
+Evidence path: `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp7`. Saved 45 of 45. Complete: True.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| All | 37/45 | 82.2 | 3 | 2 | 3 | 0 | 570.43 |
+| easy | 14/15 | 93.3 | 0 | 0 | 1 | 0 | 142.82 |
+| medium | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 627.87 |
+| hard | 8/15 | 53.3 | 3 | 2 | 2 | 0 | 940.61 |
+
+Parseable Sudoku grids: 40/45. Clues preserved among parseable grids: 38/40. Valid Sudoku units together: 39/40. Median record latency: 440.05 seconds. Reused outcome rows: 0.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| neutral_1_tokens | 12/15 | 80.0 | 2 | 1 | 0 | 0 | 608.61 |
+| neutral_2_tokens | 11/15 | 73.3 | 0 | 1 | 3 | 0 | 563.30 |
+| neutral_3_tokens | 14/15 | 93.3 | 1 | 0 | 0 | 0 | 539.39 |
+
+##### Condition by difficulty
+
+| Condition | Easy | Medium | Hard |
+| --- | --- | --- | --- |
+| neutral_1_tokens | 5/5 | 5/5 | 2/5 |
+| neutral_2_tokens | 4/5 | 5/5 | 2/5 |
+| neutral_3_tokens | 5/5 | 5/5 | 4/5 |
+
+#### Parsing and mathematical checks for every group
+
+Clues and Sudoku-unit denominators are parseable grids, not all requests. N/A controls do not require Sudoku scoring. Counts of changed cells differ from counts of affected requests.
+
+| Group | Parsed / Sudoku | Clues kept / parsed | All units valid / parsed | Clue-changing grids | Changed clue cells |
+| --- | --- | --- | --- | --- | --- |
+| All | 40/45 | 38/40 | 39/40 | 2 | 2 |
+| easy | 14/15 | 14/14 | 14/14 | 0 | 0 |
+| medium | 15/15 | 15/15 | 15/15 | 0 | 0 |
+| hard | 11/15 | 9/11 | 10/11 | 2 | 2 |
+| neutral_1_tokens | 14/15 | 12/14 | 14/14 | 2 | 2 |
+| neutral_2_tokens | 11/15 | 11/11 | 11/11 | 0 | 0 |
+| neutral_3_tokens | 15/15 | 15/15 | 14/15 | 0 | 0 |
+
+#### Full condition-by-difficulty failure and latency breakdown
+
+Grid, length, other, and operational columns are mutually exclusive failures. They sum with correct to N. Mean seconds describes the stored outcome's generation, not end-to-end revision cost or new-call-only cost.
+
+| Condition | Tier | Correct/N | Grid | Length | Other | Oper. | Mean s |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| neutral_1_tokens | easy | 5/5 | 0 | 0 | 0 | 0 | 144.32 |
+| neutral_1_tokens | medium | 5/5 | 0 | 0 | 0 | 0 | 846.42 |
+| neutral_1_tokens | hard | 2/5 | 2 | 1 | 0 | 0 | 835.09 |
+| neutral_2_tokens | easy | 4/5 | 0 | 0 | 1 | 0 | 132.71 |
+| neutral_2_tokens | medium | 5/5 | 0 | 0 | 0 | 0 | 563.95 |
+| neutral_2_tokens | hard | 2/5 | 0 | 1 | 2 | 0 | 993.23 |
+| neutral_3_tokens | easy | 5/5 | 0 | 0 | 0 | 0 | 151.43 |
+| neutral_3_tokens | medium | 5/5 | 0 | 0 | 0 | 0 | 473.23 |
+| neutral_3_tokens | hard | 4/5 | 1 | 0 | 0 | 0 | 993.52 |
+
+#### Overlapping final-output diagnostic incidences
+
+These labels overlap. Do not add them to obtain a failure count.
+
+| Label | Requests |
+| --- | --- |
+| BOX_CONSTRAINT_ERROR | 1 |
+| CORRECT | 37 |
+| FORMAT_ERROR | 1 |
+| GIVEN_MODIFIED | 2 |
+| INVALID_SYMBOL | 3 |
+| LOCAL_MAPPING_ERROR | 3 |
+| NO_FINAL_ANSWER | 2 |
+| TRUNCATED_OUTPUT | 2 |
+| WRONG_CELL_COUNT | 1 |
 
 ### Discussion and writing decision
 
-GPT-OSS's pattern is non-monotonic and does not identify an independent token-length coefficient. State both facts, rather than hiding the failed fit or claiming two tokens are inherently optimal. Specific labels and correlated prompt properties remain explanations. Use **Lens 6**, supported by **Lenses 5 and 12**. Multiple alphabets per bin and matched repeated sampling would strengthen a future design, but were not performed here.
+Both patterns are non-monotonic: GPT-OSS's highest observed bin has two tokens, while Qwen's has three. Neither registered fit identifies an independent coefficient. These outcomes do not support a universal shorter-label advantage or a universal optimal bin. Different model-specific label sets prevent a pure matched-tokenizer comparison. Specific labels and correlated prompt properties remain explanations. Use **Lens 6**, supported by **Lenses 5 and 12**. Multiple alphabets per bin and repeated sampling would strengthen a future design, but were not performed here.
 
 #### Expanded interpretation, alternative explanations, and inference limits
 
@@ -3521,7 +4019,7 @@ The same token ceiling does not imply the same time budget. Throughput and token
 
 The main alphabets differ in tokenizer segmentation as well as label identity, familiarity, and Unicode form. Their accuracy ranking does not isolate token count. The dedicated label-length experiment is non-monotonic, and its regression is singular. That evidence blocks a simple causal token-length story rather than confirming one.
 
-The two-token condition may benefit from its specific labels, stochastic variation, or other correlated prompt properties. There is only one constructed alphabet per bin. A stronger experiment would use multiple matched label sets and independent repeats, but that has not been completed. Do not present such a design as part of the existing method.
+GPT-OSS's two-token and Qwen's three-token conditions have the highest observed scores. Their different specific labels, sampling, and correlated properties remain explanations. There is one constructed alphabet per bin per model. Multiple matched label sets and independent repeats remain future work.
 
 #### Lens 12: reproducibility and evaluation design
 
@@ -3540,15 +4038,16 @@ Run from the repository root. This checks preserved bytes and re-scores saved fi
 
 ```bash
 python3 paper/report/prepare_snapshot.py tmp/research-report/snapshot \
-  evidence/snapshots/2026-09-30-report --verify
+  evidence/snapshots/2026-10-03-complete --verify
 python3 paper/report/analyze_evidence.py \
-  --snapshot evidence/snapshots/2026-09-30-report \
+  --snapshot evidence/snapshots/2026-10-03-complete \
   --output tmp/research-report/recheck
 ```
 
-Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-09-30-report/experiment_outputs/`.
+Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-10-03-complete/experiment_outputs/`.
 
 - `local-models-v1/gpt-oss-120b-local/exp7`: saved 45/45, complete `True`, matching request digest `True`. Inspect `shard-*.jsonl.gz`, `request-manifest.json`, and every `part-*.complete.json`.
+- `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp7`: saved 45/45, complete `True`, matching request digest `True`. Inspect `shard-*.jsonl.gz`, `request-manifest.json`, and every `part-*.complete.json`.
 
 Compare the named experiment's entry in `tmp/research-report/recheck/audit.json` with the tables in this block. Check request messages, ordered symbols, tier and puzzle IDs for any disputed cell. Clue checks apply only after parsing. For reused conditions, also match the original main request and saved generation. For revisions, inspect stage costs and called-stage flags instead of summing duplicated final-row latency.
 
@@ -3664,7 +4163,7 @@ Both selected models use these same sample IDs.
 
 Mechanism (15 puzzles): E030, E087, E021, E007, E012, M087, M064, M053, M078, M085, H079, H028, H018, H060, H050.
 
-### Exact recorded treatments and prompt examples
+### GPT-OSS: exact recorded treatments and prompt examples
 
 Ordered labels below map abstract values 1 through 9 to the visible symbols. These are saved request messages, not reconstructed reasoning or illustrative invented prompts. Request identifiers locate the full raw record.
 
@@ -3685,6 +4184,58 @@ Ordered labels below map abstract values 1 through 9 to the visible symbols. The
 #### Saved prompt: digits_ordinary / E007
 
 Request ID: `exp8:gpt-oss-120b-local:E007:ab9d2babc0e2821936da`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+1 2 3 4 5 6 7 8 9
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+. . 9 1 3 . 7 . 6
+. 6 4 . . . . . 8
+. 7 1 2 8 6 . . 4
+7 . . . 2 . 3 6 5
+. . . 6 . 1 . . .
+4 5 . 3 . . . 1 .
+6 4 2 8 . . . . .
+9 . 7 5 . 2 8 4 .
+1 8 5 . 4 3 . . 2
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+### Qwen: exact recorded treatments and prompt examples
+
+Ordered labels below map abstract values 1 through 9 to the visible symbols. These are saved request messages, not reconstructed reasoning or illustrative invented prompts. Request identifiers locate the full raw record.
+
+| Condition | Ordered input labels | Ordered output labels | Format / empty |
+| --- | --- | --- | --- |
+| digits_ordinary | 1 2 3 4 5 6 7 8 9 | 1 2 3 4 5 6 7 8 9 | spaced / . |
+| digits_permuted | 6 7 9 1 5 2 4 8 3 | 6 7 9 1 5 2 4 8 3 | spaced / . |
+| nonce_neutral | KAV MIP ZOT RUL BEK DAX PEV NUG WIF | KAV MIP ZOT RUL BEK DAX PEV NUG WIF | spaced / . |
+| number_words_conflicting | SIX EIGHT ONE FOUR NINE FIVE THREE SEVEN TWO | SIX EIGHT ONE FOUR NINE FIVE THREE SEVEN TWO | spaced / . |
+| number_words_ordinary | ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE | ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE | spaced / . |
+| uppercase_random_1 | F B C E I D A H G | F B C E I D A H G | spaced / . |
+| uppercase_random_2 | D G I A H E C B F | D G I A H E C B F | spaced / . |
+| uppercase_random_3 | D I E H F A B G C | D I E H F A B G C | spaced / . |
+| uppercase_random_4 | B H I F A C E D G | B H I F A C E D G | spaced / . |
+| uppercase_random_5 | H C F G D A E I B | H C F G D A E I B | spaced / . |
+| uppercase_standard | A B C D E F G H I | A B C D E F G H I | spaced / . |
+
+#### Saved prompt: digits_ordinary / E007
+
+Request ID: `exp8:qwen-3.8-27b-local:E007:ff8d16e954de53442416`.
 
 user message:
 
@@ -3847,11 +4398,135 @@ These labels overlap. Do not add them to obtain a failure count.
 
 ### Qwen results
 
-No completed Step 10 evidence is included. Job `373545` was submitted. Its reused baseline cells must match the saved Qwen main answers. Its new permutations and number-word conditions must be evaluated before any statement about cross-model semantic interference.
+Job `373545` completed 165/165 records with 147 correct. Easy, medium, and hard totals are 50/55, 51/55, and 46/55. Ordinary digits score 13/15 and permuted digits 15/15. Ordinary number words score 12/15 and permuted number words 9/15. Nonce labels score 14/15. Six uppercase assignments range from 12/15 to 15/15. Failures are nine incorrect grids, eight truncations, and one other output error, with zero operational failures. Of 156 parseable grids, 151 preserve clues and 149 satisfy all units.
+
+#### Qwen exp8
+
+Evidence path: `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp8`. Saved 165 of 165. Complete: True.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| All | 147/165 | 89.1 | 9 | 8 | 1 | 0 | 477.57 |
+| easy | 50/55 | 90.9 | 5 | 0 | 0 | 0 | 112.43 |
+| medium | 51/55 | 92.7 | 1 | 2 | 1 | 0 | 484.95 |
+| hard | 46/55 | 83.6 | 3 | 6 | 0 | 0 | 835.32 |
+
+Parseable Sudoku grids: 156/165. Clues preserved among parseable grids: 151/156. Valid Sudoku units together: 149/156. Median record latency: 353.93 seconds. Reused outcome rows: 45.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| digits_ordinary | 13/15 | 86.7 | 0 | 2 | 0 | 0 | 538.91 |
+| digits_permuted | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 425.90 |
+| nonce_neutral | 14/15 | 93.3 | 1 | 0 | 0 | 0 | 523.15 |
+| number_words_conflicting | 9/15 | 60.0 | 4 | 2 | 0 | 0 | 509.01 |
+| number_words_ordinary | 12/15 | 80.0 | 0 | 2 | 1 | 0 | 624.82 |
+| uppercase_random_1 | 12/15 | 80.0 | 2 | 1 | 0 | 0 | 440.48 |
+| uppercase_random_2 | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 331.69 |
+| uppercase_random_3 | 13/15 | 86.7 | 1 | 1 | 0 | 0 | 611.53 |
+| uppercase_random_4 | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 356.10 |
+| uppercase_random_5 | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 489.27 |
+| uppercase_standard | 14/15 | 93.3 | 1 | 0 | 0 | 0 | 402.41 |
+
+##### Condition by difficulty
+
+| Condition | Easy | Medium | Hard |
+| --- | --- | --- | --- |
+| digits_ordinary | 5/5 | 5/5 | 3/5 |
+| digits_permuted | 5/5 | 5/5 | 5/5 |
+| nonce_neutral | 4/5 | 5/5 | 5/5 |
+| number_words_conflicting | 2/5 | 4/5 | 3/5 |
+| number_words_ordinary | 5/5 | 4/5 | 3/5 |
+| uppercase_random_1 | 5/5 | 4/5 | 3/5 |
+| uppercase_random_2 | 5/5 | 5/5 | 5/5 |
+| uppercase_random_3 | 5/5 | 4/5 | 4/5 |
+| uppercase_random_4 | 5/5 | 5/5 | 5/5 |
+| uppercase_random_5 | 5/5 | 5/5 | 5/5 |
+| uppercase_standard | 4/5 | 5/5 | 5/5 |
+
+#### Parsing and mathematical checks for every group
+
+Clues and Sudoku-unit denominators are parseable grids, not all requests. N/A controls do not require Sudoku scoring. Counts of changed cells differ from counts of affected requests.
+
+| Group | Parsed / Sudoku | Clues kept / parsed | All units valid / parsed | Clue-changing grids | Changed clue cells |
+| --- | --- | --- | --- | --- | --- |
+| All | 156/165 | 151/156 | 149/156 | 5 | 9 |
+| easy | 55/55 | 52/55 | 51/55 | 3 | 4 |
+| medium | 52/55 | 51/52 | 52/52 | 1 | 4 |
+| hard | 49/55 | 48/49 | 46/49 | 1 | 1 |
+| digits_ordinary | 13/15 | 13/13 | 13/13 | 0 | 0 |
+| digits_permuted | 15/15 | 15/15 | 15/15 | 0 | 0 |
+| nonce_neutral | 15/15 | 14/15 | 14/15 | 1 | 2 |
+| number_words_conflicting | 13/15 | 12/13 | 9/13 | 1 | 1 |
+| number_words_ordinary | 12/15 | 12/12 | 12/12 | 0 | 0 |
+| uppercase_random_1 | 14/15 | 13/14 | 13/14 | 1 | 4 |
+| uppercase_random_2 | 15/15 | 15/15 | 15/15 | 0 | 0 |
+| uppercase_random_3 | 14/15 | 13/14 | 13/14 | 1 | 1 |
+| uppercase_random_4 | 15/15 | 15/15 | 15/15 | 0 | 0 |
+| uppercase_random_5 | 15/15 | 15/15 | 15/15 | 0 | 0 |
+| uppercase_standard | 15/15 | 14/15 | 15/15 | 1 | 1 |
+
+#### Full condition-by-difficulty failure and latency breakdown
+
+Grid, length, other, and operational columns are mutually exclusive failures. They sum with correct to N. Mean seconds describes the stored outcome's generation, not end-to-end revision cost or new-call-only cost.
+
+| Condition | Tier | Correct/N | Grid | Length | Other | Oper. | Mean s |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| digits_ordinary | easy | 5/5 | 0 | 0 | 0 | 0 | 79.43 |
+| digits_ordinary | medium | 5/5 | 0 | 0 | 0 | 0 | 308.92 |
+| digits_ordinary | hard | 3/5 | 0 | 2 | 0 | 0 | 1228.37 |
+| digits_permuted | easy | 5/5 | 0 | 0 | 0 | 0 | 88.03 |
+| digits_permuted | medium | 5/5 | 0 | 0 | 0 | 0 | 385.99 |
+| digits_permuted | hard | 5/5 | 0 | 0 | 0 | 0 | 803.68 |
+| nonce_neutral | easy | 4/5 | 1 | 0 | 0 | 0 | 173.48 |
+| nonce_neutral | medium | 5/5 | 0 | 0 | 0 | 0 | 557.50 |
+| nonce_neutral | hard | 5/5 | 0 | 0 | 0 | 0 | 838.48 |
+| number_words_conflicting | easy | 2/5 | 3 | 0 | 0 | 0 | 83.27 |
+| number_words_conflicting | medium | 4/5 | 0 | 1 | 0 | 0 | 657.54 |
+| number_words_conflicting | hard | 3/5 | 1 | 1 | 0 | 0 | 786.22 |
+| number_words_ordinary | easy | 5/5 | 0 | 0 | 0 | 0 | 133.07 |
+| number_words_ordinary | medium | 4/5 | 0 | 0 | 1 | 0 | 596.28 |
+| number_words_ordinary | hard | 3/5 | 0 | 2 | 0 | 0 | 1145.10 |
+| uppercase_random_1 | easy | 5/5 | 0 | 0 | 0 | 0 | 107.12 |
+| uppercase_random_1 | medium | 4/5 | 1 | 0 | 0 | 0 | 376.07 |
+| uppercase_random_1 | hard | 3/5 | 1 | 1 | 0 | 0 | 838.24 |
+| uppercase_random_2 | easy | 5/5 | 0 | 0 | 0 | 0 | 78.88 |
+| uppercase_random_2 | medium | 5/5 | 0 | 0 | 0 | 0 | 438.38 |
+| uppercase_random_2 | hard | 5/5 | 0 | 0 | 0 | 0 | 477.81 |
+| uppercase_random_3 | easy | 5/5 | 0 | 0 | 0 | 0 | 124.04 |
+| uppercase_random_3 | medium | 4/5 | 0 | 1 | 0 | 0 | 806.81 |
+| uppercase_random_3 | hard | 4/5 | 1 | 0 | 0 | 0 | 903.74 |
+| uppercase_random_4 | easy | 5/5 | 0 | 0 | 0 | 0 | 118.03 |
+| uppercase_random_4 | medium | 5/5 | 0 | 0 | 0 | 0 | 315.63 |
+| uppercase_random_4 | hard | 5/5 | 0 | 0 | 0 | 0 | 634.63 |
+| uppercase_random_5 | easy | 5/5 | 0 | 0 | 0 | 0 | 126.44 |
+| uppercase_random_5 | medium | 5/5 | 0 | 0 | 0 | 0 | 458.89 |
+| uppercase_random_5 | hard | 5/5 | 0 | 0 | 0 | 0 | 882.47 |
+| uppercase_standard | easy | 4/5 | 1 | 0 | 0 | 0 | 124.98 |
+| uppercase_standard | medium | 5/5 | 0 | 0 | 0 | 0 | 432.45 |
+| uppercase_standard | hard | 5/5 | 0 | 0 | 0 | 0 | 649.81 |
+
+#### Overlapping final-output diagnostic incidences
+
+These labels overlap. Do not add them to obtain a failure count.
+
+| Label | Requests |
+| --- | --- |
+| BOX_CONSTRAINT_ERROR | 4 |
+| COLUMN_CONSTRAINT_ERROR | 5 |
+| CORRECT | 147 |
+| FORMAT_ERROR | 2 |
+| GIVEN_MODIFIED | 5 |
+| INVALID_SYMBOL | 1 |
+| LOCAL_MAPPING_ERROR | 9 |
+| NO_FINAL_ANSWER | 7 |
+| ROW_CONSTRAINT_ERROR | 2 |
+| TRUNCATED_OUTPUT | 8 |
+| WRONG_CELL_COUNT | 2 |
+| WRONG_ROW_COUNT | 1 |
 
 ### Discussion and writing decision
 
-The GPT-OSS pattern is consistent with assignment-related sensitivity, but small differences and familiar-label contrasts do not identify an internal binding mechanism. Do not claim neutral nonce labels eliminate all semantics. Use **Lens 7**, with **Lenses 1, 6, and 9** for competing explanations. A useful two-model discussion would ask whether paired losses recur under matched assignments after both runs are verified, not assume the same mechanism from aggregate main accuracy.
+Both models score lower for permuted number words than ordinary words, by two and three answers. The digit direction differs: GPT-OSS decreases from 12/15 to 10/15, while Qwen increases from 13/15 to 15/15. This contradicts a universal penalty for permuting familiar labels. Small fixed-assignment samples do not identify an internal binding mechanism. Qwen also has five easy failures across assignments despite its strong main easy performance. Inspect condition/tier categories rather than assuming all binding failures are hard puzzles. Use **Lens 7**, with **Lenses 1, 6, and 9** for alternatives.
 
 #### Expanded interpretation, alternative explanations, and inference limits
 
@@ -3865,13 +4540,13 @@ Equal aggregate performance is insufficient evidence of invariance. GPT-OSS's Ar
 
 The main alphabets differ in tokenizer segmentation as well as label identity, familiarity, and Unicode form. Their accuracy ranking does not isolate token count. The dedicated label-length experiment is non-monotonic, and its regression is singular. That evidence blocks a simple causal token-length story rather than confirming one.
 
-The two-token condition may benefit from its specific labels, stochastic variation, or other correlated prompt properties. There is only one constructed alphabet per bin. A stronger experiment would use multiple matched label sets and independent repeats, but that has not been completed. Do not present such a design as part of the existing method.
+GPT-OSS's two-token and Qwen's three-token conditions have the highest observed scores. Their different specific labels, sampling, and correlated properties remain explanations. There is one constructed alphabet per bin per model. Multiple matched label sets and independent repeats remain future work.
 
 #### Lens 7: binding and semantics
 
 The ordinary versus permuted conditions suggest an assignment-related difference on the selected sample. Sudoku needs consistent equality relationships, so natural numeric meanings are unnecessary. A model could nevertheless rely on familiar templates or label associations. This is a plausible behavioral explanation.
 
-But the observed two-answer differences also fit sampling variation at this scale. The prompt does not explicitly impose a conflicting word-to-number definition. Internal activation evidence is absent. Use “consistent with” or “suggests a candidate explanation,” not “proves a binding mechanism” or “isolates semantic interference.”
+Both models lose answers under permuted number words, but Qwen gains answers under permuted digits while GPT-OSS loses them. Small differences also fit sampling variation. The prompt does not impose a conflicting arithmetic definition. Internal evidence is absent. Use bounded candidate explanations, not a proven binding mechanism.
 
 #### Lens 9: prompt sensitivity and variance
 
@@ -3888,15 +4563,16 @@ Run from the repository root. This checks preserved bytes and re-scores saved fi
 
 ```bash
 python3 paper/report/prepare_snapshot.py tmp/research-report/snapshot \
-  evidence/snapshots/2026-09-30-report --verify
+  evidence/snapshots/2026-10-03-complete --verify
 python3 paper/report/analyze_evidence.py \
-  --snapshot evidence/snapshots/2026-09-30-report \
+  --snapshot evidence/snapshots/2026-10-03-complete \
   --output tmp/research-report/recheck
 ```
 
-Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-09-30-report/experiment_outputs/`.
+Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-10-03-complete/experiment_outputs/`.
 
 - `local-models-v1/gpt-oss-120b-local/exp8`: saved 165/165, complete `True`, matching request digest `True`. Inspect `shard-*.jsonl.gz`, `request-manifest.json`, and every `part-*.complete.json`.
+- `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp8`: saved 165/165, complete `True`, matching request digest `True`. Inspect `shard-*.jsonl.gz`, `request-manifest.json`, and every `part-*.complete.json`.
 
 Compare the named experiment's entry in `tmp/research-report/recheck/audit.json` with the tables in this block. Check request messages, ordered symbols, tier and puzzle IDs for any disputed cell. Clue checks apply only after parsing. For reused conditions, also match the original main request and saved generation. For revisions, inspect stage costs and called-stage flags instead of summing duplicated final-row latency.
 
@@ -3990,7 +4666,7 @@ Both selected models use these same sample IDs.
 
 Ablation (9 puzzles): E012, E087, E021, M087, M085, M078, H028, H050, H060.
 
-### Exact recorded treatments and prompt examples
+### GPT-OSS: exact recorded treatments and prompt examples
 
 Ordered labels below map abstract values 1 through 9 to the visible symbols. These are saved request messages, not reconstructed reasoning or illustrative invented prompts. Request identifiers locate the full raw record.
 
@@ -4574,6 +5250,590 @@ Return only 9 lines of 9 space-separated output symbols.
 ```
 
 
+### Qwen: exact recorded treatments and prompt examples
+
+Ordered labels below map abstract values 1 through 9 to the visible symbols. These are saved request messages, not reconstructed reasoning or illustrative invented prompts. Request identifiers locate the full raw record.
+
+| Condition | Ordered input labels | Ordered output labels | Format / empty |
+| --- | --- | --- | --- |
+| empty_dot | α β γ δ ε ζ η θ ι | α β γ δ ε ζ η θ ι | spaced / . |
+| empty_underscore | α β γ δ ε ζ η θ ι | α β γ δ ε ζ η θ ι | spaced / _ |
+| empty_word | α β γ δ ε ζ η θ ι | α β γ δ ε ζ η θ ι | spaced / EMPTY |
+| empty_zero | α β γ δ ε ζ η θ ι | α β γ δ ε ζ η θ ι | spaced / 0 |
+| latin_lowercase | a b c d e f g h i | a b c d e f g h i | spaced / . |
+| latin_uppercase | A B C D E F G H I | A B C D E F G H I | spaced / . |
+| mapping_alphabet_only | α β γ δ ε ζ η θ ι | α β γ δ ε ζ η θ ι | spaced / . |
+| mapping_to_abstract | α β γ δ ε ζ η θ ι | α β γ δ ε ζ η θ ι | spaced / . |
+| mapping_to_digits | α β γ δ ε ζ η θ ι | α β γ δ ε ζ η θ ι | spaced / . |
+| nonce_lowercase | kav mip zot rul bek dax pev nug wif | kav mip zot rul bek dax pev nug wif | spaced / . |
+| nonce_uppercase | KAV MIP ZOT RUL BEK DAX PEV NUG WIF | KAV MIP ZOT RUL BEK DAX PEV NUG WIF | spaced / . |
+| output_compact | α β γ δ ε ζ η θ ι | α β γ δ ε ζ η θ ι | compact / . |
+| output_json | α β γ δ ε ζ η θ ι | α β γ δ ε ζ η θ ι | json / . |
+| output_spaced | α β γ δ ε ζ η θ ι | α β γ δ ε ζ η θ ι | spaced / . |
+| output_string81 | α β γ δ ε ζ η θ ι | α β γ δ ε ζ η θ ι | string81 / . |
+| rules_constraints_alphabet | α β γ δ ε ζ η θ ι | α β γ δ ε ζ η θ ι | spaced / . |
+| rules_explicit_constraints | α β γ δ ε ζ η θ ι | α β γ δ ε ζ η θ ι | spaced / . |
+| rules_fully_explicit | α β γ δ ε ζ η θ ι | α β γ δ ε ζ η θ ι | spaced / . |
+| rules_minimal | α β γ δ ε ζ η θ ι | α β γ δ ε ζ η θ ι | spaced / . |
+
+#### Saved prompt: empty_dot / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:169b34fdded829d5d72e`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+α β γ δ ε ζ η θ ι
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+α η γ ι δ . ζ β ε
+β θ . γ . α ι η δ
+δ . ζ . . . θ . α
+. . . θ γ . . ι ζ
+. γ . ε . . δ α η
+ε . . . . . γ . β
+. δ η β . . . ε γ
+ι β α δ . . . ζ .
+. . . ζ . η β . .
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+#### Saved prompt: empty_underscore / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:39ca3ba6c2e838058907`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+α β γ δ ε ζ η θ ι
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+α η γ ι δ _ ζ β ε
+β θ _ γ _ α ι η δ
+δ _ ζ _ _ _ θ _ α
+_ _ _ θ γ _ _ ι ζ
+_ γ _ ε _ _ δ α η
+ε _ _ _ _ _ γ _ β
+_ δ η β _ _ _ ε γ
+ι β α δ _ _ _ ζ _
+_ _ _ ζ _ η β _ _
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+#### Saved prompt: empty_word / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:247cee0365f412d63954`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+α β γ δ ε ζ η θ ι
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+α η γ ι δ EMPTY ζ β ε
+β θ EMPTY γ EMPTY α ι η δ
+δ EMPTY ζ EMPTY EMPTY EMPTY θ EMPTY α
+EMPTY EMPTY EMPTY θ γ EMPTY EMPTY ι ζ
+EMPTY γ EMPTY ε EMPTY EMPTY δ α η
+ε EMPTY EMPTY EMPTY EMPTY EMPTY γ EMPTY β
+EMPTY δ η β EMPTY EMPTY EMPTY ε γ
+ι β α δ EMPTY EMPTY EMPTY ζ EMPTY
+EMPTY EMPTY EMPTY ζ EMPTY η β EMPTY EMPTY
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+#### Saved prompt: empty_zero / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:50ddfe458a5b59116faf`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+α β γ δ ε ζ η θ ι
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+α η γ ι δ 0 ζ β ε
+β θ 0 γ 0 α ι η δ
+δ 0 ζ 0 0 0 θ 0 α
+0 0 0 θ γ 0 0 ι ζ
+0 γ 0 ε 0 0 δ α η
+ε 0 0 0 0 0 γ 0 β
+0 δ η β 0 0 0 ε γ
+ι β α δ 0 0 0 ζ 0
+0 0 0 ζ 0 η β 0 0
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+#### Saved prompt: latin_lowercase / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:25b15c4497383ddfc154`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+a b c d e f g h i
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+a g c i d . f b e
+b h . c . a i g d
+d . f . . . h . a
+. . . h c . . i f
+. c . e . . d a g
+e . . . . . c . b
+. d g b . . . e c
+i b a d . . . f .
+. . . f . g b . .
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+#### Saved prompt: latin_uppercase / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:27ec8750e1d59a5b8cac`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+A B C D E F G H I
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+A G C I D . F B E
+B H . C . A I G D
+D . F . . . H . A
+. . . H C . . I F
+. C . E . . D A G
+E . . . . . C . B
+. D G B . . . E C
+I B A D . . . F .
+. . . F . G B . .
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+#### Saved prompt: mapping_alphabet_only / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:d26077637d8ce925b6d5`.
+
+Exactly identical to the prompt shown for `empty_dot` within this block. It was nevertheless a separate generated condition.
+
+
+#### Saved prompt: mapping_to_abstract / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:fd2ca52d03c7c145c549`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+α β γ δ ε ζ η θ ι
+
+Abstract-value mapping:
+α=V1 β=V2 γ=V3 δ=V4 ε=V5 ζ=V6 η=V7 θ=V8 ι=V9
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+α η γ ι δ . ζ β ε
+β θ . γ . α ι η δ
+δ . ζ . . . θ . α
+. . . θ γ . . ι ζ
+. γ . ε . . δ α η
+ε . . . . . γ . β
+. δ η β . . . ε γ
+ι β α δ . . . ζ .
+. . . ζ . η β . .
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+#### Saved prompt: mapping_to_digits / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:73e2a495ccb95c3b63da`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+α β γ δ ε ζ η θ ι
+
+Symbol mapping:
+α=1 β=2 γ=3 δ=4 ε=5 ζ=6 η=7 θ=8 ι=9
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+α η γ ι δ . ζ β ε
+β θ . γ . α ι η δ
+δ . ζ . . . θ . α
+. . . θ γ . . ι ζ
+. γ . ε . . δ α η
+ε . . . . . γ . β
+. δ η β . . . ε γ
+ι β α δ . . . ζ .
+. . . ζ . η β . .
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+#### Saved prompt: nonce_lowercase / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:394e4bdf7d2f4be7f16c`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+kav mip zot rul bek dax pev nug wif
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+kav pev zot wif rul . dax mip bek
+mip nug . zot . kav wif pev rul
+rul . dax . . . nug . kav
+. . . nug zot . . wif dax
+. zot . bek . . rul kav pev
+bek . . . . . zot . mip
+. rul pev mip . . . bek zot
+wif mip kav rul . . . dax .
+. . . dax . pev mip . .
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+#### Saved prompt: nonce_uppercase / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:3a4b90693ac5f6df4f65`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+KAV MIP ZOT RUL BEK DAX PEV NUG WIF
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+KAV PEV ZOT WIF RUL . DAX MIP BEK
+MIP NUG . ZOT . KAV WIF PEV RUL
+RUL . DAX . . . NUG . KAV
+. . . NUG ZOT . . WIF DAX
+. ZOT . BEK . . RUL KAV PEV
+BEK . . . . . ZOT . MIP
+. RUL PEV MIP . . . BEK ZOT
+WIF MIP KAV RUL . . . DAX .
+. . . DAX . PEV MIP . .
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+#### Saved prompt: output_compact / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:230ef338263a15cd60a7`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+α β γ δ ε ζ η θ ι
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+α η γ ι δ . ζ β ε
+β θ . γ . α ι η δ
+δ . ζ . . . θ . α
+. . . θ γ . . ι ζ
+. γ . ε . . δ α η
+ε . . . . . γ . β
+. δ η β . . . ε γ
+ι β α δ . . . ζ .
+. . . ζ . η β . .
+
+Return only 9 lines, each containing exactly 9 output symbols with no separators.
+```
+
+
+#### Saved prompt: output_json / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:15bd2af1c5abd44e0e4f`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+α β γ δ ε ζ η θ ι
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+α η γ ι δ . ζ β ε
+β θ . γ . α ι η δ
+δ . ζ . . . θ . α
+. . . θ γ . . ι ζ
+. γ . ε . . δ α η
+ε . . . . . γ . β
+. δ η β . . . ε γ
+ι β α δ . . . ζ .
+. . . ζ . η β . .
+
+Return only a JSON array containing 9 arrays of 9 output-symbol strings.
+```
+
+
+#### Saved prompt: output_spaced / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:236470906ed145076c9a`.
+
+Exactly identical to the prompt shown for `empty_dot` within this block. It was nevertheless a separate generated condition.
+
+
+#### Saved prompt: output_string81 / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:bd64b1309a8831c4c78a`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+α β γ δ ε ζ η θ ι
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+- The visible symbols are labels; apply the same symbol-value mapping everywhere.
+
+Puzzle:
+α η γ ι δ . ζ β ε
+β θ . γ . α ι η δ
+δ . ζ . . . θ . α
+. . . θ γ . . ι ζ
+. γ . ε . . δ α η
+ε . . . . . γ . β
+. δ η β . . . ε γ
+ι β α δ . . . ζ .
+. . . ζ . η β . .
+
+Return only one string of exactly 81 output symbols with no spaces or line breaks.
+```
+
+
+#### Saved prompt: rules_constraints_alphabet / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:71ddb705a3c680df7d9e`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Valid input symbols:
+α β γ δ ε ζ η θ ι
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+
+Puzzle:
+α η γ ι δ . ζ β ε
+β θ . γ . α ι η δ
+δ . ζ . . . θ . α
+. . . θ γ . . ι ζ
+. γ . ε . . δ α η
+ε . . . . . γ . β
+. δ η β . . . ε γ
+ι β α δ . . . ζ .
+. . . ζ . η β . .
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+#### Saved prompt: rules_explicit_constraints / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:aad05acaf22d49643098`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Rules:
+- Every row must contain each valid value exactly once.
+- Every column must contain each valid value exactly once.
+- Every 3x3 box must contain each valid value exactly once.
+- Do not change the given cells.
+
+Puzzle:
+α η γ ι δ . ζ β ε
+β θ . γ . α ι η δ
+δ . ζ . . . θ . α
+. . . θ γ . . ι ζ
+. γ . ε . . δ α η
+ε . . . . . γ . β
+. δ η β . . . ε γ
+ι β α δ . . . ζ .
+. . . ζ . η β . .
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
+#### Saved prompt: rules_fully_explicit / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:deff172ecdc49f8bd375`.
+
+Exactly identical to the prompt shown for `empty_dot` within this block. It was nevertheless a separate generated condition.
+
+
+#### Saved prompt: rules_minimal / E012
+
+Request ID: `exp9:qwen-3.8-27b-local:E012:cd70e6d557d97a5d04ad`.
+
+user message:
+
+```text
+Solve the following 9x9 Sudoku.
+
+Use standard Sudoku rules and do not change the given cells.
+
+Puzzle:
+α η γ ι δ . ζ β ε
+β θ . γ . α ι η δ
+δ . ζ . . . θ . α
+. . . θ γ . . ι ζ
+. γ . ε . . δ α η
+ε . . . . . γ . β
+. δ η β . . . ε γ
+ι β α δ . . . ζ .
+. . . ζ . η β . .
+
+Return only 9 lines of 9 space-separated output symbols.
+```
+
+
 ### GPT-OSS results
 
 All 171 records and the completion marker exist, despite the scheduler killing teardown at the 15-hour limit. The saved records have zero operational failures. Correctness is 103/171, with easy 55/57, medium 37/57, hard 11/57, and 12 truncations. Digit mapping and uppercase nonce each score 8/9. Compact rows and string81 each score 3/9. Identical-default-prompt conditions score 5/9, 6/9, 5/9, and 7/9.
@@ -4753,11 +6013,183 @@ These labels overlap. Do not add them to obtain a failure count.
 
 ### Qwen results
 
-No completed Step 11 evidence is included. Job `373546` was submitted. Require all 171 request IDs and the marker, then inspect own-format compliance, tier counts, and identical-prompt outcomes. A scheduler timeout must be interpreted alongside saved artifact completeness, not automatically counted as 171 failed requests.
+Job `373546` completed in 26:44:02 with exit `0:0`, all 171 records, and a valid marker. Correctness is 130/171: easy 51/57, medium 43/57, hard 36/57. There are 25 incorrect grids, four truncations, 12 other output errors, and zero operational failures. Digit mapping, uppercase nonce, and minimal rules each score 9/9. Compact rows score 2/9 and string81 4/9. The four identical default conditions each score 7/9. Of 155 parseable outputs, 137 preserve clues and 147 satisfy all units, so mathematical validity alone remains insufficient.
+
+#### Qwen exp9
+
+Evidence path: `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp9`. Saved 171 of 171. Complete: True.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| All | 130/171 | 76.0 | 25 | 4 | 12 | 0 | 558.25 |
+| easy | 51/57 | 89.5 | 3 | 0 | 3 | 0 | 210.69 |
+| medium | 43/57 | 75.4 | 7 | 0 | 7 | 0 | 606.72 |
+| hard | 36/57 | 63.2 | 15 | 4 | 2 | 0 | 857.33 |
+
+Parseable Sudoku grids: 155/171. Clues preserved among parseable grids: 137/155. Valid Sudoku units together: 147/155. Median record latency: 517.43 seconds. Reused outcome rows: 0.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| empty_dot | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 549.77 |
+| empty_underscore | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 502.99 |
+| empty_word | 8/9 | 88.9 | 1 | 0 | 0 | 0 | 478.71 |
+| empty_zero | 6/9 | 66.7 | 3 | 0 | 0 | 0 | 410.06 |
+| latin_lowercase | 7/9 | 77.8 | 1 | 1 | 0 | 0 | 644.03 |
+| latin_uppercase | 8/9 | 88.9 | 1 | 0 | 0 | 0 | 415.45 |
+| mapping_alphabet_only | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 548.86 |
+| mapping_to_abstract | 4/9 | 44.4 | 3 | 0 | 2 | 0 | 635.56 |
+| mapping_to_digits | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 487.84 |
+| nonce_lowercase | 8/9 | 88.9 | 1 | 0 | 0 | 0 | 580.09 |
+| nonce_uppercase | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 589.55 |
+| output_compact | 2/9 | 22.2 | 0 | 1 | 6 | 0 | 773.64 |
+| output_json | 7/9 | 77.8 | 1 | 1 | 0 | 0 | 643.48 |
+| output_spaced | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 548.80 |
+| output_string81 | 4/9 | 44.4 | 1 | 1 | 3 | 0 | 839.71 |
+| rules_constraints_alphabet | 7/9 | 77.8 | 1 | 0 | 1 | 0 | 573.50 |
+| rules_explicit_constraints | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 424.07 |
+| rules_fully_explicit | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 552.24 |
+| rules_minimal | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 408.32 |
+
+##### Condition by difficulty
+
+| Condition | Easy | Medium | Hard |
+| --- | --- | --- | --- |
+| empty_dot | 3/3 | 3/3 | 1/3 |
+| empty_underscore | 3/3 | 2/3 | 2/3 |
+| empty_word | 3/3 | 2/3 | 3/3 |
+| empty_zero | 3/3 | 2/3 | 1/3 |
+| latin_lowercase | 3/3 | 2/3 | 2/3 |
+| latin_uppercase | 2/3 | 3/3 | 3/3 |
+| mapping_alphabet_only | 3/3 | 3/3 | 1/3 |
+| mapping_to_abstract | 3/3 | 0/3 | 1/3 |
+| mapping_to_digits | 3/3 | 3/3 | 3/3 |
+| nonce_lowercase | 3/3 | 2/3 | 3/3 |
+| nonce_uppercase | 3/3 | 3/3 | 3/3 |
+| output_compact | 1/3 | 0/3 | 1/3 |
+| output_json | 3/3 | 3/3 | 1/3 |
+| output_spaced | 3/3 | 3/3 | 1/3 |
+| output_string81 | 1/3 | 2/3 | 1/3 |
+| rules_constraints_alphabet | 2/3 | 2/3 | 3/3 |
+| rules_explicit_constraints | 3/3 | 2/3 | 2/3 |
+| rules_fully_explicit | 3/3 | 3/3 | 1/3 |
+| rules_minimal | 3/3 | 3/3 | 3/3 |
+
+#### Parsing and mathematical checks for every group
+
+Clues and Sudoku-unit denominators are parseable grids, not all requests. N/A controls do not require Sudoku scoring. Counts of changed cells differ from counts of affected requests.
+
+| Group | Parsed / Sudoku | Clues kept / parsed | All units valid / parsed | Clue-changing grids | Changed clue cells |
+| --- | --- | --- | --- | --- | --- |
+| All | 155/171 | 137/155 | 147/155 | 18 | 18 |
+| easy | 54/57 | 52/54 | 53/54 | 2 | 2 |
+| medium | 50/57 | 44/50 | 49/50 | 6 | 6 |
+| hard | 51/57 | 41/51 | 45/51 | 10 | 10 |
+| empty_dot | 9/9 | 8/9 | 8/9 | 1 | 1 |
+| empty_underscore | 9/9 | 7/9 | 9/9 | 2 | 2 |
+| empty_word | 9/9 | 8/9 | 9/9 | 1 | 1 |
+| empty_zero | 9/9 | 6/9 | 9/9 | 3 | 3 |
+| latin_lowercase | 8/9 | 8/8 | 7/8 | 0 | 0 |
+| latin_uppercase | 9/9 | 8/9 | 9/9 | 1 | 1 |
+| mapping_alphabet_only | 9/9 | 8/9 | 8/9 | 1 | 1 |
+| mapping_to_abstract | 7/9 | 4/7 | 6/7 | 3 | 3 |
+| mapping_to_digits | 9/9 | 9/9 | 9/9 | 0 | 0 |
+| nonce_lowercase | 9/9 | 8/9 | 9/9 | 1 | 1 |
+| nonce_uppercase | 9/9 | 9/9 | 9/9 | 0 | 0 |
+| output_compact | 2/9 | 2/2 | 2/2 | 0 | 0 |
+| output_json | 8/9 | 8/8 | 7/8 | 0 | 0 |
+| output_spaced | 9/9 | 8/9 | 8/9 | 1 | 1 |
+| output_string81 | 5/9 | 4/5 | 5/5 | 1 | 1 |
+| rules_constraints_alphabet | 8/9 | 8/8 | 7/8 | 0 | 0 |
+| rules_explicit_constraints | 9/9 | 7/9 | 9/9 | 2 | 2 |
+| rules_fully_explicit | 9/9 | 8/9 | 8/9 | 1 | 1 |
+| rules_minimal | 9/9 | 9/9 | 9/9 | 0 | 0 |
+
+#### Full condition-by-difficulty failure and latency breakdown
+
+Grid, length, other, and operational columns are mutually exclusive failures. They sum with correct to N. Mean seconds describes the stored outcome's generation, not end-to-end revision cost or new-call-only cost.
+
+| Condition | Tier | Correct/N | Grid | Length | Other | Oper. | Mean s |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| empty_dot | easy | 3/3 | 0 | 0 | 0 | 0 | 189.10 |
+| empty_dot | medium | 3/3 | 0 | 0 | 0 | 0 | 553.62 |
+| empty_dot | hard | 1/3 | 2 | 0 | 0 | 0 | 906.59 |
+| empty_underscore | easy | 3/3 | 0 | 0 | 0 | 0 | 201.06 |
+| empty_underscore | medium | 2/3 | 1 | 0 | 0 | 0 | 544.81 |
+| empty_underscore | hard | 2/3 | 1 | 0 | 0 | 0 | 763.10 |
+| empty_word | easy | 3/3 | 0 | 0 | 0 | 0 | 123.13 |
+| empty_word | medium | 2/3 | 1 | 0 | 0 | 0 | 702.36 |
+| empty_word | hard | 3/3 | 0 | 0 | 0 | 0 | 610.65 |
+| empty_zero | easy | 3/3 | 0 | 0 | 0 | 0 | 115.29 |
+| empty_zero | medium | 2/3 | 1 | 0 | 0 | 0 | 455.47 |
+| empty_zero | hard | 1/3 | 2 | 0 | 0 | 0 | 659.41 |
+| latin_lowercase | easy | 3/3 | 0 | 0 | 0 | 0 | 120.54 |
+| latin_lowercase | medium | 2/3 | 1 | 0 | 0 | 0 | 653.28 |
+| latin_lowercase | hard | 2/3 | 0 | 1 | 0 | 0 | 1158.27 |
+| latin_uppercase | easy | 2/3 | 1 | 0 | 0 | 0 | 109.12 |
+| latin_uppercase | medium | 3/3 | 0 | 0 | 0 | 0 | 460.03 |
+| latin_uppercase | hard | 3/3 | 0 | 0 | 0 | 0 | 677.19 |
+| mapping_alphabet_only | easy | 3/3 | 0 | 0 | 0 | 0 | 192.73 |
+| mapping_alphabet_only | medium | 3/3 | 0 | 0 | 0 | 0 | 554.69 |
+| mapping_alphabet_only | hard | 1/3 | 2 | 0 | 0 | 0 | 899.16 |
+| mapping_to_abstract | easy | 3/3 | 0 | 0 | 0 | 0 | 164.76 |
+| mapping_to_abstract | medium | 0/3 | 1 | 0 | 2 | 0 | 841.07 |
+| mapping_to_abstract | hard | 1/3 | 2 | 0 | 0 | 0 | 900.84 |
+| mapping_to_digits | easy | 3/3 | 0 | 0 | 0 | 0 | 252.91 |
+| mapping_to_digits | medium | 3/3 | 0 | 0 | 0 | 0 | 389.76 |
+| mapping_to_digits | hard | 3/3 | 0 | 0 | 0 | 0 | 820.86 |
+| nonce_lowercase | easy | 3/3 | 0 | 0 | 0 | 0 | 342.79 |
+| nonce_lowercase | medium | 2/3 | 1 | 0 | 0 | 0 | 491.26 |
+| nonce_lowercase | hard | 3/3 | 0 | 0 | 0 | 0 | 906.21 |
+| nonce_uppercase | easy | 3/3 | 0 | 0 | 0 | 0 | 212.44 |
+| nonce_uppercase | medium | 3/3 | 0 | 0 | 0 | 0 | 587.19 |
+| nonce_uppercase | hard | 3/3 | 0 | 0 | 0 | 0 | 969.03 |
+| output_compact | easy | 1/3 | 0 | 0 | 2 | 0 | 344.76 |
+| output_compact | medium | 0/3 | 0 | 0 | 3 | 0 | 899.79 |
+| output_compact | hard | 1/3 | 0 | 1 | 1 | 0 | 1076.37 |
+| output_json | easy | 3/3 | 0 | 0 | 0 | 0 | 368.69 |
+| output_json | medium | 3/3 | 0 | 0 | 0 | 0 | 494.75 |
+| output_json | hard | 1/3 | 1 | 1 | 0 | 0 | 1067.01 |
+| output_spaced | easy | 3/3 | 0 | 0 | 0 | 0 | 191.44 |
+| output_spaced | medium | 3/3 | 0 | 0 | 0 | 0 | 554.77 |
+| output_spaced | hard | 1/3 | 2 | 0 | 0 | 0 | 900.18 |
+| output_string81 | easy | 1/3 | 1 | 0 | 1 | 0 | 373.59 |
+| output_string81 | medium | 2/3 | 0 | 0 | 1 | 0 | 980.05 |
+| output_string81 | hard | 1/3 | 0 | 1 | 1 | 0 | 1165.48 |
+| rules_constraints_alphabet | easy | 2/3 | 1 | 0 | 0 | 0 | 156.69 |
+| rules_constraints_alphabet | medium | 2/3 | 0 | 0 | 1 | 0 | 903.12 |
+| rules_constraints_alphabet | hard | 3/3 | 0 | 0 | 0 | 0 | 660.69 |
+| rules_explicit_constraints | easy | 3/3 | 0 | 0 | 0 | 0 | 233.26 |
+| rules_explicit_constraints | medium | 2/3 | 1 | 0 | 0 | 0 | 368.22 |
+| rules_explicit_constraints | hard | 2/3 | 1 | 0 | 0 | 0 | 670.73 |
+| rules_fully_explicit | easy | 3/3 | 0 | 0 | 0 | 0 | 194.61 |
+| rules_fully_explicit | medium | 3/3 | 0 | 0 | 0 | 0 | 558.36 |
+| rules_fully_explicit | hard | 1/3 | 2 | 0 | 0 | 0 | 903.76 |
+| rules_minimal | easy | 3/3 | 0 | 0 | 0 | 0 | 116.24 |
+| rules_minimal | medium | 3/3 | 0 | 0 | 0 | 0 | 535.04 |
+| rules_minimal | hard | 3/3 | 0 | 0 | 0 | 0 | 573.68 |
+
+#### Overlapping final-output diagnostic incidences
+
+These labels overlap. Do not add them to obtain a failure count.
+
+| Label | Requests |
+| --- | --- |
+| BOX_CONSTRAINT_ERROR | 7 |
+| COLUMN_CONSTRAINT_ERROR | 3 |
+| CORRECT | 130 |
+| FORMAT_ERROR | 12 |
+| GIVEN_MODIFIED | 18 |
+| INVALID_SYMBOL | 2 |
+| LOCAL_MAPPING_ERROR | 25 |
+| NO_FINAL_ANSWER | 1 |
+| ROW_CONSTRAINT_ERROR | 1 |
+| TRUNCATED_OUTPUT | 4 |
+| WRONG_CELL_COUNT | 3 |
+| WRONG_ROW_COUNT | 1 |
 
 ### Discussion and writing decision
 
-The identical-prompt variation cautions against attributing a small difference to wording. No variant establishes a universally superior main prompt. A high score can motivate a separately documented repeat experiment, not a retrospective change to the frozen benchmark. Use **Lens 9**, with **Lenses 3 and 12**. Preserve the full condition table in an appendix to avoid highlighting only favorable variants.
+Digit mapping and uppercase nonce have high scores in both models, while compact rows are weak in both. This motivates repeat testing, not an optimized prompt claim. GPT-OSS's identical-prompt totals vary. Qwen's four conditions share the same seven correct puzzle IDs: E012, E021, E087, H028, M078, M085, and M087. Binary agreement in this capture does not prove identical erroneous grids or deterministic future inference. Qwen's 18 clue-changing outputs also caution against using its 147 unit-valid outputs as its correct count. Use **Lens 9**, with **Lenses 3 and 12**. Preserve every condition.
 
 #### Expanded interpretation, alternative explanations, and inference limits
 
@@ -4790,15 +6222,16 @@ Run from the repository root. This checks preserved bytes and re-scores saved fi
 
 ```bash
 python3 paper/report/prepare_snapshot.py tmp/research-report/snapshot \
-  evidence/snapshots/2026-09-30-report --verify
+  evidence/snapshots/2026-10-03-complete --verify
 python3 paper/report/analyze_evidence.py \
-  --snapshot evidence/snapshots/2026-09-30-report \
+  --snapshot evidence/snapshots/2026-10-03-complete \
   --output tmp/research-report/recheck
 ```
 
-Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-09-30-report/experiment_outputs/`.
+Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-10-03-complete/experiment_outputs/`.
 
 - `local-models-v1/gpt-oss-120b-local/exp9`: saved 171/171, complete `True`, matching request digest `True`. Inspect `shard-*.jsonl.gz`, `request-manifest.json`, and every `part-*.complete.json`.
+- `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp9`: saved 171/171, complete `True`, matching request digest `True`. Inspect `shard-*.jsonl.gz`, `request-manifest.json`, and every `part-*.complete.json`.
 
 Compare the named experiment's entry in `tmp/research-report/recheck/audit.json` with the tables in this block. Check request messages, ordered symbols, tier and puzzle IDs for any disputed cell. Clue checks apply only after parsing. For reused conditions, also match the original main request and saved generation. For revisions, inspect stage costs and called-stage flags instead of summing duplicated final-row latency.
 
@@ -5131,11 +6564,156 @@ End-to-end means include the reused initial answer and every called revision sta
 
 ### Qwen results
 
-No completed Step 12 evidence is included. Job `373547` was submitted. Calculate its own 27-cell initial-correct count before interpreting revisions. Do not reuse GPT-OSS's nine-failure checker denominator: Qwen's initial answers may have a different number of errors. Report ceilings for improvement and the number of errors actually eligible for repair.
+Job `373547` completed 108/108 records. One pass scores 23/27, one self-revision 26/27, two self-revisions 23/27, and checker-guided revision 26/27. One revision fixes three of four initial failures with no regression. Two revisions fix two initial failures but regress two initial successes, giving no net improvement. Checker feedback fixes three of four failures and makes only four new calls. The arm new-call counts are 0, 27, 54, and 4. Mean cumulative generation times are 561.28, 725.74, 788.07, and 718.79 seconds. Final-row truncations total three, with zero operational failures. Stage-level copies are not unique inference failures.
+
+#### Qwen exp10
+
+Evidence path: `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp10`. Saved 108 of 108. Complete: True.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| All | 98/108 | 90.7 | 7 | 3 | 0 | 0 | 323.74 |
+| easy | 36/36 | 100.0 | 0 | 0 | 0 | 0 | 87.06 |
+| medium | 35/36 | 97.2 | 1 | 0 | 0 | 0 | 260.44 |
+| hard | 27/36 | 75.0 | 6 | 3 | 0 | 0 | 623.71 |
+
+Parseable Sudoku grids: 105/108. Clues preserved among parseable grids: 101/105. Valid Sudoku units together: 102/105. Median record latency: 104.28 seconds. Reused outcome rows: 0.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| arabic_digits:checker_guided_revision | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 421.80 |
+| arabic_digits:one_pass | 7/9 | 77.8 | 0 | 2 | 0 | 0 | 719.65 |
+| arabic_digits:one_self_revision | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 236.80 |
+| arabic_digits:two_self_revisions | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 33.47 |
+| emoji:checker_guided_revision | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 405.79 |
+| emoji:one_pass | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 405.79 |
+| emoji:one_self_revision | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 70.66 |
+| emoji:two_self_revisions | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 92.31 |
+| greek_letters:checker_guided_revision | 8/9 | 88.9 | 0 | 1 | 0 | 0 | 692.37 |
+| greek_letters:one_pass | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 558.38 |
+| greek_letters:one_self_revision | 8/9 | 88.9 | 1 | 0 | 0 | 0 | 185.92 |
+| greek_letters:two_self_revisions | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 61.93 |
+
+##### Condition by difficulty
+
+| Condition | Easy | Medium | Hard |
+| --- | --- | --- | --- |
+| arabic_digits:checker_guided_revision | 3/3 | 3/3 | 3/3 |
+| arabic_digits:one_pass | 3/3 | 3/3 | 1/3 |
+| arabic_digits:one_self_revision | 3/3 | 3/3 | 3/3 |
+| arabic_digits:two_self_revisions | 3/3 | 3/3 | 3/3 |
+| emoji:checker_guided_revision | 3/3 | 3/3 | 3/3 |
+| emoji:one_pass | 3/3 | 3/3 | 3/3 |
+| emoji:one_self_revision | 3/3 | 3/3 | 3/3 |
+| emoji:two_self_revisions | 3/3 | 2/3 | 2/3 |
+| greek_letters:checker_guided_revision | 3/3 | 3/3 | 2/3 |
+| greek_letters:one_pass | 3/3 | 3/3 | 1/3 |
+| greek_letters:one_self_revision | 3/3 | 3/3 | 2/3 |
+| greek_letters:two_self_revisions | 3/3 | 3/3 | 1/3 |
+
+##### Shared-initial revision transitions and compute
+
+| Arm | Correct | Fixed | Regressed | New calls | Extra seconds | Mean end-to-end seconds | All-stage truncations |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| checker_guided_revision | 26 | 3 | 0 | 4 | 4252.98 | 718.79 | 3 |
+| one_pass | 23 | 0 | 0 | 0 | 0.00 | 561.28 | 2 |
+| one_self_revision | 26 | 3 | 0 | 27 | 4440.47 | 725.74 | 2 |
+| two_self_revisions | 23 | 2 | 2 | 54 | 6123.53 | 788.07 | 2 |
+
+#### Parsing and mathematical checks for every group
+
+Clues and Sudoku-unit denominators are parseable grids, not all requests. N/A controls do not require Sudoku scoring. Counts of changed cells differ from counts of affected requests.
+
+| Group | Parsed / Sudoku | Clues kept / parsed | All units valid / parsed | Clue-changing grids | Changed clue cells |
+| --- | --- | --- | --- | --- | --- |
+| All | 105/108 | 101/105 | 102/105 | 4 | 5 |
+| easy | 36/36 | 36/36 | 36/36 | 0 | 0 |
+| medium | 36/36 | 36/36 | 35/36 | 0 | 0 |
+| hard | 33/36 | 29/33 | 31/33 | 4 | 5 |
+| arabic_digits:checker_guided_revision | 9/9 | 9/9 | 9/9 | 0 | 0 |
+| arabic_digits:one_pass | 7/9 | 7/7 | 7/7 | 0 | 0 |
+| arabic_digits:one_self_revision | 9/9 | 9/9 | 9/9 | 0 | 0 |
+| arabic_digits:two_self_revisions | 9/9 | 9/9 | 9/9 | 0 | 0 |
+| emoji:checker_guided_revision | 9/9 | 9/9 | 9/9 | 0 | 0 |
+| emoji:one_pass | 9/9 | 9/9 | 9/9 | 0 | 0 |
+| emoji:one_self_revision | 9/9 | 9/9 | 9/9 | 0 | 0 |
+| emoji:two_self_revisions | 9/9 | 9/9 | 7/9 | 0 | 0 |
+| greek_letters:checker_guided_revision | 8/9 | 8/8 | 8/8 | 0 | 0 |
+| greek_letters:one_pass | 9/9 | 8/9 | 8/9 | 1 | 1 |
+| greek_letters:one_self_revision | 9/9 | 8/9 | 9/9 | 1 | 1 |
+| greek_letters:two_self_revisions | 9/9 | 7/9 | 9/9 | 2 | 3 |
+
+#### Full condition-by-difficulty failure and latency breakdown
+
+Grid, length, other, and operational columns are mutually exclusive failures. They sum with correct to N. Mean seconds describes the stored outcome's generation, not end-to-end revision cost or new-call-only cost.
+
+| Condition | Tier | Correct/N | Grid | Length | Other | Oper. | Mean s |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| arabic_digits:checker_guided_revision | easy | 3/3 | 0 | 0 | 0 | 0 | 84.12 |
+| arabic_digits:checker_guided_revision | medium | 3/3 | 0 | 0 | 0 | 0 | 302.00 |
+| arabic_digits:checker_guided_revision | hard | 3/3 | 0 | 0 | 0 | 0 | 879.27 |
+| arabic_digits:one_pass | easy | 3/3 | 0 | 0 | 0 | 0 | 84.12 |
+| arabic_digits:one_pass | medium | 3/3 | 0 | 0 | 0 | 0 | 302.00 |
+| arabic_digits:one_pass | hard | 1/3 | 0 | 2 | 0 | 0 | 1772.85 |
+| arabic_digits:one_self_revision | easy | 3/3 | 0 | 0 | 0 | 0 | 20.64 |
+| arabic_digits:one_self_revision | medium | 3/3 | 0 | 0 | 0 | 0 | 39.89 |
+| arabic_digits:one_self_revision | hard | 3/3 | 0 | 0 | 0 | 0 | 649.87 |
+| arabic_digits:two_self_revisions | easy | 3/3 | 0 | 0 | 0 | 0 | 45.95 |
+| arabic_digits:two_self_revisions | medium | 3/3 | 0 | 0 | 0 | 0 | 30.37 |
+| arabic_digits:two_self_revisions | hard | 3/3 | 0 | 0 | 0 | 0 | 24.09 |
+| emoji:checker_guided_revision | easy | 3/3 | 0 | 0 | 0 | 0 | 101.51 |
+| emoji:checker_guided_revision | medium | 3/3 | 0 | 0 | 0 | 0 | 535.42 |
+| emoji:checker_guided_revision | hard | 3/3 | 0 | 0 | 0 | 0 | 580.45 |
+| emoji:one_pass | easy | 3/3 | 0 | 0 | 0 | 0 | 101.51 |
+| emoji:one_pass | medium | 3/3 | 0 | 0 | 0 | 0 | 535.42 |
+| emoji:one_pass | hard | 3/3 | 0 | 0 | 0 | 0 | 580.45 |
+| emoji:one_self_revision | easy | 3/3 | 0 | 0 | 0 | 0 | 37.68 |
+| emoji:one_self_revision | medium | 3/3 | 0 | 0 | 0 | 0 | 111.13 |
+| emoji:one_self_revision | hard | 3/3 | 0 | 0 | 0 | 0 | 63.18 |
+| emoji:two_self_revisions | easy | 3/3 | 0 | 0 | 0 | 0 | 39.80 |
+| emoji:two_self_revisions | medium | 2/3 | 1 | 0 | 0 | 0 | 41.86 |
+| emoji:two_self_revisions | hard | 2/3 | 1 | 0 | 0 | 0 | 195.27 |
+| greek_letters:checker_guided_revision | easy | 3/3 | 0 | 0 | 0 | 0 | 197.41 |
+| greek_letters:checker_guided_revision | medium | 3/3 | 0 | 0 | 0 | 0 | 566.30 |
+| greek_letters:checker_guided_revision | hard | 2/3 | 0 | 1 | 0 | 0 | 1313.39 |
+| greek_letters:one_pass | easy | 3/3 | 0 | 0 | 0 | 0 | 197.41 |
+| greek_letters:one_pass | medium | 3/3 | 0 | 0 | 0 | 0 | 566.30 |
+| greek_letters:one_pass | hard | 1/3 | 2 | 0 | 0 | 0 | 911.43 |
+| greek_letters:one_self_revision | easy | 3/3 | 0 | 0 | 0 | 0 | 107.64 |
+| greek_letters:one_self_revision | medium | 3/3 | 0 | 0 | 0 | 0 | 63.70 |
+| greek_letters:one_self_revision | hard | 2/3 | 1 | 0 | 0 | 0 | 386.43 |
+| greek_letters:two_self_revisions | easy | 3/3 | 0 | 0 | 0 | 0 | 26.98 |
+| greek_letters:two_self_revisions | medium | 3/3 | 0 | 0 | 0 | 0 | 30.92 |
+| greek_letters:two_self_revisions | hard | 1/3 | 2 | 0 | 0 | 0 | 127.90 |
+
+#### Overlapping final-output diagnostic incidences
+
+These labels overlap. Do not add them to obtain a failure count.
+
+| Label | Requests |
+| --- | --- |
+| BOX_CONSTRAINT_ERROR | 2 |
+| COLUMN_CONSTRAINT_ERROR | 1 |
+| CORRECT | 98 |
+| GIVEN_MODIFIED | 4 |
+| LOCAL_MAPPING_ERROR | 7 |
+| NO_FINAL_ANSWER | 3 |
+| TRUNCATED_OUTPUT | 3 |
+
+#### Complete revision-arm transitions and cumulative costs
+
+End-to-end means include the reused initial answer and every called revision stage. Stage-level length stops can include shared initial copies, so they are not unique failed inference counts.
+
+| Arm | Correct/N | Fixes | Regressions | New calls | Added s | End-to-end mean s | Stage length stops |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| checker_guided_revision | 26/27 | 3 | 0 | 4 | 4252.98 | 718.79 | 3 |
+| one_pass | 23/27 | 0 | 0 | 0 | 0.00 | 561.28 | 2 |
+| one_self_revision | 26/27 | 3 | 0 | 27 | 4440.47 | 725.74 | 2 |
+| two_self_revisions | 23/27 | 2 | 2 | 54 | 6123.53 | 788.07 | 2 |
 
 ### Discussion and writing decision
 
-Two generic revisions and conditional checker feedback improve realized GPT-OSS correctness on this subset. That supports a practical observed trade-off, not a universal revision benefit. One answer changes an arm by 3.7 percentage points. If Qwen starts nearer ceiling, fewer fixes may reflect fewer opportunities rather than inferior correction ability. Compare wrong-to-right and right-to-wrong transitions, denominators, and added time. Use **Lens 10**, supported by **Lenses 5, 11, and 12**.
+The models do not support a universal benefit from more revision. GPT-OSS's two-revision branch has the highest score, but Qwen's one-revision branch improves by three answers and its two-revision branch loses that net gain. Against the common initial baseline, Qwen has two fixes and two regressions after two revisions. Do not call those regressions a measured internal reasoning failure. Checker feedback repairs 4/9 GPT-OSS and 3/4 Qwen initial failures, with different eligible denominators and a stopping rule that protects initial successes. One answer changes an arm by 3.7 points. Compare transitions and cumulative cost, not final-stage time or raw improvement alone. Use **Lens 10**, supported by **Lenses 5, 11, and 12**.
 
 #### Expanded interpretation, alternative explanations, and inference limits
 
@@ -5149,7 +6727,7 @@ The same token ceiling does not imply the same time budget. Throughput and token
 
 #### Lens 10: revision as extra computation and information
 
-Two revisions improve the observed count from 18/27 to 23/27. Checker-guided revision reaches 22/27 while calling the model on only nine initially wrong cells. This is a useful practical comparison. Its additional compute and selective intervention differ from generic revision.
+GPT-OSS improves from 18/27 to 23/27 after two revisions; checker feedback reaches 22/27 using nine calls. Qwen improves from 23/27 to 26/27 after one revision, but two revisions finish at 23/27 with two fixes and two regressions relative to the initial answer. Its checker reaches 26/27 with four calls. The benefit is not monotonic or universal. Compare eligible initial failures (nine versus four), protected successes, and cumulative generation costs.
 
 The checker supplies constraint violations without a complete solution. That is less information than a solved grid but more information than an unassisted “check yourself” request. Its no-regression property follows partly from skipping initially correct outputs. The study lacks an equal-compute resampling baseline, so it cannot attribute gains exclusively to self-correction skill.
 
@@ -5185,15 +6763,16 @@ Run from the repository root. This checks preserved bytes and re-scores saved fi
 
 ```bash
 python3 paper/report/prepare_snapshot.py tmp/research-report/snapshot \
-  evidence/snapshots/2026-09-30-report --verify
+  evidence/snapshots/2026-10-03-complete --verify
 python3 paper/report/analyze_evidence.py \
-  --snapshot evidence/snapshots/2026-09-30-report \
+  --snapshot evidence/snapshots/2026-10-03-complete \
   --output tmp/research-report/recheck
 ```
 
-Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-09-30-report/experiment_outputs/`.
+Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-10-03-complete/experiment_outputs/`.
 
 - `local-models-v1/gpt-oss-120b-local/exp10`: saved 108/108, complete `True`, matching request digest `True`. Inspect `shard-*.jsonl.gz`, `request-manifest.json`, and every `part-*.complete.json`.
+- `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp10`: saved 108/108, complete `True`, matching request digest `True`. Inspect `shard-*.jsonl.gz`, `request-manifest.json`, and every `part-*.complete.json`.
 
 Compare the named experiment's entry in `tmp/research-report/recheck/audit.json` with the tables in this block. Check request messages, ordered symbols, tier and puzzle IDs for any disputed cell. Clue checks apply only after parsing. For reused conditions, also match the original main request and saved generation. For revisions, inspect stage costs and called-stage flags instead of summing duplicated final-row latency.
 
@@ -5274,7 +6853,7 @@ The frozen source passed 82 historical tests. The earlier evidence audit passed 
 
 ### Qwen results and artifacts
 
-Job `373551` was queued for CPU finalization after successful completion of all five follow-up jobs. No completed Qwen Step 13 artifact is used here. Do not substitute the already completed offline main comparison for evidence that every Qwen mechanism prerequisite has finished.
+Job `373551` completed in 7:40 with exit `0:0` after all five follow-ups. It wrote 2,781 token-diagnostic rows and analyzed 1,229 saved outcome records. Its token-length fit is singular. Both final summaries and registries are included in `evidence/snapshots/2026-10-03-complete/`. These tokenization diagnostics are not additional model solves. The original GPT-OSS final-analysis snapshot is preserved separately as well.
 
 ### Discussion and writing decision
 
@@ -5321,7 +6900,38 @@ The registry has 81 symbol records (nine alphabets times nine labels) plus 2,700
 | emoji | 300 | 246.95 | 230 | 275 |
 | nonce_labels | 300 | 224.62 | 214 | 244 |
 
-These descriptive token costs do not identify their causal contribution to accuracy. They span all 300 puzzles, not only the main 60. Do not regress main correctness against these aggregate means and call that the registered token-length experiment. Qwen's corresponding completed registry is not present in this evidence capture.
+These descriptive token costs do not identify their causal contribution to accuracy. They span all 300 puzzles, not only the main 60. Do not regress main correctness against these aggregate means and call that the registered token-length experiment. Each selected model has a completed registry and saved final analysis in this capture.
+
+
+### Completed Qwen token diagnostics: exact scope and summary
+
+The registry has 81 symbol records (nine alphabets times nine labels) plus 2,700 prompt records (all 300 certified puzzles times nine alphabets), totaling 2,781. The 2,700 prompts are tokenizer diagnostics, not additional model solves. Symbol rows store exact Unicode code points, UTF-8 bytes, code points, graphemes, isolated and leading-space token IDs/counts, full-label-row token count, and tokenizer identity. Prompt rows store puzzle/tier/alphabet, clue count, visible clue tokens, mean clue tokens and total prompt tokens. The total-prompt measure tokenizes the user prompt, not the model's complete chat-template conversation.
+
+| Alphabet | Mean isolated tokens | Mean after-space tokens | Label-row tokens | Mean bytes | Mean code points |
+| --- | --- | --- | --- | --- | --- |
+| arabic_digits | 1.00 | 2.00 | 17 | 1.00 | 1.00 |
+| devanagari_numerals | 2.00 | 3.00 | 26 | 3.00 | 1.00 |
+| bengali_numerals | 2.00 | 3.00 | 26 | 3.00 | 1.00 |
+| uppercase_latin | 1.00 | 1.00 | 9 | 1.00 | 1.00 |
+| lowercase_latin | 1.00 | 1.00 | 9 | 1.00 | 1.00 |
+| greek_letters | 1.00 | 1.00 | 9 | 2.00 | 1.00 |
+| abstract_symbols | 1.11 | 1.22 | 11 | 2.67 | 1.00 |
+| emoji | 3.00 | 2.78 | 26 | 3.78 | 1.00 |
+| nonce_labels | 2.00 | 2.00 | 18 | 3.00 | 3.00 |
+
+| Alphabet | Prompt records | Mean user-prompt tokens | Min | Max |
+| --- | --- | --- | --- | --- |
+| arabic_digits | 300 | 236.73 | 229 | 252 |
+| devanagari_numerals | 300 | 276.87 | 261 | 307 |
+| bengali_numerals | 300 | 276.87 | 261 | 307 |
+| uppercase_latin | 300 | 201.00 | 201 | 201 |
+| lowercase_latin | 300 | 201.00 | 201 | 201 |
+| greek_letters | 300 | 201.00 | 201 | 201 |
+| abstract_symbols | 300 | 209.59 | 205 | 216 |
+| emoji | 300 | 274.17 | 258 | 304 |
+| nonce_labels | 300 | 241.14 | 233 | 256 |
+
+These descriptive token costs do not identify their causal contribution to accuracy. They span all 300 puzzles, not only the main 60. Do not regress main correctness against these aggregate means and call that the registered token-length experiment. Each selected model has a completed registry and saved final analysis in this capture.
 
 
 ### Verify this experiment locally, without inference
@@ -5330,13 +6940,13 @@ Run from the repository root. This checks preserved bytes and re-scores saved fi
 
 ```bash
 python3 paper/report/prepare_snapshot.py tmp/research-report/snapshot \
-  evidence/snapshots/2026-09-30-report --verify
+  evidence/snapshots/2026-10-03-complete --verify
 python3 paper/report/analyze_evidence.py \
-  --snapshot evidence/snapshots/2026-09-30-report \
+  --snapshot evidence/snapshots/2026-10-03-complete \
   --output tmp/research-report/recheck
 ```
 
-Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-09-30-report/experiment_outputs/`.
+Require `dataset_valid: true`, no audit errors, no re-evaluation disagreements, and no independent-grid disagreements. The following local paths are relative to `evidence/snapshots/2026-10-03-complete/experiment_outputs/`.
 
 
 Compare the named experiment's entry in `tmp/research-report/recheck/audit.json` with the tables in this block. Check request messages, ordered symbols, tier and puzzle IDs for any disputed cell. Clue checks apply only after parsing. For reused conditions, also match the original main request and saved generation. For revisions, inspect stage costs and called-stage flags instead of summing duplicated final-row latency.
@@ -5370,9 +6980,9 @@ Run these commands on your machine. They do not use SSH, load a model, install p
 cd /Users/arnavbharti/Developer/arnavbharti/thesis
 python3 paper/report/prepare_snapshot.py \
   tmp/research-report/snapshot \
-  evidence/snapshots/2026-09-30-report --verify
+  evidence/snapshots/2026-10-03-complete --verify
 python3 paper/report/analyze_evidence.py \
-  --snapshot evidence/snapshots/2026-09-30-report \
+  --snapshot evidence/snapshots/2026-10-03-complete \
   --output tmp/research-report/recheck
 ```
 
@@ -5390,7 +7000,7 @@ python3 - <<'PY'
 import gzip
 import json
 from pathlib import Path
-root = Path('evidence/snapshots/2026-09-30-report/experiment_outputs')
+root = Path('evidence/snapshots/2026-10-03-complete/experiment_outputs')
 directory = root / 'local-models-v1/gpt-oss-120b-local/exp4'
 for path in sorted(directory.glob('shard-*.jsonl.gz')):
     with gzip.open(path, 'rt', encoding='utf-8') as stream:
@@ -5416,7 +7026,7 @@ import gzip
 import json
 from collections import Counter
 from pathlib import Path
-root = Path('evidence/snapshots/2026-09-30-report/experiment_outputs')
+root = Path('evidence/snapshots/2026-10-03-complete/experiment_outputs')
 for relative in ('local-models-v1/gpt-oss-120b-local/exp4',
                  'qwen-3.8-27b-v2/qwen-3.8-27b-local/exp4'):
     rows = []
@@ -5501,19 +7111,19 @@ The same token ceiling does not imply the same time budget. Throughput and token
 
 The main alphabets differ in tokenizer segmentation as well as label identity, familiarity, and Unicode form. Their accuracy ranking does not isolate token count. The dedicated label-length experiment is non-monotonic, and its regression is singular. That evidence blocks a simple causal token-length story rather than confirming one.
 
-The two-token condition may benefit from its specific labels, stochastic variation, or other correlated prompt properties. There is only one constructed alphabet per bin. A stronger experiment would use multiple matched label sets and independent repeats, but that has not been completed. Do not present such a design as part of the existing method.
+GPT-OSS's two-token and Qwen's three-token conditions have the highest observed scores. Their different specific labels, sampling, and correlated properties remain explanations. There is one constructed alphabet per bin per model. Multiple matched label sets and independent repeats remain future work.
 
 ## Lens 7: binding and semantics
 
 The ordinary versus permuted conditions suggest an assignment-related difference on the selected sample. Sudoku needs consistent equality relationships, so natural numeric meanings are unnecessary. A model could nevertheless rely on familiar templates or label associations. This is a plausible behavioral explanation.
 
-But the observed two-answer differences also fit sampling variation at this scale. The prompt does not explicitly impose a conflicting word-to-number definition. Internal activation evidence is absent. Use “consistent with” or “suggests a candidate explanation,” not “proves a binding mechanism” or “isolates semantic interference.”
+Both models lose answers under permuted number words, but Qwen gains answers under permuted digits while GPT-OSS loses them. Small differences also fit sampling variation. The prompt does not impose a conflicting arithmetic definition. Internal evidence is absent. Use bounded candidate explanations, not a proven binding mechanism.
 
 ## Lens 8: input/output asymmetry
 
 All simple controls succeed, while full Sudoku solving fails. This narrows explanations involving basic symbol copying or the fixed translation task. It does not prove all input processing is flawless during long solving. Cross-mapping adds instructions and an additional conversion requirement, so a weaker cross condition can reflect combined burden rather than output script alone.
 
-The two same-alphabet baselines both score 12/15 on the mechanism subset. That result is incompatible with a deterministic universal Greek penalty. It is compatible with sample-specific difficulty, prompt interactions, and stochastic variability. Do not generalize a mechanism-subset equality to the full main sample.
+GPT-OSS's same-alphabet baselines both score 12/15. Qwen's Arabic and Greek baselines score 13/15 and 11/15, while its Greek-to-Arabic cross remains 11/15. Neither pattern establishes a deterministic Greek-output cause. Sample-specific difficulty, extra mapping instructions, and variability remain alternatives.
 
 ## Lens 9: prompt sensitivity and variance
 
@@ -5523,7 +7133,7 @@ Some ablations change output contract and parsing, while others change symbol id
 
 ## Lens 10: revision as extra computation and information
 
-Two revisions improve the observed count from 18/27 to 23/27. Checker-guided revision reaches 22/27 while calling the model on only nine initially wrong cells. This is a useful practical comparison. Its additional compute and selective intervention differ from generic revision.
+GPT-OSS improves from 18/27 to 23/27 after two revisions; checker feedback reaches 22/27 using nine calls. Qwen improves from 23/27 to 26/27 after one revision, but two revisions finish at 23/27 with two fixes and two regressions relative to the initial answer. Its checker reaches 26/27 with four calls. The benefit is not monotonic or universal. Compare eligible initial failures (nine versus four), protected successes, and cumulative generation costs.
 
 The checker supplies constraint violations without a complete solution. That is less information than a solved grid but more information than an unassisted “check yourself” request. Its no-regression property follows partly from skipping initially correct outputs. The study lacks an equal-compute resampling baseline, so it cannot attribute gains exclusively to self-correction skill.
 
@@ -5558,13 +7168,13 @@ The provenance files have a null commit field and are captured once. Disclose th
 - It does not establish a universal benefit from self-revision or checker feedback.
 - It does not show that all length-limited responses would become correct with a higher ceiling.
 - It does not prove exact novelty over all prior literature. Close symbol-symmetry work must be acknowledged.
-- It does not provide completed Qwen mechanism evidence in the current snapshot.
+- It does not establish that corresponding follow-ups share a single causal explanation across both models.
 
 ## Limitations paragraph checklist
 
 Include the single generated dataset family, 60 main underlying puzzles, one sampled completion per condition, two selected configurations, nested small mechanism subsets, provider-specific reasoning controls, different architecture/quantization, context-bound generation, selection after screening, missing independently varied tokenizer factors, sampling variability, and once-per-run provenance. State that the exact verifier assesses final solutions, not the process by which they were generated.
 
-Both main benchmarks are complete in this checksum-verified snapshot. Qwen mechanisms remain unrun in the captured evidence. Do not conceal that a historical or GPT-OSS job timeout happened, but do not misclassify checkpointed or completed outcome data as operational request errors. If later experiments are added, update the evidence capture and analysis before adding their findings.
+Both main benchmarks, all selected-model follow-ups, and both final analyses are complete in this capture. GPT-OSS's completed ablation artifact survives a teardown timeout; Qwen's corresponding job completes normally. Preserve execution distinctions instead of misclassifying saved answers as request errors. Future additions require a new capture and audit.
 
 # Conclusion: points to include and what to leave out
 
@@ -5574,13 +7184,13 @@ Include that standard Sudoku label substitutions preserve the abstract problem, 
 
 Do not introduce new numerical analyses in the conclusion. Do not promise unrun experiments as completed work. Do not claim tokenization caused the differences. Do not claim the study proves all current models lack reasoning. Do not write that syntax-only constraints solve correctness.
 
-Future work can name repeated sampling, broader datasets, additional models, tokenizer-matched label sets, equal-time/equal-compute comparisons, Qwen mechanism replication, and conditional reruns with a larger context. These are proposals, not accomplishments. No such inference was submitted while preparing this report.
+Future work can name repeated sampling, broader datasets, additional models, tokenizer-matched label sets, equal-time/equal-compute comparisons, and conditional larger-context reruns. Qwen's corresponding mechanisms are now completed, not future work. No new inference was submitted during this update.
 
 ## Two defensible paper narratives
 
 **Evaluation-centered narrative.** Lead with paired symbolic representation and difficulty. Use the complete two-model main benchmark, with bounded within-model representation findings and the paired configuration comparison. Use error decomposition as a second contribution. Put most mechanism details and failed-model screening in appendices. This is the clearest route if the paper's main value is a carefully audited empirical benchmark.
 
-**Diagnosis-centered narrative.** Lead with why an apparently equivalent task can fail at the final-output interface. Present GPT-OSS main results, simple-symbol controls, non-monotonic token-length evidence, and revision results. Keep explanations explicitly bounded. Do not market the diagnostic experiments as a causal mechanistic discovery.
+**Diagnosis-centered narrative.** Lead with failures at the final-output interface. Use both models' main results, perfect simple controls, different non-monotonic token-length patterns, differing digit-permutation directions, and model-dependent revision. Keep causal claims bounded.
 
 You may combine these, but avoid a paper with six unrelated mini-studies and no central claim. Use the main paired experiment as the anchor. Every mechanism section should answer a specific alternative explanation raised by the main data.
 
@@ -5622,7 +7232,7 @@ The report's generated CSV and JSON can be supplementary artifacts. Before publi
 - Parseability and clue preservation use stated denominators.
 - Statistical tests respect pairing, clustering, and multiplicity.
 - Causal explanations are not substituted for descriptive evidence.
-- Missing Qwen mechanisms or analysis stages remain explicitly unclaimed.
+- Both models' follow-up findings are grounded in matching completed artifacts, not inferred from submission or main scores.
 
 ## Writing and presentation
 
@@ -6162,6 +7772,228 @@ These use the registered retention procedure. The p-values below are unadjusted 
 | uppercase_latin | medium | 17/19 | 2 | 1 | 1.0000 |
 | uppercase_latin | hard | 13/14 | 1 | 5 | 0.2188 |
 
+## Qwen exp6
+
+Evidence path: `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp6`. Saved 135 of 135. Complete: True.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| All | 120/135 | 88.9 | 9 | 6 | 0 | 0 | 257.18 |
+| easy | 44/45 | 97.8 | 1 | 0 | 0 | 0 | 52.43 |
+| medium | 43/45 | 95.6 | 2 | 0 | 0 | 0 | 246.05 |
+| hard | 33/45 | 73.3 | 6 | 6 | 0 | 0 | 473.07 |
+
+Parseable Sudoku grids: 54/60. Clues preserved among parseable grids: 48/54. Valid Sudoku units together: 51/54. Median record latency: 9.65 seconds. Reused outcome rows: 30.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| A_arabic_to_arabic | 13/15 | 86.7 | 0 | 2 | 0 | 0 | 538.91 |
+| B_greek_to_greek | 11/15 | 73.3 | 3 | 1 | 0 | 0 | 584.72 |
+| C_greek_to_arabic | 11/15 | 73.3 | 4 | 0 | 0 | 0 | 531.30 |
+| D_arabic_to_greek | 10/15 | 66.7 | 2 | 3 | 0 | 0 | 642.79 |
+| control_coordinate_retrieval | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 1.60 |
+| control_copy | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 1.63 |
+| control_grid_conversion | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 9.09 |
+| control_mapping_translation | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 1.41 |
+| control_occurrence_count | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 3.18 |
+
+### Condition by difficulty
+
+| Condition | Easy | Medium | Hard |
+| --- | --- | --- | --- |
+| A_arabic_to_arabic | 5/5 | 5/5 | 3/5 |
+| B_greek_to_greek | 5/5 | 5/5 | 1/5 |
+| C_greek_to_arabic | 5/5 | 4/5 | 2/5 |
+| D_arabic_to_greek | 4/5 | 4/5 | 2/5 |
+| control_coordinate_retrieval | 5/5 | 5/5 | 5/5 |
+| control_copy | 5/5 | 5/5 | 5/5 |
+| control_grid_conversion | 5/5 | 5/5 | 5/5 |
+| control_mapping_translation | 5/5 | 5/5 | 5/5 |
+| control_occurrence_count | 5/5 | 5/5 | 5/5 |
+
+## Qwen exp7
+
+Evidence path: `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp7`. Saved 45 of 45. Complete: True.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| All | 37/45 | 82.2 | 3 | 2 | 3 | 0 | 570.43 |
+| easy | 14/15 | 93.3 | 0 | 0 | 1 | 0 | 142.82 |
+| medium | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 627.87 |
+| hard | 8/15 | 53.3 | 3 | 2 | 2 | 0 | 940.61 |
+
+Parseable Sudoku grids: 40/45. Clues preserved among parseable grids: 38/40. Valid Sudoku units together: 39/40. Median record latency: 440.05 seconds. Reused outcome rows: 0.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| neutral_1_tokens | 12/15 | 80.0 | 2 | 1 | 0 | 0 | 608.61 |
+| neutral_2_tokens | 11/15 | 73.3 | 0 | 1 | 3 | 0 | 563.30 |
+| neutral_3_tokens | 14/15 | 93.3 | 1 | 0 | 0 | 0 | 539.39 |
+
+### Condition by difficulty
+
+| Condition | Easy | Medium | Hard |
+| --- | --- | --- | --- |
+| neutral_1_tokens | 5/5 | 5/5 | 2/5 |
+| neutral_2_tokens | 4/5 | 5/5 | 2/5 |
+| neutral_3_tokens | 5/5 | 5/5 | 4/5 |
+
+## Qwen exp8
+
+Evidence path: `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp8`. Saved 165 of 165. Complete: True.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| All | 147/165 | 89.1 | 9 | 8 | 1 | 0 | 477.57 |
+| easy | 50/55 | 90.9 | 5 | 0 | 0 | 0 | 112.43 |
+| medium | 51/55 | 92.7 | 1 | 2 | 1 | 0 | 484.95 |
+| hard | 46/55 | 83.6 | 3 | 6 | 0 | 0 | 835.32 |
+
+Parseable Sudoku grids: 156/165. Clues preserved among parseable grids: 151/156. Valid Sudoku units together: 149/156. Median record latency: 353.93 seconds. Reused outcome rows: 45.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| digits_ordinary | 13/15 | 86.7 | 0 | 2 | 0 | 0 | 538.91 |
+| digits_permuted | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 425.90 |
+| nonce_neutral | 14/15 | 93.3 | 1 | 0 | 0 | 0 | 523.15 |
+| number_words_conflicting | 9/15 | 60.0 | 4 | 2 | 0 | 0 | 509.01 |
+| number_words_ordinary | 12/15 | 80.0 | 0 | 2 | 1 | 0 | 624.82 |
+| uppercase_random_1 | 12/15 | 80.0 | 2 | 1 | 0 | 0 | 440.48 |
+| uppercase_random_2 | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 331.69 |
+| uppercase_random_3 | 13/15 | 86.7 | 1 | 1 | 0 | 0 | 611.53 |
+| uppercase_random_4 | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 356.10 |
+| uppercase_random_5 | 15/15 | 100.0 | 0 | 0 | 0 | 0 | 489.27 |
+| uppercase_standard | 14/15 | 93.3 | 1 | 0 | 0 | 0 | 402.41 |
+
+### Condition by difficulty
+
+| Condition | Easy | Medium | Hard |
+| --- | --- | --- | --- |
+| digits_ordinary | 5/5 | 5/5 | 3/5 |
+| digits_permuted | 5/5 | 5/5 | 5/5 |
+| nonce_neutral | 4/5 | 5/5 | 5/5 |
+| number_words_conflicting | 2/5 | 4/5 | 3/5 |
+| number_words_ordinary | 5/5 | 4/5 | 3/5 |
+| uppercase_random_1 | 5/5 | 4/5 | 3/5 |
+| uppercase_random_2 | 5/5 | 5/5 | 5/5 |
+| uppercase_random_3 | 5/5 | 4/5 | 4/5 |
+| uppercase_random_4 | 5/5 | 5/5 | 5/5 |
+| uppercase_random_5 | 5/5 | 5/5 | 5/5 |
+| uppercase_standard | 4/5 | 5/5 | 5/5 |
+
+## Qwen exp9
+
+Evidence path: `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp9`. Saved 171 of 171. Complete: True.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| All | 130/171 | 76.0 | 25 | 4 | 12 | 0 | 558.25 |
+| easy | 51/57 | 89.5 | 3 | 0 | 3 | 0 | 210.69 |
+| medium | 43/57 | 75.4 | 7 | 0 | 7 | 0 | 606.72 |
+| hard | 36/57 | 63.2 | 15 | 4 | 2 | 0 | 857.33 |
+
+Parseable Sudoku grids: 155/171. Clues preserved among parseable grids: 137/155. Valid Sudoku units together: 147/155. Median record latency: 517.43 seconds. Reused outcome rows: 0.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| empty_dot | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 549.77 |
+| empty_underscore | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 502.99 |
+| empty_word | 8/9 | 88.9 | 1 | 0 | 0 | 0 | 478.71 |
+| empty_zero | 6/9 | 66.7 | 3 | 0 | 0 | 0 | 410.06 |
+| latin_lowercase | 7/9 | 77.8 | 1 | 1 | 0 | 0 | 644.03 |
+| latin_uppercase | 8/9 | 88.9 | 1 | 0 | 0 | 0 | 415.45 |
+| mapping_alphabet_only | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 548.86 |
+| mapping_to_abstract | 4/9 | 44.4 | 3 | 0 | 2 | 0 | 635.56 |
+| mapping_to_digits | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 487.84 |
+| nonce_lowercase | 8/9 | 88.9 | 1 | 0 | 0 | 0 | 580.09 |
+| nonce_uppercase | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 589.55 |
+| output_compact | 2/9 | 22.2 | 0 | 1 | 6 | 0 | 773.64 |
+| output_json | 7/9 | 77.8 | 1 | 1 | 0 | 0 | 643.48 |
+| output_spaced | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 548.80 |
+| output_string81 | 4/9 | 44.4 | 1 | 1 | 3 | 0 | 839.71 |
+| rules_constraints_alphabet | 7/9 | 77.8 | 1 | 0 | 1 | 0 | 573.50 |
+| rules_explicit_constraints | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 424.07 |
+| rules_fully_explicit | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 552.24 |
+| rules_minimal | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 408.32 |
+
+### Condition by difficulty
+
+| Condition | Easy | Medium | Hard |
+| --- | --- | --- | --- |
+| empty_dot | 3/3 | 3/3 | 1/3 |
+| empty_underscore | 3/3 | 2/3 | 2/3 |
+| empty_word | 3/3 | 2/3 | 3/3 |
+| empty_zero | 3/3 | 2/3 | 1/3 |
+| latin_lowercase | 3/3 | 2/3 | 2/3 |
+| latin_uppercase | 2/3 | 3/3 | 3/3 |
+| mapping_alphabet_only | 3/3 | 3/3 | 1/3 |
+| mapping_to_abstract | 3/3 | 0/3 | 1/3 |
+| mapping_to_digits | 3/3 | 3/3 | 3/3 |
+| nonce_lowercase | 3/3 | 2/3 | 3/3 |
+| nonce_uppercase | 3/3 | 3/3 | 3/3 |
+| output_compact | 1/3 | 0/3 | 1/3 |
+| output_json | 3/3 | 3/3 | 1/3 |
+| output_spaced | 3/3 | 3/3 | 1/3 |
+| output_string81 | 1/3 | 2/3 | 1/3 |
+| rules_constraints_alphabet | 2/3 | 2/3 | 3/3 |
+| rules_explicit_constraints | 3/3 | 2/3 | 2/3 |
+| rules_fully_explicit | 3/3 | 3/3 | 1/3 |
+| rules_minimal | 3/3 | 3/3 | 3/3 |
+
+## Qwen exp10
+
+Evidence path: `qwen-3.8-27b-v2/qwen-3.8-27b-local/exp10`. Saved 108 of 108. Complete: True.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| All | 98/108 | 90.7 | 7 | 3 | 0 | 0 | 323.74 |
+| easy | 36/36 | 100.0 | 0 | 0 | 0 | 0 | 87.06 |
+| medium | 35/36 | 97.2 | 1 | 0 | 0 | 0 | 260.44 |
+| hard | 27/36 | 75.0 | 6 | 3 | 0 | 0 | 623.71 |
+
+Parseable Sudoku grids: 105/108. Clues preserved among parseable grids: 101/105. Valid Sudoku units together: 102/105. Median record latency: 104.28 seconds. Reused outcome rows: 0.
+
+| Group | Correct / total | Accuracy % | Invalid grid | Truncated | Other output error | Operational | Mean seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| arabic_digits:checker_guided_revision | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 421.80 |
+| arabic_digits:one_pass | 7/9 | 77.8 | 0 | 2 | 0 | 0 | 719.65 |
+| arabic_digits:one_self_revision | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 236.80 |
+| arabic_digits:two_self_revisions | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 33.47 |
+| emoji:checker_guided_revision | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 405.79 |
+| emoji:one_pass | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 405.79 |
+| emoji:one_self_revision | 9/9 | 100.0 | 0 | 0 | 0 | 0 | 70.66 |
+| emoji:two_self_revisions | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 92.31 |
+| greek_letters:checker_guided_revision | 8/9 | 88.9 | 0 | 1 | 0 | 0 | 692.37 |
+| greek_letters:one_pass | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 558.38 |
+| greek_letters:one_self_revision | 8/9 | 88.9 | 1 | 0 | 0 | 0 | 185.92 |
+| greek_letters:two_self_revisions | 7/9 | 77.8 | 2 | 0 | 0 | 0 | 61.93 |
+
+### Condition by difficulty
+
+| Condition | Easy | Medium | Hard |
+| --- | --- | --- | --- |
+| arabic_digits:checker_guided_revision | 3/3 | 3/3 | 3/3 |
+| arabic_digits:one_pass | 3/3 | 3/3 | 1/3 |
+| arabic_digits:one_self_revision | 3/3 | 3/3 | 3/3 |
+| arabic_digits:two_self_revisions | 3/3 | 3/3 | 3/3 |
+| emoji:checker_guided_revision | 3/3 | 3/3 | 3/3 |
+| emoji:one_pass | 3/3 | 3/3 | 3/3 |
+| emoji:one_self_revision | 3/3 | 3/3 | 3/3 |
+| emoji:two_self_revisions | 3/3 | 2/3 | 2/3 |
+| greek_letters:checker_guided_revision | 3/3 | 3/3 | 2/3 |
+| greek_letters:one_pass | 3/3 | 3/3 | 1/3 |
+| greek_letters:one_self_revision | 3/3 | 3/3 | 2/3 |
+| greek_letters:two_self_revisions | 3/3 | 3/3 | 1/3 |
+
+### Shared-initial revision transitions and compute
+
+| Arm | Correct | Fixed | Regressed | New calls | Extra seconds | Mean end-to-end seconds | All-stage truncations |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| checker_guided_revision | 26 | 3 | 0 | 4 | 4252.98 | 718.79 | 3 |
+| one_pass | 23 | 0 | 0 | 0 | 0.00 | 561.28 | 2 |
+| one_self_revision | 26 | 3 | 0 | 27 | 4440.47 | 725.74 | 2 |
+| two_self_revisions | 23 | 2 | 2 | 54 | 6123.53 | 788.07 | 2 |
+
 ## Historical diagnostics and all available outputs
 
 These are inventory counts, not a combined accuracy estimate. A missing marker or incomplete request digest prevents a completion claim.
@@ -6198,8 +8030,13 @@ These are inventory counts, not a combined accuracy estimate. A missing marker o
 | qwen-3.8-27b-local-natural-timing-v2-easy/qwen-3.8-27b-local/timing-diagnostic | 1/1 | 1 | 0 | 0 | True |
 | qwen-3.8-27b-local-natural-timing-v2-hard/qwen-3.8-27b-local/timing-diagnostic | 1/1 | 0 | 1 | 0 | True |
 | qwen-3.8-27b-local-natural-timing-v2-medium/qwen-3.8-27b-local/timing-diagnostic | 1/1 | 0 | 1 | 0 | True |
+| qwen-3.8-27b-v2/qwen-3.8-27b-local/exp10 | 108/108 | 98 | 3 | 0 | True |
 | qwen-3.8-27b-v2/qwen-3.8-27b-local/exp2 | 60/60 | 54 | 2 | 0 | True |
 | qwen-3.8-27b-v2/qwen-3.8-27b-local/exp4 | 540/540 | 472 | 24 | 0 | True |
+| qwen-3.8-27b-v2/qwen-3.8-27b-local/exp6 | 135/135 | 120 | 6 | 0 | True |
+| qwen-3.8-27b-v2/qwen-3.8-27b-local/exp7 | 45/45 | 37 | 2 | 0 | True |
+| qwen-3.8-27b-v2/qwen-3.8-27b-local/exp8 | 165/165 | 147 | 8 | 0 | True |
+| qwen-3.8-27b-v2/qwen-3.8-27b-local/exp9 | 171/171 | 130 | 4 | 0 | True |
 | qwen-3.8-27b-v2/qwen-3.8-27b-local/qualification | 5/5 | 5 | 0 | 0 | True |
 | qwen-3.8-27b-v2-natural-timing-v3-medium/qwen-3.8-27b-local/timing-diagnostic | 1/1 | 1 | 0 | 0 | True |
 | qwen-natural-timing-v1-easy/qwen-local/timing-diagnostic | 1/1 | 1 | 0 | 0 | True |

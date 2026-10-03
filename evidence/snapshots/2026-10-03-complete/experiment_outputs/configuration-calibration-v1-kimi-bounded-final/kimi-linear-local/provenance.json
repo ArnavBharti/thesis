@@ -1,0 +1,55 @@
+{
+  "backend": "vllm",
+  "dataset_sha256": "43a1ef3a4dfe22fa6cd8939021a80ef3cc812c5916ab62ef6b11501b45b58cc2",
+  "dtype": "bfloat16",
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "0,1",
+    "SLURM_JOB_ID": "337846",
+    "SLURM_JOB_NODELIST": "gpunode7"
+  },
+  "git_commit": "4af9788e4c5acb9bd885548df5a7b8eec44b13d6",
+  "gpu": [
+    {
+      "driver_version": "580.126.20",
+      "index": "0",
+      "memory_total_mib": "143771",
+      "name": "NVIDIA H200 NVL",
+      "uuid": "GPU-db3b7c94-7bab-9809-e39a-820a7c3bf4cf"
+    },
+    {
+      "driver_version": "580.126.20",
+      "index": "1",
+      "memory_total_mib": "143771",
+      "name": "NVIDIA H200 NVL",
+      "uuid": "GPU-6d136ccf-a2bf-8ba5-ca74-0479bb1f7d1a"
+    }
+  ],
+  "hostname": "gpunode7.sharanga.local",
+  "model": "kimi-linear-local",
+  "model_id": "moonshotai/Kimi-Linear-48B-A3B-Instruct",
+  "packages": {
+    "accelerate": "1.14.0",
+    "torch": "2.13.0",
+    "transformers": "5.16.1",
+    "vllm": "0.28.0"
+  },
+  "platform": "Linux-4.18.0-553.109.1.el8_10.x86_64-x86_64-with-glibc2.28",
+  "python": "3.11.5 (main, Sep 11 2023, 13:54:46) [GCC 11.2.0]",
+  "revision": "e1df551a447157d4658b573f9a695d57658590e9",
+  "run_id": "configuration-calibration-v1-kimi-bounded-final",
+  "runtime_options": {
+    "gpu_memory_utilization": 0.9,
+    "max_model_len": 32768,
+    "max_num_seqs": 1
+  },
+  "sampling_options": {
+    "max_tokens": 8192,
+    "repetition_penalty": 1.05,
+    "seed": 20260826,
+    "temperature": 0.7,
+    "top_k": 20,
+    "top_p": 0.9
+  },
+  "tensor_parallel_size": 2,
+  "tokenizer_id": "moonshotai/Kimi-Linear-48B-A3B-Instruct"
+}

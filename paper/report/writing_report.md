@@ -2,7 +2,7 @@
 title: "Symbolic Representation and LLM Sudoku Performance"
 subtitle: "Evidence dossier and section-by-section research-paper writing guide"
 author: "Prepared for Arnav Bharti"
-date: "30 September 2026"
+date: "3 October 2026"
 ---
 
 # Purpose, scope, and how to use this report
@@ -11,13 +11,13 @@ This is a writing dossier, not a replacement manuscript. You will write the pape
 
 Read this narrative together with `generated/results_tables.md`. The latter contains every selected-model condition, its difficulty breakdown, error categories, latency, and completion checks. `generated/audit.json` is the machine-readable audit. `generated/observations.csv` contains one row per saved result and can be opened in a spreadsheet. Historical diagnostics are included separately. Do not combine them into one model accuracy figure.
 
-The raw backup is under `evidence/snapshots/2026-09-30-report/`. JSONL results and job logs are losslessly gzip-compressed. A snapshot manifest records both compressed-file and uncompressed-content SHA-256 checksums. The transfer includes result records, frozen protocols, sample plans, provenance, generated Slurm scripts, and logs. It excludes model weights, virtual environments, and credentials. The uncompressed working copy is under the ignored `tmp/research-report/snapshot/` directory.
+The complete raw backup is under `evidence/snapshots/2026-10-03-complete/`. Its 599 files occupy 69,814,796 stored bytes, excluding the manifest. JSONL results and job logs are losslessly gzip-compressed. The manifest records stored-file and raw-content SHA-256 checksums. The transfer includes outcomes, frozen protocols, sample plans, provenance, generated Slurm scripts, logs, both final analyses and token registries, and a fresh exact-ID scheduler capture. It excludes weights, environments, and credentials. The uncompressed working copy is under ignored `tmp/research-report/2026-10-03-capture/`. Both September snapshots remain unchanged.
 
 ## Evidence status and the central writing decision
 
-Both selected models have complete qualification, pilot, and main evidence. Each main benchmark contains 540/540 saved records with its exact frozen request digest and all valid completion markers. GPT-OSS also has complete outcome records for Steps 8 through 12. Qwen's final part, job 366222, completed at 19:29:44 IST on 30 September 2026 in 8:18:28 with exit code `0:0`. The final read-only capture followed at 19:31 IST. The local audit covers 2,026 records across the selected and historical runs. It finds no request-content hash, shard, scoring, independent-grid, or dataset-identity disagreement. The generated audit states the status of every included run. Historical incomplete diagnostic trials remain incomplete and must not be described as completed merely because the selected main benchmarks are complete.
+Both selected models have complete qualification, pilot, main, Steps 8--12, and final-analysis evidence. Each main contains 540/540 saved records with matching frozen request digests and valid markers. Qwen follow-ups contain 135, 45, 165, 171, and 108 records, all complete with matching digests. Jobs 373543--373547 and CPU analysis 373551 completed with exit `0:0`; final analysis ended at 13:04:25 IST on 3 October. The fresh read-only capture followed that evening. The local audit covers 2,650 outcome records across selected and historical runs with no content-hash, shard, re-scoring, independent-grid, or dataset-identity disagreement. Historical partial diagnostics remain partial.
 
-No Qwen mechanism experiment is represented in this snapshot. Code exists for those experiments, but implemented code is not completed evidence. Do not write that input/output cross, token length, binding, ablations, or revision replicated across both models. Do not write that the whole project is finished merely because GPT-OSS inference is finished.
+Both models now have completed corresponding follow-up evidence, but their patterns are not identical. Both pass 75/75 simple controls and have singular token-length regressions. Permuted number words score lower in both, while permuted digits decrease GPT-OSS's score and increase Qwen's. Two revisions improve GPT-OSS's score but produce no net Qwen gain, with two Qwen regressions. Describe this as a completed two-model comparison, not universal replication of every effect. Step 13 analyzes 1,229 outcome rows and writes 2,781 token-diagnostic rows per model; neither count represents fresh independent solves.
 
 This dossier does not label completed manuscript results as “preliminary.” It distinguishes completed evidence, incomplete evidence, and untested explanations for your use as the author. Only completed, verified evidence belongs in final-paper results prose.
 
@@ -58,7 +58,7 @@ Use the authentic template for your chosen venue. The supplied guidance mentions
 
 **Contribution, one or two sentences.** Say you evaluate a controlled symbolic-representation benchmark with unique-solution Sudoku puzzles and deterministic answer checks. Identify the study as evaluation and diagnosis, not a new training algorithm, tokenizer, neural architecture, or Sudoku solver.
 
-**Method, one or two sentences.** Mention three technique-defined difficulty tiers, nine alphabets, the same 60 main puzzles across representations, and final-grid-only scoring. Name GPT-OSS-120B and Qwen3.8-27B-FP8. Their complete main evidence is verified. Distinguish the paired main benchmark from smaller GPT-OSS diagnostic experiments.
+**Method, one or two sentences.** Mention three technique-defined difficulty tiers, nine alphabets, the same 60 main puzzles across representations, and final-grid-only scoring. Name GPT-OSS-120B and Qwen3.8-27B-FP8. Distinguish the paired main benchmark from the smaller completed diagnostics for both models.
 
 **Results, one or two sentences.** Select the strongest complete findings. GPT-OSS solved 372/540 requests, or 68.9%, and Qwen solved 472/540, or 87.4%. The paired difference is 18.5 percentage points, with an exploratory stratified puzzle-bootstrap 95% interval of 13.7 to 23.5 points. Both models decline with difficulty. Alphabet accuracies range from 61.7% to 75.0% for GPT-OSS and 80.0% to 93.3% for Qwen, but neither model's eight Arabic-baseline comparisons survives Holm adjustment at 0.05. Do not pack all of these numbers into the abstract. A compact option is the two overall accuracies, a qualitative difficulty trend, and a bounded statement that numerical representation variation was not statistically resolved by these baseline comparisons.
 
@@ -67,7 +67,7 @@ Use the authentic template for your chosen venue. The supplied guidance mentions
 ## Decisions to make before writing the abstract
 
 - Decide whether the main message is representation sensitivity, the model comparison, or the separation of failure types. Give one of these priority.
-- If the abstract mentions revision, note that the result is a small GPT-OSS subset. Do not let a 27-cell arm dominate the 540-request main study.
+- If the abstract mentions revision, state its small shared-initial subset and model-dependent result: two revisions help GPT-OSS but give no net Qwen improvement. Do not let a 27-cell arm dominate the main study.
 - Use “percentage points” for accuracy differences. A change from 75.0% to 61.7% is 13.3 percentage points, not a 13.3% relative reduction.
 - Do not call the main input set “540 puzzles.” State 60 puzzles represented nine ways.
 - Avoid putting raw Slurm job IDs, framework versions, historical rejected models, or context-ceiling details in the abstract.
@@ -107,7 +107,7 @@ State that the study uses pinned model revisions and frozen sample plans. Do not
 
 ## Paragraph 5: experimental setup in one paragraph
 
-The dataset has 300 puzzles, 100 per tier. The frozen main sample has 20 per tier. Each model receives 540 main requests. The pilot uses different underlying puzzles. GPT-OSS mechanisms use nested 15-puzzle and nine-puzzle subsets of the main set. Hidden reasoning is permitted, but only the extracted final answer is scored.
+The dataset has 300 puzzles, 100 per tier. The frozen main sample has 20 per tier. Each model receives 540 main requests. The pilot uses different underlying puzzles. Both models' mechanisms use the same nested 15-puzzle and nine-puzzle subsets. Hidden reasoning is permitted, but only the extracted final answer is scored.
 
 Name the two selected checkpoints and state that the experiments run locally on Sharanga H100 compute nodes. “Local” means locally hosted open-weight inference on the university cluster, not inference on your laptop. Do not introduce Nemotron and Mistral as main-study models.
 
@@ -124,7 +124,7 @@ Candidate contributions, stated in full sentences, are as follows.
 1. A reproducible paired evaluation of the same unique-solution Sudoku puzzles under nine symbolic alphabets and three solver-defined difficulty tiers.
 2. A final-answer evaluation procedure that separates logical errors, clue changes, output-format failures, and truncation from operational failures.
 3. A comparison of the selected open-weight reasoning models under matched puzzle sets, sampling settings, and context ceilings, with model-specific reasoning interfaces disclosed.
-4. Targeted GPT-OSS experiments testing input/output remapping, token-length constructions, label assignments, prompt/output choices, and final-answer revision.
+4. Corresponding experiments for both models testing input/output remapping, model-specific token-length constructions, label assignments, prompt/output choices, and final-answer revision.
 
 Do not describe the dataset as the largest Sudoku benchmark or the models as the strongest possible models. Do not present small mechanism differences as causal discoveries. The distinctive contribution is the controlled combination and auditability, not a claim that every component is new.
 
@@ -132,7 +132,7 @@ Do not describe the dataset as the largest Sudoku benchmark or the models as the
 
 RQ1 asks whether realized final-grid accuracy differs across equivalent symbolic alphabets on the same puzzles. RQ2 asks how that pattern changes with solver-defined difficulty and model. RQ3 asks how much failure is attributable to invalid grids versus output errors and truncation. RQ4 asks whether simple Greek-symbol handling or cross-mapping alone explains failures. RQ5 asks what the token-length, binding, and prompt experiments establish or fail to establish. RQ6 asks whether revising a shared initial answer improves correctness, and at what additional cost.
 
-Keep the paper's RQs limited enough that each has a substantive answer. RQ4 through RQ6 currently have GPT-OSS evidence only. The report's discussion later gives alternative organizations if you want a shorter paper.
+Keep the paper's RQs limited enough that each has a substantive answer. All six now have completed evidence for both models. Shared and differing patterns must both appear. The later discussion offers shorter-paper organizations.
 
 # Background and related work
 
@@ -417,7 +417,7 @@ The 15 mechanism puzzles each have four Sudoku conditions. Arabic-to-Arabic and 
 
 Each puzzle also has five controls. Copy a Greek row exactly. Translate the fixed sequence `ε γ η` to `5 3 7`. Retrieve the symbol at row 1, column 5 of a complete Greek grid. Count occurrences of one symbol in a complete grid. Convert a supplied complete Greek grid to Arabic digits. These tasks use a supplied completed solution and do not require solving Sudoku.
 
-Total records are (15(4+5)=135). Thirty Sudoku baselines are reused, 30 Sudoku cross calls are new, and 75 controls are new. All 75 control outcomes are correct. Some controls repeat a fixed answer such as `9` or `5 3 7`. They are limited checks, not exhaustive proofs of arbitrary Greek understanding or general grid manipulation.
+Total records are (15(4+5)=135) per model. Thirty Sudoku baselines are reused, 30 cross calls are new, and 75 controls are new. Both models pass all 75 controls. Some controls repeat a fixed answer such as `9` or `5 3 7`. These limited checks do not prove arbitrary Greek understanding or general grid manipulation.
 
 **Purpose.** Separate simple symbol handling from integrated constraint solving and cross-representation output. A successful control excludes some narrow explanations under that prompt, but not every possible parsing, memory, reasoning, or binding problem in the full task.
 
@@ -427,7 +427,7 @@ Use the selected model's exact tokenizer to search deterministic candidate label
 
 Record nominal token length, mean clue tokens, mean symbol UTF-8 bytes, mean code-point count, and prompt tokens. Full-row and contextual tokenization can differ from isolation, so do not describe a label's isolated length as the whole prompt cost.
 
-The registered logistic fit predicts correctness using prompt tokens, mean clue tokens, mean bytes, and mean code points. It returned a singular information matrix. These predictors co-vary in the available construction. There is no independently identified coefficient to interpret. Do not omit this failure and present a clean token-length explanation.
+The registered logistic fit predicts correctness using prompt tokens, mean clue tokens, mean bytes, and mean code points. It returned a singular information matrix for both models. Predictors co-vary in each construction. No independent coefficient is identified. Do not omit these failures or present a clean token-length explanation.
 
 **Purpose and limitation.** This is a diagnostic comparison of constructed label sets, not a randomized causal experiment isolating token count. Label identity also changes between bins. The non-monotonic descriptive results directly contradict a simple “fewer tokens always improves solving” summary on this sample.
 
@@ -537,17 +537,17 @@ Under the recorded deployed configurations, Qwen has higher realized accuracy an
 
 ## Step 8: input/output cross and controls
 
-All 135 records are saved with a valid marker. The four Sudoku conditions solve 12/15, 12/15, 10/15, and 11/15 for Arabic-to-Arabic, Greek-to-Greek, Greek-to-Arabic, and Arabic-to-Greek. The Sudoku-only total is 45/60. The 75 controls all pass. The combined 120/135 figure mixes solving with simpler controls and should not be presented as the model's Sudoku accuracy.
+GPT-OSS saves all 135 records with a valid marker. Its four Sudoku conditions score 12/15, 12/15, 10/15, and 11/15 in Arabic-to-Arabic, Greek-to-Greek, Greek-to-Arabic, and Arabic-to-Greek order. Qwen scores 13/15, 11/15, 11/15, and 10/15. Each model solves 45/60 Sudoku outcomes and passes all 75 controls. Their equal mixed 120/135 totals conceal different condition outcomes and are not Sudoku-only accuracy.
 
-Sudoku-only easy, medium, and hard correctness is 19/20, 18/20, and 8/20. All four Sudoku conditions score 2/5 on hard. Two hard responses truncate. There are zero request-level operational failures.
+Sudoku-only easy, medium, and hard correctness is 19/20, 18/20, and 8/20 for both models. GPT-OSS has two truncations, nine incorrect grids, and four other output errors. Qwen has six truncations and nine incorrect grids. Both have zero operational failures. Equal tier totals do not establish identical cells.
 
-The baseline equality of Arabic-to-Arabic and Greek-to-Greek, plus perfect simple controls, does not support a simple universal Greek-output penalty. The cross conditions are lower in aggregate, but their extra instructions and mapping burden confound pure input/output attribution. They also have only 15 puzzles per condition.
+GPT-OSS's equal baselines do not support a universal Greek-output penalty. Qwen's Greek-to-Arabic score remains 11/15, equal to Greek-to-Greek, so Arabic output does not improve this aggregate. Cross prompts add instructions and mapping burden, confounding pure input/output attribution. Each condition has only 15 puzzles.
 
 ## Step 9: token-length construction
 
 All 45 requests are complete. One-token labels solve 9/15, two-token labels 13/15, and three-token labels 10/15. Easy is 15/15, medium 13/15, and hard 4/15 across the three conditions. There are five truncations, four other output errors, four incorrect grids, and zero operational failures.
 
-The best observed condition is the two-token alphabet. Hard correctness is 0/5, 3/5, and 1/5 across the bins. This is non-monotonic. The registered regression reports a singular information matrix for 45 observations. Report the construction and descriptive result without assigning an independently estimated token-length effect.
+GPT-OSS's highest bin has two tokens, with hard counts 0/5, 3/5, and 1/5. Qwen solves 37/45: bins 12/15, 11/15, and 14/15; tiers 14/15 easy, 15/15 medium, and 8/15 hard. Its failures are three incorrect grids, two truncations, three other output errors, and zero operational failures. Both patterns are non-monotonic and both 45-observation fits are singular. Labels are model-specific. Report descriptive constructions, not an identified token-length effect.
 
 ## Step 10: binding conditions
 
@@ -555,7 +555,9 @@ All 165 records are complete. Overall correctness is 124/165. Easy, medium, and 
 
 Ordinary digits, ordinary number words, and nonce labels each solve 12/15. Permuted digits and permuted number words each solve 10/15. Six uppercase assignments range from 10/15 to 13/15. The complete condition table supplies exact results and latency.
 
-Possible interpretation is sensitivity to assignment or familiar-label semantics. However, the smaller permutations are not established causal effects. Five fixed uppercase permutations also vary by up to three outcomes, showing that assignment choice can interact with the selected puzzle sample and sampled generation. Do not state that “semantic conflict causes a 13.3-point loss” as an identified general mechanism.
+Qwen solves 147/165: easy 50/55, medium 51/55, hard 46/55. Ordinary and permuted digits score 13/15 and 15/15; ordinary and permuted number words 12/15 and 9/15; nonce 14/15. Uppercase assignments span 12/15--15/15. Its failures are nine incorrect grids, eight truncations, one other output error, and zero operational failures.
+
+Both models score lower on permuted words, but the digit direction differs. This rules out summarizing every permutation as harmful. Assignment sensitivity or familiar-label semantics are candidate explanations, not identified mechanisms. Fixed permutations and sampling remain alternatives. Do not state that semantic conflict causes a general percentage loss.
 
 ## Step 11: ablation outcomes and generation variability
 
@@ -565,7 +567,9 @@ The overall result is 103/171. Difficulty counts are 55/57 easy, 37/57 medium, a
 
 The four identical-default-prompt conditions score 5/9, 6/9, 5/9, and 7/9. This demonstrates that a two-answer difference can arise without changing the prompt. Consequently an observed 8/9 condition is a candidate for further evaluation, not sufficient evidence to replace the frozen benchmark prompt.
 
-The alternate formats are evaluated under their own parsing rules. A low score can include substantive grid errors as well as formatting failures. Do not claim their entire performance change is an output-format compliance effect without the category breakdown.
+Qwen completes all 171 records and marker, with job 373546 exiting `0:0` in 26:44:02. It solves 130/171: easy 51/57, medium 43/57, hard 36/57. Its failures are 25 incorrect grids, four truncations, and 12 other output errors, with zero operational failures. Digit mapping, uppercase nonce, and minimal rules score 9/9; compact rows 2/9 and string81 4/9. The four identical-default-prompt conditions have the same binary success set, 7/9. This verified agreement does not prove identical erroneous grids or deterministic future inference.
+
+Alternate formats use their own parsing rules. A low score can include grid errors as well as formatting failures. Qwen has 18 clue-changing outputs among 155 parseable grids, despite 147 unit-valid grids. Do not claim every format difference is compliance alone or select the highest nine-puzzle score as a validated new protocol.
 
 ## Step 12: revision results and costs
 
@@ -577,7 +581,13 @@ New-call counts are zero, 27, 54, and nine. Additional generation time totals ar
 
 The table's final-record truncation count is three across the four branches, while all-stage counts are larger because shared initial truncated answers appear in each arm and revisions can truncate. Do not sum shared initial stages and report them as independent truncation events. Use unique source request IDs or explicitly state branch-stage accounting.
 
-The strongest bounded statement is that two generic revisions and one conditional checker revision improve realized final correctness on this nine-puzzle, three-representation subset. Extra compute, branch selection, and feedback are not independently isolated. Qwen revision behavior is not measured in this snapshot.
+Qwen's 108 records are complete. Its arms score 23/27, 26/27, 23/27, and 26/27 in one-pass, one-revision, two-revision, and checker order. One revision fixes three of four initial failures with no regression. Two revisions fix two initial failures and regress two initially correct answers. Checker feedback fixes three of four failures and makes four calls, not GPT-OSS's nine. Qwen's new-call counts are 0, 27, 54, and 4; added times 0, 4,440.47, 6,123.53, and 4,252.98 seconds; mean cumulative times 561.28, 725.74, 788.07, and 718.79 seconds. It has three final-row truncations and zero operational errors.
+
+The bounded comparison is model-dependent. Two generic revisions help GPT-OSS but produce no net Qwen gain, including two regressions. Checker feedback improves both recorded subsets but uses selective intervention. Extra compute, selection, and feedback are not independently isolated. Do not generalize more revisions as consistently beneficial.
+
+## Step 13: completed analysis and token registries
+
+Both CPU analyses complete: GPT-OSS job 373562 in 3:44 and Qwen job 373551 in 7:40, exit `0:0`. Each analyzes 1,229 rows and produces 2,781 registry rows: 81 symbols and 2,700 user prompts across all 300 puzzles and nine alphabets. These are tokenizer measurements, not additional Sudoku solves. The experiment-centered block includes both full registry summaries and verification paths. The stored server retention, regression, and revision analyses must agree with their local registered re-analysis. Report-only Holm adjustment and the cluster bootstrap remain exploratory additions.
 
 ## Historical model-screening evidence
 
@@ -609,9 +619,9 @@ Run these commands on your machine. They do not use SSH, load a model, install p
 cd /Users/arnavbharti/Developer/arnavbharti/thesis
 python3 paper/report/prepare_snapshot.py \
   tmp/research-report/snapshot \
-  evidence/snapshots/2026-09-30-report --verify
+  evidence/snapshots/2026-10-03-complete --verify
 python3 paper/report/analyze_evidence.py \
-  --snapshot evidence/snapshots/2026-09-30-report \
+  --snapshot evidence/snapshots/2026-10-03-complete \
   --output tmp/research-report/recheck
 ```
 
@@ -629,7 +639,7 @@ python3 - <<'PY'
 import gzip
 import json
 from pathlib import Path
-root = Path('evidence/snapshots/2026-09-30-report/experiment_outputs')
+root = Path('evidence/snapshots/2026-10-03-complete/experiment_outputs')
 directory = root / 'local-models-v1/gpt-oss-120b-local/exp4'
 for path in sorted(directory.glob('shard-*.jsonl.gz')):
     with gzip.open(path, 'rt', encoding='utf-8') as stream:
@@ -655,7 +665,7 @@ import gzip
 import json
 from collections import Counter
 from pathlib import Path
-root = Path('evidence/snapshots/2026-09-30-report/experiment_outputs')
+root = Path('evidence/snapshots/2026-10-03-complete/experiment_outputs')
 for relative in ('local-models-v1/gpt-oss-120b-local/exp4',
                  'qwen-3.8-27b-v2/qwen-3.8-27b-local/exp4'):
     rows = []
@@ -740,19 +750,19 @@ The same token ceiling does not imply the same time budget. Throughput and token
 
 The main alphabets differ in tokenizer segmentation as well as label identity, familiarity, and Unicode form. Their accuracy ranking does not isolate token count. The dedicated label-length experiment is non-monotonic, and its regression is singular. That evidence blocks a simple causal token-length story rather than confirming one.
 
-The two-token condition may benefit from its specific labels, stochastic variation, or other correlated prompt properties. There is only one constructed alphabet per bin. A stronger experiment would use multiple matched label sets and independent repeats, but that has not been completed. Do not present such a design as part of the existing method.
+GPT-OSS's two-token and Qwen's three-token conditions have the highest observed scores. Their different specific labels, sampling, and correlated properties remain explanations. There is one constructed alphabet per bin per model. Multiple matched label sets and independent repeats remain future work.
 
 ## Lens 7: binding and semantics
 
 The ordinary versus permuted conditions suggest an assignment-related difference on the selected sample. Sudoku needs consistent equality relationships, so natural numeric meanings are unnecessary. A model could nevertheless rely on familiar templates or label associations. This is a plausible behavioral explanation.
 
-But the observed two-answer differences also fit sampling variation at this scale. The prompt does not explicitly impose a conflicting word-to-number definition. Internal activation evidence is absent. Use “consistent with” or “suggests a candidate explanation,” not “proves a binding mechanism” or “isolates semantic interference.”
+Both models lose answers under permuted number words, but Qwen gains answers under permuted digits while GPT-OSS loses them. Small differences also fit sampling variation. The prompt does not impose a conflicting arithmetic definition. Internal evidence is absent. Use bounded candidate explanations, not a proven binding mechanism.
 
 ## Lens 8: input/output asymmetry
 
 All simple controls succeed, while full Sudoku solving fails. This narrows explanations involving basic symbol copying or the fixed translation task. It does not prove all input processing is flawless during long solving. Cross-mapping adds instructions and an additional conversion requirement, so a weaker cross condition can reflect combined burden rather than output script alone.
 
-The two same-alphabet baselines both score 12/15 on the mechanism subset. That result is incompatible with a deterministic universal Greek penalty. It is compatible with sample-specific difficulty, prompt interactions, and stochastic variability. Do not generalize a mechanism-subset equality to the full main sample.
+GPT-OSS's same-alphabet baselines both score 12/15. Qwen's Arabic and Greek baselines score 13/15 and 11/15, while its Greek-to-Arabic cross remains 11/15. Neither pattern establishes a deterministic Greek-output cause. Sample-specific difficulty, extra mapping instructions, and variability remain alternatives.
 
 ## Lens 9: prompt sensitivity and variance
 
@@ -762,7 +772,7 @@ Some ablations change output contract and parsing, while others change symbol id
 
 ## Lens 10: revision as extra computation and information
 
-Two revisions improve the observed count from 18/27 to 23/27. Checker-guided revision reaches 22/27 while calling the model on only nine initially wrong cells. This is a useful practical comparison. Its additional compute and selective intervention differ from generic revision.
+GPT-OSS improves from 18/27 to 23/27 after two revisions; checker feedback reaches 22/27 using nine calls. Qwen improves from 23/27 to 26/27 after one revision, but two revisions finish at 23/27 with two fixes and two regressions relative to the initial answer. Its checker reaches 26/27 with four calls. The benefit is not monotonic or universal. Compare eligible initial failures (nine versus four), protected successes, and cumulative generation costs.
 
 The checker supplies constraint violations without a complete solution. That is less information than a solved grid but more information than an unassisted “check yourself” request. Its no-regression property follows partly from skipping initially correct outputs. The study lacks an equal-compute resampling baseline, so it cannot attribute gains exclusively to self-correction skill.
 
@@ -797,13 +807,13 @@ The provenance files have a null commit field and are captured once. Disclose th
 - It does not establish a universal benefit from self-revision or checker feedback.
 - It does not show that all length-limited responses would become correct with a higher ceiling.
 - It does not prove exact novelty over all prior literature. Close symbol-symmetry work must be acknowledged.
-- It does not provide completed Qwen mechanism evidence in the current snapshot.
+- It does not establish that corresponding follow-ups share a single causal explanation across both models.
 
 ## Limitations paragraph checklist
 
 Include the single generated dataset family, 60 main underlying puzzles, one sampled completion per condition, two selected configurations, nested small mechanism subsets, provider-specific reasoning controls, different architecture/quantization, context-bound generation, selection after screening, missing independently varied tokenizer factors, sampling variability, and once-per-run provenance. State that the exact verifier assesses final solutions, not the process by which they were generated.
 
-Both main benchmarks are complete in this checksum-verified snapshot. Qwen mechanisms remain unrun in the captured evidence. Do not conceal that a historical or GPT-OSS job timeout happened, but do not misclassify checkpointed or completed outcome data as operational request errors. If later experiments are added, update the evidence capture and analysis before adding their findings.
+Both main benchmarks, all selected-model follow-ups, and both final analyses are complete in this capture. GPT-OSS's completed ablation artifact survives a teardown timeout; Qwen's corresponding job completes normally. Preserve execution distinctions instead of misclassifying saved answers as request errors. Future additions require a new capture and audit.
 
 # Conclusion: points to include and what to leave out
 
@@ -813,13 +823,13 @@ Include that standard Sudoku label substitutions preserve the abstract problem, 
 
 Do not introduce new numerical analyses in the conclusion. Do not promise unrun experiments as completed work. Do not claim tokenization caused the differences. Do not claim the study proves all current models lack reasoning. Do not write that syntax-only constraints solve correctness.
 
-Future work can name repeated sampling, broader datasets, additional models, tokenizer-matched label sets, equal-time/equal-compute comparisons, Qwen mechanism replication, and conditional reruns with a larger context. These are proposals, not accomplishments. No such inference was submitted while preparing this report.
+Future work can name repeated sampling, broader datasets, additional models, tokenizer-matched label sets, equal-time/equal-compute comparisons, and conditional larger-context reruns. Qwen's corresponding mechanisms are now completed, not future work. No new inference was submitted during this update.
 
 ## Two defensible paper narratives
 
 **Evaluation-centered narrative.** Lead with paired symbolic representation and difficulty. Use the complete two-model main benchmark, with bounded within-model representation findings and the paired configuration comparison. Use error decomposition as a second contribution. Put most mechanism details and failed-model screening in appendices. This is the clearest route if the paper's main value is a carefully audited empirical benchmark.
 
-**Diagnosis-centered narrative.** Lead with why an apparently equivalent task can fail at the final-output interface. Present GPT-OSS main results, simple-symbol controls, non-monotonic token-length evidence, and revision results. Keep explanations explicitly bounded. Do not market the diagnostic experiments as a causal mechanistic discovery.
+**Diagnosis-centered narrative.** Lead with failures at the final-output interface. Use both models' main results, perfect simple controls, different non-monotonic token-length patterns, differing digit-permutation directions, and model-dependent revision. Keep causal claims bounded.
 
 You may combine these, but avoid a paper with six unrelated mini-studies and no central claim. Use the main paired experiment as the anchor. Every mechanism section should answer a specific alternative explanation raised by the main data.
 
@@ -861,7 +871,7 @@ The report's generated CSV and JSON can be supplementary artifacts. Before publi
 - Parseability and clue preservation use stated denominators.
 - Statistical tests respect pairing, clustering, and multiplicity.
 - Causal explanations are not substituted for descriptive evidence.
-- Missing Qwen mechanisms or analysis stages remain explicitly unclaimed.
+- Both models' follow-up findings are grounded in matching completed artifacts, not inferred from submission or main scores.
 
 ## Writing and presentation
 

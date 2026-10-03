@@ -1,0 +1,64 @@
+{
+  "inference": {
+    "max_new_tokens": 131072,
+    "seed": 20260826,
+    "temperature": 0.6,
+    "top_p": 0.95
+  },
+  "model": {
+    "api_base": null,
+    "api_key_env": null,
+    "backend": "vllm",
+    "dtype": "auto",
+    "enabled": true,
+    "extra": {
+      "chat_template": {
+        "enable_thinking": true,
+        "preserve_thinking": false,
+        "reasoning_effort": "high"
+      },
+      "reasoning_output": "think_tags",
+      "sampling": {
+        "min_p": 0,
+        "presence_penalty": 1.5,
+        "repetition_penalty": 1,
+        "temperature": 1,
+        "top_k": 20,
+        "top_p": 0.95
+      },
+      "vllm": {
+        "gdn_prefill_backend": "triton",
+        "gpu_memory_utilization": 0.9,
+        "language_model_only": true,
+        "linear_backend": "triton",
+        "max_model_len": 131072
+      }
+    },
+    "local_files_only": true,
+    "model_id": "Qwen/Qwen3.5-122B-A10B-FP8",
+    "name": "qwen-3.5-122b-local",
+    "revision": "a099dee70ccfcd8d5dda56aaa0b60cb8ecadabc9",
+    "slurm": {
+      "cpus": 8,
+      "gpus": 2,
+      "memory": "256G",
+      "modules": [],
+      "nodelist": null,
+      "partition": "gpu_h200_8",
+      "time_limit": "0-01:00"
+    },
+    "tensor_parallel_size": 2,
+    "tokenizer_id": null,
+    "trust_remote_code": false
+  },
+  "request_count": 1,
+  "request_id_sha256": "138fad260f7695ac88f72b9559618edd13433481c82d8d1b285352dfb1b2ff44",
+  "retry": {
+    "attempts": 5,
+    "initial_delay_seconds": 2.0,
+    "maximum_delay_seconds": 30.0,
+    "timeout_seconds": 600.0
+  },
+  "run_id": "qwen-3.5-122b-local-natural-timing-v2-medium",
+  "step": "timing-diagnostic"
+}

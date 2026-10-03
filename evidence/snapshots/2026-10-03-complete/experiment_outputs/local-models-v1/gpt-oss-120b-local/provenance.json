@@ -1,0 +1,47 @@
+{
+  "backend": "vllm",
+  "dataset_sha256": "43a1ef3a4dfe22fa6cd8939021a80ef3cc812c5916ab62ef6b11501b45b58cc2",
+  "dtype": "auto",
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "0",
+    "SLURM_JOB_ID": "347048",
+    "SLURM_JOB_NODELIST": "gpunode6"
+  },
+  "git_commit": null,
+  "gpu": [
+    {
+      "driver_version": "580.126.20",
+      "index": "0",
+      "memory_total_mib": "81559",
+      "name": "NVIDIA H100 80GB HBM3",
+      "uuid": "GPU-6132e1b7-d625-1aa0-f28a-f408c63380f2"
+    }
+  ],
+  "hostname": "gpunode6.hpc.bits-hyderabad.ac.in",
+  "model": "gpt-oss-120b-local",
+  "model_id": "openai/gpt-oss-120b",
+  "packages": {
+    "accelerate": "1.14.0",
+    "torch": "2.13.0",
+    "transformers": "5.16.1",
+    "vllm": "0.28.0"
+  },
+  "platform": "Linux-4.18.0-553.45.1.el8_10.x86_64-x86_64-with-glibc2.28",
+  "python": "3.11.5 (main, Sep 11 2023, 13:54:46) [GCC 11.2.0]",
+  "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+  "run_id": "local-models-v1",
+  "runtime_options": {
+    "gpu_memory_utilization": 0.9,
+    "max_model_len": 131072,
+    "max_num_seqs": 1
+  },
+  "sampling_options": {
+    "max_tokens": 131072,
+    "seed": 20260826,
+    "skip_special_tokens": false,
+    "temperature": 1,
+    "top_p": 1
+  },
+  "tensor_parallel_size": 1,
+  "tokenizer_id": "openai/gpt-oss-120b"
+}

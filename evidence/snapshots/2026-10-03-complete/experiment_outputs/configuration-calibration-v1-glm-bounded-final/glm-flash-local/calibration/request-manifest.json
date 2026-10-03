@@ -1,0 +1,62 @@
+{
+  "inference": {
+    "max_new_tokens": 16384,
+    "seed": 20260826,
+    "temperature": 1.0,
+    "top_p": 0.95
+  },
+  "model": {
+    "api_base": null,
+    "api_key_env": null,
+    "backend": "vllm",
+    "dtype": "bfloat16",
+    "enabled": true,
+    "extra": {
+      "bounded_final": {
+        "final_tokens": 1024,
+        "mode": "close_think",
+        "reasoning_tokens": 15360
+      },
+      "chat_template": {
+        "enable_thinking": true
+      },
+      "protocol": {
+        "cohort_role": "local GLM-family replacement",
+        "replacement_reason": "the exact checkpoint is not locally deployable on available Sharanga nodes",
+        "replaces_outline_model": "zai-org/GLM-5.2"
+      },
+      "reasoning_output": "think_tags",
+      "sampling": {},
+      "vllm": {
+        "gpu_memory_utilization": 0.9,
+        "max_model_len": 32768
+      }
+    },
+    "local_files_only": true,
+    "model_id": "zai-org/GLM-4.7-Flash",
+    "name": "glm-flash-local",
+    "revision": "7dd20894a642a0aa287e9827cb1a1f7f91386b67",
+    "slurm": {
+      "cpus": 12,
+      "gpus": 2,
+      "memory": "256G",
+      "modules": [],
+      "nodelist": null,
+      "partition": "gpu_h100_4",
+      "time_limit": "0-23:30"
+    },
+    "tensor_parallel_size": 2,
+    "tokenizer_id": null,
+    "trust_remote_code": true
+  },
+  "request_count": 15,
+  "request_id_sha256": "3db857ef96553701a180b14376f5aa72efcf226fd55ecb9c70d9d073cdc66804",
+  "retry": {
+    "attempts": 5,
+    "initial_delay_seconds": 2.0,
+    "maximum_delay_seconds": 30.0,
+    "timeout_seconds": 600.0
+  },
+  "run_id": "configuration-calibration-v1-glm-bounded-final",
+  "step": "calibration"
+}

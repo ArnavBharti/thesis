@@ -54,8 +54,10 @@ unchanged in six shards.
 On 30 September 2026, Qwen Steps 8--12 were queued independently, followed
 by a dependent CPU Step 13. Exact job IDs, resource overrides, and the separate
 GPT-OSS Step 13 frozen-source resolution are recorded in [AGENTS.md](../AGENTS.md).
-These submissions are not completed results. The dated paper-report snapshot
-predates them and remains unchanged.
+All five Qwen follow-ups and CPU Step 13 completed with exit `0:0` by
+3 October 2026. The new complete snapshot below preserves their outcomes,
+markers, final analyses, tokenizer registries, scripts, logs, and scheduler
+metadata. Earlier snapshots remain unchanged.
 GPT-OSS Step 13 subsequently completed in CPU job `373562`, using the exact
 frozen source without bypassing its protocol check. Its token diagnostics
 and analysis are backed up separately under
@@ -407,21 +409,26 @@ commands. Its PDF is `../output/pdf/thesis-paper-writing-report.pdf`. Invoke
 `$thesis-paper-report` in Codex to use the installed reusable skill. This does
 not authorize additional inference or change the frozen protocol.
 
-The durable snapshot at `../evidence/snapshots/2026-09-30-report/` includes
-GPT-OSS Steps 8--12, historical diagnostics, captured Qwen outputs, protocols,
-sample plans, and job logs. It excludes weights and credentials. Both main
-benchmarks have 540/540 records, matching frozen request digests and valid
-markers. Qwen's final job completed on 30 September 2026 at 19:29:44 IST.
-Qwen mechanism experiments are not completed evidence in this snapshot.
+The complete snapshot at `../evidence/snapshots/2026-10-03-complete/` has
+599 files with stored/raw SHA-256 checksums. Both models have complete main
+benchmarks and Steps 8--12, plus completed Step 13 summaries and registries.
+The local audit checks 2,650 selected/historical outcome records with no errors.
+Weights, environments, and credentials are excluded. Main scores remain
+372/540 for GPT-OSS and 472/540 for Qwen; follow-ups are not pooled into main.
+
+The active main manuscript is `../Soduku/paper.tex`. Run `make -C Soduku`
+from the repository root to rebuild `output/pdf/thesis-main-paper.pdf` using
+the existing local LaTeX tools. Its generators derive both models' tokenizer,
+condition/tier, failure, and cumulative revision-cost tables from audited data.
 
 Run these on your Mac, not on the login node:
 
 ```bash
 cd "/Users/arnavbharti/Developer/arnavbharti/thesis"
-python3 paper/report/prepare_snapshot.py tmp/research-report/snapshot \
-  evidence/snapshots/2026-09-30-report --verify
+python3 paper/report/prepare_snapshot.py tmp/research-report/unused \
+  evidence/snapshots/2026-10-03-complete --verify
 python3 paper/report/analyze_evidence.py \
-  --snapshot evidence/snapshots/2026-09-30-report \
+  --snapshot evidence/snapshots/2026-10-03-complete \
   --output tmp/research-report/recheck
 diff paper/report/generated/results_tables.md \
   tmp/research-report/recheck/results_tables.md
